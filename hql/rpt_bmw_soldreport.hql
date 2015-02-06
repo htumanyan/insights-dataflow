@@ -45,4 +45,4 @@ VehicleInformation_stg VI
    LEFT OUTER  JOIN Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN UnitType_stg U ON U.ID = VI.UnitType
    where year(BVP.VehiclePurchaseDt) is not null;
-quit;
+!quit;
