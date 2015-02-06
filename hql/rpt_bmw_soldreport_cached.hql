@@ -39,8 +39,8 @@ CREATE TABLE rpt_bmw_soldreport_cached
  from  
 psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
-   LEFT OUTER JOIN (select FIRST_VALUE(t.vehicleinstanceid) as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
-   LEFT OUTER JOIN (select FIRST_VALUE(t.vehicleinstanceid) as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
+   LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
+   LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Address_stg AD ON AD.ID = BVP.BuyerDeliveryLocationID
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
