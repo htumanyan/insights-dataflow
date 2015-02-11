@@ -52,5 +52,4 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa_shark.sales_session_tactics_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid; 
-
-
+!quit;
