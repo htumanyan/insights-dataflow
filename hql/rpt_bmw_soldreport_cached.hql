@@ -39,7 +39,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
 			   VI.Stockage, 
                            U.Description AS Vehicle_Type,
 			   SalesTacticSession.sessionname as SalesSession,
-			   SalesTacticSession.tacticname as TacticName
+			   SalesTacticSession.tacticname as TacticName,
 		           VI.country_id as CountryId,
 			   Country.Name as CountryName
  from  
