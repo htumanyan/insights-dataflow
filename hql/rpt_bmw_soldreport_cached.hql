@@ -35,14 +35,22 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.ExteriorColour,
                            VI.DaysOnSale,
                            VI.AuctionPrice,
-                           U.Description AS Vehicle_Type
+			   VI.Transmission, 
+			   VI.Stockage, 
+                           U.Description AS Vehicle_Type,
+			   SalesTacticSession.sessionname as SalesSession,
+			   SalesTacticSession.tacticname as TacticName
+		           VI.country_id as CountryId,
+			   Country.Name as CountryName
  from  
-psa.VehicleInformation_stg VI
+   psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Address_stg AD ON AD.ID = BVP.BuyerDeliveryLocationID
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
-   LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType;
+   LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
+   LEFT OUTER  JOIN psa_shark.sales_session_tactics_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid; 
+
 

@@ -15,3 +15,4 @@ INSERT INTO TABLE vehicleinformationwithoptions_stg SELECT
 	FROM VehicleInformation_stg VI
                 LEFT OUTER JOIN Options_stg OPT
 		ON  OPT.DerivativeID = VI.DerivativeID; 
+!quit
