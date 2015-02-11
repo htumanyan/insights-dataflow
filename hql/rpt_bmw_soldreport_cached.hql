@@ -35,13 +35,13 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.ExteriorColour,
                            VI.DaysOnSale,
                            VI.AuctionPrice,
-			   VI.Transmission, 
-			   VI.Stockage, 
+                           VI.Transmission, 
+                           VI.Stockage, 
                            U.Description AS Vehicle_Type,
-			   SalesTacticSession.sessionname as SalesSession,
-			   SalesTacticSession.tacticname as TacticName,
-		           VI.country_id as CountryId,
-			   Country.Name as CountryName
+                           SalesTacticSession.sessionname AS SalesSession,
+                           SalesTacticSession.tacticname AS TacticName,
+                           VI.country_id as CountryId,
+                           CU.Name as CountryName
  from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
