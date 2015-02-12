@@ -4,10 +4,10 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
-			   VI.derivativeid,
+               VI.derivativeid,
                            VI.RegistrationDate,
                            VI.SaleChannel,
-			   VI.SaleChannelID,
+               VI.SaleChannelID,
                            VI.VendorTradingName,
                            BVP.VehiclePurchaseDt AS SoldDate,
                            CASE VI.VatQualified
@@ -57,4 +57,3 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid; 
-!quit;
