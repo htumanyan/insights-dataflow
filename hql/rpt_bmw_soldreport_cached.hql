@@ -4,11 +4,12 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
-               VI.derivativeid,
+                           VI.derivativeid,
                            VI.RegistrationDate,
                            VI.SaleChannel,
-               VI.SaleChannelID,
+               SCD.SaleChannelId,
                            VI.VendorTradingName,
+               VI.VendorID, 
                            BVP.VehiclePurchaseDt AS SoldDate,
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
@@ -38,12 +39,15 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.DaysOnSale,
                            VI.AuctionPrice,
                            VI.Transmission, 
+                           VI.Transmissionid, 
                            VI.Stockage, 
                            U.Description AS Vehicle_Type,
                            SalesTacticSession.sessionname AS SalesSession,
                            SalesTacticSession.sessionid AS SalesSessionID,
                            SalesTacticSession.tacticname AS TacticName,
                            SalesTacticSession.tacticid AS TacticId,
+                           CommercialConcept.Description as CommercialConceptName,
+                          CommercialConcept.SaleChannelTypeId as CommercialConceptId,
                            VI.countryid as CountryId,
                            CU.Name as CountryName,
                            VI.totaldamagesnetprice AS totaldamagesnetprice
@@ -56,4 +60,6 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.Address_stg AD ON AD.ID = BVP.BuyerDeliveryLocationID
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
-   LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid; 
+   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannel=SaleChannelName 
+   LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.language=1 and CommercialConcept.vendorid=VI.vendorid
+   LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
