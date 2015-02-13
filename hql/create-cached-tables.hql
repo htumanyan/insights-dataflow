@@ -245,4 +245,4 @@ CREATE TABLE IF NOT EXISTS VehicleInstance_stg_cached
   reconditioned ,
   isupstream 
   FROM psa.VehicleInstance_stg;
-quit;
+!quit
