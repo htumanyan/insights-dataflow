@@ -63,3 +63,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannel=SaleChannelName 
    LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.language=1 and CommercialConcept.vendorid=VI.vendorid
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
+
+create table sales_dimension_salechannel_cached  as select distinct salechannelid, salechannel, commercialconceptid  from rpt_bmw_soldreport_cached where salechannel != "null";
+create table sales_dimension_country_cached as select  distinct  countryid,C.name  from rpt_bmw_soldreport_cached RPT  inner join psa.country_stg C on RPT.countryid = C.id;
+create table sales_dimension_tactic_cached as  select distinct tacticid, tacticname, salechannelid from rpt_bmw_soldreport_cached where tacticid is not null and tacticname is not null;
