@@ -4,7 +4,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
-                           VI.derivativeid,
+                           GVI.derivativeid,
                            VI.RegistrationDate,
                            VI.SaleChannel,
                SCD.SaleChannelId,
@@ -18,7 +18,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            END AS VatQualified,
                            (BVP.NetPriceAmt + BVP.VATAmt) AS SoldPrice,
                             BPC.BuyerPremium AS BuyerPremium,
-                GDC.Delivery AS Delivery,
+              GDC.Delivery AS Delivery,
                             B.Name AS Buyer ,
                                 B.BuyerCode AS BuyerCode,
                                 regexp_replace(COALESCE(AD.NameNo, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Addressline1, ''), ',', ' ') + ' '
@@ -50,20 +50,33 @@ CREATE TABLE rpt_bmw_soldreport_cached
                           CommercialConcept.SaleChannelTypeId as CommercialConceptId,
                            VI.countryid as CountryId,
                            CU.Name as CountryName,
-                           VI.totaldamagesnetprice AS totaldamagesnetprice
+                           VI.totaldamagesnetprice AS totaldamagesnetprice,
+                           VI.fueltype AS fueltype,
+                           VI.vehicleid,
+                           VI.vin,
+                           VI.sourceid,
+                           Source.sourcename,
+                           BuyerType.BuyerTypeId,
+                           BuyerType.BuyerTypeName,
+			   BVP.NetPriceAmt as PriceExcludingVat
+			   
  from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.VehicleID
+   LEFT OUTER  JOIN psa.BuyerType_stg BuyerType ON B.BuyerTypeId = BuyerType.BuyerTypeId
    LEFT OUTER  JOIN psa.Address_stg AD ON AD.ID = BVP.BuyerDeliveryLocationID
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannel=SaleChannelName 
    LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.language=1 and CommercialConcept.vendorid=VI.vendorid
+   LEFT OUTER JOIN psa.source_stg Source on VI.sourceid = Source.ID
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
 
-create table sales_dimension_salechannel_cached  as select distinct salechannelid, salechannel, commercialconceptid  from rpt_bmw_soldreport_cached where salechannel != "null";
 create table sales_dimension_country_cached as select  distinct  countryid,C.name  from rpt_bmw_soldreport_cached RPT  inner join psa.country_stg C on RPT.countryid = C.id;
-create table sales_dimension_tactic_cached as  select distinct tacticid, tacticname, salechannelid from rpt_bmw_soldreport_cached where tacticid is not null and tacticname is not null;
+create table sales_dimension_model_cached as select  distinct  model  from rpt_bmw_soldreport_cached;
+create table sales_dimension_transmission_cached as select distinct transmission, transmissionid  from rpt_bmw_soldreport_cached;
+create table sales_dimension_source_cached as select  distinct  sourceid, sourcename  from rpt_bmw_soldreport_cached;
+create table concept_channel_tactic_session_cached as select  distinct CommercialConceptName, CommercialConceptId, TacticId, Tacticname, SalesSessionID, SalesSession, SaleChannel, SaleChannelId from psa_shark.rpt_bmw_soldreport_cached where CommercialConceptName is not null;
