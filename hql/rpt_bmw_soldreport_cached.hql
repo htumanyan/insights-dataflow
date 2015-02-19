@@ -58,7 +58,9 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            Source.sourcename,
                            BuyerType.BuyerTypeId,
                            BuyerType.BuyerTypeName,
-                           BVP.NetPriceAmt as PriceExcludingVat
+                           BVP.NetPriceAmt AS PriceExcludingVat,
+                           Company.name as SellerName,
+                           Company.id as SellerId
  from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
