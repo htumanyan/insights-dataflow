@@ -4,12 +4,12 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
-                           GVI.derivativeid,
+                           VI.derivativeid,
                            VI.RegistrationDate,
                            VI.SaleChannel,
-               SCD.SaleChannelId,
+                           SCD.SaleChannelId,
                            VI.VendorTradingName,
-               VI.VendorID, 
+                           VI.VendorID, 
                            BVP.VehiclePurchaseDt AS SoldDate,
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
@@ -18,7 +18,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            END AS VatQualified,
                            (BVP.NetPriceAmt + BVP.VATAmt) AS SoldPrice,
                             BPC.BuyerPremium AS BuyerPremium,
-              GDC.Delivery AS Delivery,
+                            GDC.Delivery AS Delivery,
                             B.Name AS Buyer ,
                                 B.BuyerCode AS BuyerCode,
                                 regexp_replace(COALESCE(AD.NameNo, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Addressline1, ''), ',', ' ') + ' '
@@ -72,11 +72,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
    LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid
-   LEFT OUTER JOIN psa.source_stg Source on VI.sourceid = Source.ID
+   LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
+   LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
 
-create table sales_dimension_country_cached as select  distinct  countryid,C.name  from rpt_bmw_soldreport_cached RPT  inner join psa.country_stg C on RPT.countryid = C.id;
-create table sales_dimension_model_cached as select  distinct  model  from rpt_bmw_soldreport_cached;
-create table sales_dimension_transmission_cached as select distinct transmission, transmissionid  from rpt_bmw_soldreport_cached;
-create table sales_dimension_source_cached as select  distinct  sourceid, sourcename  from rpt_bmw_soldreport_cached;
-create table concept_channel_tactic_session_cached as select  distinct CommercialConceptName, CommercialConceptId, TacticId, Tacticname, SalesSessionID, SalesSession, SaleChannel, SaleChannelId from psa_shark.rpt_bmw_soldreport_cached where CommercialConceptName is not null;
