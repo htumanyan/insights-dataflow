@@ -36,7 +36,7 @@ CREATE TABLE inventory_report_cached
                            VI.Registration,
                            VI.VendorStatusId,
                            VS.BaseStatusId as StatusID,
-                           VS.Description as StatusDescription,
+                           VS.Description as StatusDescription
 FROM
    psa.VehicleInformation_stg VI
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
