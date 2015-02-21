@@ -1,5 +1,5 @@
 CREATE TABLE buyer_activity_report_cached AS
-SELECT User.id,
+SELECT U.id,
         U.username,
         U.createddate,
         U.loggedindate,
