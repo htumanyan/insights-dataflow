@@ -6,9 +6,9 @@ SELECT UserAudit.id,
         Buyer.id,
         Buyer.name,
         BuyerType.BuyerTypeId,
-        BuyerType.BuyerTypeName,
+        BuyerType.BuyerTypeName
 from psa.useraudit_stg
-inner join BuyerUsers ON BuyerUsers.userid=Buyer.id
-inner join Buyer ON Buyer.Id = BuyerUsers.buyerid
+inner join psa.BuyerUsers_stg ON BuyerUsers.userid=Buyer.id
+inner join psa.Buyer_stg ON Buyer.Id = BuyerUsers.buyerid
 LEFT OUTER  JOIN psa.BuyerType_stg BuyerType ON Buyer.BuyerTypeId = BuyerType.BuyerTypeId;
  
