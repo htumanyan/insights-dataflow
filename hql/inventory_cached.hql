@@ -4,7 +4,7 @@ CREATE TABLE inventory_report_cached
                            VI.vehicleid,
                            VI.vin,
                            VI.countryid as CountryId,
-                           unix_timestamp(VI.createddt) as CreationDT,
+                           unix_timestamp(VI.createddt) as CreationTS,
                            CU.Name as CountryName,
                            VI.make,
                            VI.makeref,
