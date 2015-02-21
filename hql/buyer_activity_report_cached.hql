@@ -3,8 +3,8 @@ SELECT U.id,
         U.username,
         U.createddate,
         U.loggedindate,
-        Buyer.id,
-        Buyer.name,
+        Buyer.id as buyerid,
+        Buyer.name as buyername,
         BuyerType.BuyerTypeId,
         BuyerType.BuyerTypeName
 from psa.useraudit_stg U
