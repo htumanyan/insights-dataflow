@@ -26,6 +26,7 @@ public class SQLPredicateGenerator
 
 			String sqlQueryPrefix = (String) params.get("sqlQueryPrefix");
 			String sqlQuerySuffix = (String) params.get("sqlQuerySuffix");
+			String skipWhereToken = (String) params.get("skipWhereToken");
 
 			StringBuffer sqlQueryBuff = new StringBuffer();
 			sqlQueryBuff.append(sqlQueryPrefix);
@@ -92,7 +93,10 @@ public class SQLPredicateGenerator
 			
 			if(predicateString.length() != 0)
 			{
-				sqlQueryBuff.append(" WHERE ");
+				if(!skipWhereToken.equals("true"))
+				{
+					sqlQueryBuff.append(" WHERE ");
+				}
 				sqlQueryBuff.append(predicateString);
 			}
 			sqlQueryBuff.append(" ");
