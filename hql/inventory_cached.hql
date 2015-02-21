@@ -30,7 +30,6 @@ CREATE TABLE inventory_report_cached
                            VI.AuctionPrice,
                            VI.Transmission, 
                            VI.Transmissionid, 
-                           U.Description AS Vehicle_Type,
                            VI.sourceid,
                            Source.sourcename,
                            VI.Registration,
