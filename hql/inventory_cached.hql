@@ -45,6 +45,7 @@ FROM
    LEFT OUTER JOIN psa.SalesSessionVehicles_stg SSV ON SSV.VehicleInstanceId = VI.vehicleInstanceid
    LEFT OUTER JOIN psa.SalesSessions_stg SS ON SS.id = SSV.SalesSessionID
    LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
+   LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
    
 
