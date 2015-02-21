@@ -30,7 +30,6 @@ CREATE TABLE inventory_report_cached
                            VI.AuctionPrice,
                            VI.Transmission, 
                            VI.Transmissionid, 
-                           Source.sourcename,
                            VI.Registration,
                            VI.VendorStatusId,
                            VS.BaseStatusId as StatusID,
