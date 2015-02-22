@@ -60,7 +60,7 @@ CREATE TABLE sales_report_cached
                            BuyerType.BuyerTypeName,
                            BVP.NetPriceAmt AS PriceExcludingVat,
                            Company.name as SellerName,
-                           Company.id as SellerId
+                           Company.id as SellerId,
                            year(BVP.VehiclePurchaseDt) as SoldYear,
                           month(BVP.VehiclePurchaseDt) as SoldMonth
  from  
