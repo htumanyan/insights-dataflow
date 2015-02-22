@@ -61,9 +61,8 @@ CREATE TABLE sales_report_cached
                            BVP.NetPriceAmt AS PriceExcludingVat,
                            Company.name as SellerName,
                            Company.id as SellerId
-			   year(BVP.VehiclePurchaseDt) as SoldYear,
-			   month(BVP.VehiclePurchaseDt) as SoldMonth,
-        
+                           year(BVP.VehiclePurchaseDt) as SoldYear,
+                          month(BVP.VehiclePurchaseDt) as SoldMonth
  from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
