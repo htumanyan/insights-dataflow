@@ -11,6 +11,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.VendorTradingName,
                            VI.VendorID, 
                            BVP.VehiclePurchaseDt AS SoldDate,
+			   unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
                                 WHEN false THEN 'VAT Qualifying'
@@ -60,7 +61,9 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            BuyerType.BuyerTypeName,
                            BVP.NetPriceAmt AS PriceExcludingVat,
                            Company.name as SellerName,
-                           Company.id as SellerId
+                           Company.id as SellerId,
+                           year(BVP.VehiclePurchaseDt) as SoldYear,
+                          month(BVP.VehiclePurchaseDt) as SoldMonth
  from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
@@ -72,7 +75,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid
+   LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid=VI.vendorid
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
