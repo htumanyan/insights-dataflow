@@ -20,7 +20,8 @@ CREATE TABLE sales_report_cached
                            (BVP.NetPriceAmt + BVP.VATAmt) AS SoldPrice,
                             BPC.BuyerPremium AS BuyerPremium,
                             GDC.Delivery AS Delivery,
-                            B.Name AS Buyer ,
+                            B.Name AS Buyer,
+                            B.ID as BuyerID,
                                 B.BuyerCode AS BuyerCode,
                                 regexp_replace(COALESCE(AD.NameNo, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Addressline1, ''), ',', ' ') + ' '
                                 + regexp_replace(COALESCE(AD.Addressline2, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Town, ''), ',', ' ') + ' '
