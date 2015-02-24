@@ -1,0 +1,29 @@
+<coordinator-app name="sqoop_workflow" frequency="${freq}" start="${startTime}" end="${endTime}" timezone="UTC" xmlns="uri:oozie:coordinator:0.1">
+        <action>
+                <workflow>
+                        <app-path>${workflowPath}</app-path>
+                                <configuration>
+                                        <property>
+                                                <name>jobTracker</name>
+                                                <value>${jobTracker}</value>
+                                        </property>
+                                        <property>
+                                                <name>nameNode</name>
+                                                <value>${nameNode}</value>
+                                        </property>
+                                        <property>
+                                                <name>queueName</name>
+                                                <value>${queueName}</value>
+                                        </property>
+                                        <property>
+                                                <name>oozie.use.system.libpath</name>
+                                                <value>true</value>
+                                        </property>
+                                        <property>
+                                                <name>oozie.libpath</name>
+                                                <value>${libpath}</value>
+                                        </property>
+                                </configuration>
+                </workflow>
+   </action>
+</coordinator-app>
