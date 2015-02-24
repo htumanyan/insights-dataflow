@@ -11,7 +11,7 @@ CREATE TABLE sales_report_cached
                            VI.VendorTradingName,
                            VI.VendorID, 
                            BVP.VehiclePurchaseDt AS SoldDate,
-			   unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
+    unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
                                 WHEN false THEN 'VAT Qualifying'
