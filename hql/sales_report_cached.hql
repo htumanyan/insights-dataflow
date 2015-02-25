@@ -38,7 +38,7 @@ CREATE TABLE sales_report_cached
                            VI.ModelYear,
                            VI.ModelRef AS Model_Code,
                            VI.Mileage,
-                           mileage_band(VI.Mileage) as mileageband, 
+                           psa_shark.mileage_band(VI.Mileage) as mileageband, 
                            VI.ExteriorColour,
                            VI.DaysOnSale,
                            VI.AuctionPrice,
