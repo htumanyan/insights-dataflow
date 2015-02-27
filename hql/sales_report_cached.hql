@@ -1,17 +1,18 @@
 use psa_shark;
-CREATE TABLE rpt_bmw_soldreport_cached
+CREATE TABLE sales_report_cached
  AS SELECT VI.Make,
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
                            VI.derivativeid,
                            VI.RegistrationDate,
+                           VI.createddt as CreationDate,
                            VI.SaleChannel,
                            SCD.SaleChannelId,
                            VI.VendorTradingName,
                            VI.VendorID, 
                            BVP.VehiclePurchaseDt AS SoldDate,
-                           unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
+    unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
                                 WHEN false THEN 'VAT Qualifying'
@@ -20,7 +21,8 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            (BVP.NetPriceAmt + BVP.VATAmt) AS SoldPrice,
                             BPC.BuyerPremium AS BuyerPremium,
                             GDC.Delivery AS Delivery,
-                            B.Name AS Buyer ,
+                            B.Name AS Buyer,
+                            B.ID as BuyerID,
                                 B.BuyerCode AS BuyerCode,
                                 regexp_replace(COALESCE(AD.NameNo, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Addressline1, ''), ',', ' ') + ' '
                                 + regexp_replace(COALESCE(AD.Addressline2, ''), ',', ' ') + ' ' + regexp_replace(COALESCE(AD.Town, ''), ',', ' ') + ' '
@@ -36,6 +38,7 @@ CREATE TABLE rpt_bmw_soldreport_cached
                            VI.ModelYear,
                            VI.ModelRef AS Model_Code,
                            VI.Mileage,
+                           psa_shark.mileage_band(VI.Mileage) as mileageband, 
                            VI.ExteriorColour,
                            VI.DaysOnSale,
                            VI.AuctionPrice,
