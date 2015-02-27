@@ -3,7 +3,7 @@ package com.nusla.hivePlugins;
 
 import org.apache.hadoop.hive.ql.exec.UDF;
 
-public class StockageBand extends UDF {
+public class NetDamagesBand extends UDF {
 	 public int evaluate(long netdamages)
 	 {
 		 if(netdamages >= 0 && netdamages <= 99) return 1;
