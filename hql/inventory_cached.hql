@@ -25,6 +25,7 @@ CREATE TABLE inventory_report_cached
                            VI.Stockage, 
                            VI.fueltype AS fueltype,
                            VI.Model,
+                           VI.Modelref,
                            VI.Code,
                            VI.ModelYear,
                            VI.ModelRef AS Model_Code,
@@ -33,6 +34,7 @@ CREATE TABLE inventory_report_cached
                            VI.Transmissionid, 
                            VI.Registration,
                            VI.VendorStatusId,
+                           VI.VehicleAgeInDays,
                            VS.BaseStatusId as StatusID,
                            VS.Description as StatusDescription
 FROM
