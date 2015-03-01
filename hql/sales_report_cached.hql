@@ -1,6 +1,7 @@
 use psa_shark;
 CREATE TABLE sales_report_cached
  AS SELECT VI.Make,
+                           VI.Makeref, 
                            VI.Registration,
                            VI.Chassis,
                            VI.Derivative,
@@ -11,8 +12,9 @@ CREATE TABLE sales_report_cached
                            SCD.SaleChannelId,
                            VI.VendorTradingName,
                            VI.VendorID, 
+                           VI.VehicleAgeInDays,
                            BVP.VehiclePurchaseDt AS SoldDate,
-    unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
+                           unix_timestamp( BVP.VehiclePurchaseDt) AS SoldDateTs, 
                            CASE VI.VatQualified
                             WHEN true THEN 'Marginal'
                                 WHEN false THEN 'VAT Qualifying'
