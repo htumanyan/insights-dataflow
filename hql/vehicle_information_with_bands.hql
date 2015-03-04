@@ -103,5 +103,5 @@ select
             WHEN VI.mileage >=75000 AND VI.mileage <100000 THEN 6
             WHEN VI.mileage >=100001 AND VI.mileage <150000 THEN 7
             WHEN VI.mileage >=150001 AND VI.mileage <999999 THEN 8
-end mileageBandName,
+end mileageBandName
      from psa.vehicleinformation_stg VI;
