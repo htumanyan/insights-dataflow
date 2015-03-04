@@ -37,10 +37,19 @@ CREATE TABLE inventory_report_cached
                            VI.Registration,
                            VI.VendorStatusId,
                            VI.VehicleAgeInDays,
+                           VDB.ageinweeksbandname,
+                           VDB.ageinweeksbandid,
+                           VDB.stockageweeksbandname,
+                           VDB.stockageweeksbandid,
+                           VDB.damagesbandname,
+                           VDB.damagesbandid, 
+                           VDB.mileagebandname,
+                           VDB.mileagebandid
                            VS.BaseStatusId as StatusID,
                            VS.Description as StatusDescription
 FROM
    psa.VehicleInformation_stg VI
+   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
    LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid=VI.VendorId
