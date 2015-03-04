@@ -1,3 +1,4 @@
+use psa_shark;
 create table vehicle_dimension_bands as 
 select 
      VI.vehicleinstanceid,
