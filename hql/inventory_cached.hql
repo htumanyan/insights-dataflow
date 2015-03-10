@@ -44,7 +44,7 @@ CREATE TABLE inventory_report_cached
                            VDB.damagesbandname,
                            VDB.damagesbandid, 
                            VDB.mileagebandname,
-                           VDB.mileagebandid
+                           VDB.mileagebandid,
                            VS.BaseStatusId as StatusID,
                            VS.Description as StatusDescription
 FROM
