@@ -68,10 +68,19 @@ CREATE TABLE sales_report_cached
                            Company.name as SellerName,
                            Company.id as SellerId,
                            year(BVP.VehiclePurchaseDt) as SoldYear,
-                          month(BVP.VehiclePurchaseDt) as SoldMonth
- from  
+                           month(BVP.VehiclePurchaseDt) as SoldMonth,
+                           VDB.ageinweeksbandname,
+                           VDB.ageinweeksbandid,
+                           VDB.stockageweeksbandname,
+                           VDB.stockageweeksbandid,
+                           VDB.damagesbandname,
+                           VDB.damagesbandid, 
+                           VDB.mileagebandname,
+                           VDB.mileagebandid
+from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
+   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
