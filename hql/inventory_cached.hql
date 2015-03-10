@@ -14,6 +14,8 @@ CREATE TABLE inventory_report_cached
                            CommercialConcept.SaleChannelTypeId as CommercialConceptId,
                            ST.id as TacticId,
                            ST.SalesTacticName as TacticName, 
+                           SS.id as SalesSessionId,
+                           SS.name as SalesSessionName,
                            VI.VendorTradingName,
                            VI.VendorID, 
                            VI.Derivative,
