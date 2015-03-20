@@ -21,3 +21,4 @@ address^1^--map-column-hive^TimeStamp=String
 country^1^--map-column-hive^TimeStamp=String
 company^1
 unittype^1
+salessessionsteps^1
