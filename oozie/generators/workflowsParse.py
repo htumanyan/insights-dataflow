@@ -13,9 +13,11 @@ class sqoopCommand(object):
 		self.mapColumn = mapColumn
 		self.splitBy = splitBy
 	
-script, inFilename, outFilePath = argv
+#ex startup: python generators/workflowsParse.py 9 tables/table.txt workflows/workflowFull_
+#ex startup: python generators/workflowsParse.py 8 tables/tablesUsed.txt workflows/workflow_
+script, numSubFlows, inFilename, outFilePath = argv
 
-txt = open(filename, "r")
+txt = open(inFilename, "r")
 
 actions = []
 i=0
@@ -42,7 +44,7 @@ for line in txt:
 
 
 numActions = len(actions)
-maxSize = 9
+maxSize = int(numSubFlows) #8 or 9 optimal for current setup of mappers 3-19-15
 root = ET.Element('workflow-app', xmlns='uri:oozie:workflow:0.2', name='sqoop-wf')
 # for arr of max size create list of root elements then iterate through until out 
 # of sqoop commands
@@ -51,16 +53,6 @@ for index in range(maxSize):
 	root = ET.Element('workflow-app', xmlns='uri:oozie:workflow:0.2', name='sqoop-wf')
 	ET.SubElement(root, 'start', to='sqoop-node0')
 	workFlows.append(ET.ElementTree(root))
-	
-# ET.SubElement(root, 'start', to='forking')
-# fork = ET.SubElement(root, 'fork', name='forking')
-# 
-# i=0
-# while(i <= numActions):
-# 	 path = ET.SubElement(fork, 'path', start='sqoop-node' + str(i))
-# 	 i = i+1
-# 	 if(i>maxSize):
-# 	 	break
 
 i=0
 fullWorkFlow = []
@@ -72,7 +64,7 @@ for action in actions:
 	ET.SubElement(sqoop, 'job-tracker').text = '${jobTracker}'
 	ET.SubElement(sqoop, 'name-node').text = '${nameNode}'
 	prepare = ET.SubElement(sqoop, 'prepare')
-	ET.SubElement(prepare, 'delete', path='/data/database/sqoop_test/' + action.tableName)
+	ET.SubElement(prepare, 'delete', path='/data/database/psa/' + action.tableName)
 	configuration = ET.SubElement(sqoop, 'configuration')
 	property = ET.SubElement(configuration, 'property')
 	ET.SubElement(property, 'name').text = 'mapred.job.queue.name'
@@ -82,19 +74,19 @@ for action in actions:
 	ET.SubElement(property2, 'value').text = 'tmp/oozie-hive-site.xml'
 	ET.SubElement(sqoop, 'arg').text = 'import'
 	ET.SubElement(sqoop, 'arg').text = '--connect'
-	ET.SubElement(sqoop, 'arg').text = 'jdbc:sqlserver://10.133.10.6:1433;databaseName=Hadoop_Data;'
+	ET.SubElement(sqoop, 'arg').text = 'jdbc:sqlserver://10.140.10.16:1433;databaseName=Hadoop_Data;'
 	ET.SubElement(sqoop, 'arg').text = '--username'
 	ET.SubElement(sqoop, 'arg').text = 'Hadoop'
 	ET.SubElement(sqoop, 'arg').text = '--password'
 	ET.SubElement(sqoop, 'arg').text = 'RMS_H@d00p'
 	ET.SubElement(sqoop, 'arg').text = '--table'
 	ET.SubElement(sqoop, 'arg').text = action.tableName
-	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/sqoop_test/'
+	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/psa/'
 	ET.SubElement(sqoop, 'arg').text = '-m'
 	ET.SubElement(sqoop, 'arg').text = str(action.mapTasks)
 	ET.SubElement(sqoop, 'arg').text = '--hive-import'
 	ET.SubElement(sqoop, 'arg').text = '--hive-table'
-	ET.SubElement(sqoop, 'arg').text = 'sqoop_test.' + action.tableName
+	ET.SubElement(sqoop, 'arg').text = action.tableName + "_stg"
 	if action.mapColumn!=0:
 		ET.SubElement(sqoop, 'arg').text = '--map-column-hive'
 		ET.SubElement(sqoop, 'arg').text = action.mapColumn
@@ -123,5 +115,5 @@ for workFlow in workFlows:
 	ET.SubElement(kill, 'message').text = 'Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]'
 	ET.SubElement(root, 'end', name='end')	
 	tree = ET.ElementTree(root)
-	tree.write('outFilePath' + str(i+1) + '.xml')
+	tree.write(outFilePath + str(i+1) + '.xml')
 	i = i+1
