@@ -86,13 +86,14 @@ for action in actions:
 	ET.SubElement(sqoop, 'arg').text = str(action.mapTasks)
 	ET.SubElement(sqoop, 'arg').text = '--hive-import'
 	ET.SubElement(sqoop, 'arg').text = '--hive-table'
-	ET.SubElement(sqoop, 'arg').text = action.tableName + "_stg"
+	ET.SubElement(sqoop, 'arg').text = 'psa.' + action.tableName + '_stg'
 	if action.mapColumn!=0:
 		ET.SubElement(sqoop, 'arg').text = '--map-column-hive'
 		ET.SubElement(sqoop, 'arg').text = action.mapColumn
 	if action.splitBy!=0:
 		ET.SubElement(sqoop, 'arg').text = '--split-by'
 		ET.SubElement(sqoop, 'arg').text = action.splitBy
+	ET.SubElement(sqoop, 'file').text = '/tmp/hive-site.xml#hive-site.xml'
 	if (i+maxSize)/numActions > 0:
 		ET.SubElement(actXml, 'ok', to='end')
 	else: 
