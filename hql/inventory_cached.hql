@@ -51,8 +51,8 @@ FROM
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId 
    LEFT OUTER JOIN psa.SalesSessionVehicles_stg SSV ON SSV.VehicleInstanceId = VI.vehicleInstanceid
+   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SSV.SaleChannelTypeId 
    LEFT OUTER JOIN psa.SalesSessions_stg SS ON SS.id = SSV.SalesSessionID
    LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
