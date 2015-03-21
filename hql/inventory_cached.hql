@@ -10,8 +10,7 @@ CREATE TABLE inventory_report_cached
                            VI.makeref,
                            SCD.SaleChannelId,
                            VI.SaleChannel,
-                           case when BVP.directsaleid > 0 then 'Direct Sale' else 
-                           CommercialConcept.salechanneltypename end as CommercialConceptName,
+                           CommercialConcept.salechanneltypename as CommercialConceptName,
                            ST.id as TacticId,
                            ST.SalesTacticName as TacticName, 
                            SS.id as SalesSessionID,
@@ -52,7 +51,7 @@ FROM
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid=VI.VendorId
+   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId 
    LEFT OUTER JOIN psa.SalesSessionVehicles_stg SSV ON SSV.VehicleInstanceId = VI.vehicleInstanceid
    LEFT OUTER JOIN psa.SalesSessions_stg SS ON SS.id = SSV.SalesSessionID
    LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
