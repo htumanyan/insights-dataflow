@@ -52,8 +52,8 @@ CREATE TABLE sales_report_cached
                            SalesTacticSession.sessionid AS SalesSessionID,
                            SalesTacticSession.tacticname AS TacticName,
                            SalesTacticSession.tacticid AS TacticId,
-                           CommercialConcept.Description as CommercialConceptName,
-                          CommercialConcept.SaleChannelTypeId as CommercialConceptId,
+                           case when BVP.directsaleid > 0 then 'Direct Sale' else 
+                           CommercialConcept.salechanneltypename end as CommercialConceptName,
                            VI.countryid as CountryId,
                            CU.Name as CountryName,
                            VI.totaldamagesnetprice AS totaldamagesnetprice,
@@ -65,6 +65,7 @@ CREATE TABLE sales_report_cached
                            BuyerType.BuyerTypeId,
                            BuyerType.BuyerTypeName,
                            BVP.NetPriceAmt AS PriceExcludingVat,
+                           BVP.directsaleid as directsaleid, 
                            Company.name as SellerName,
                            Company.id as SellerId,
                            year(BVP.VehiclePurchaseDt) as SoldYear,
@@ -89,7 +90,7 @@ from
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER  JOIN psa.SaleChannelTypeTranslation_stg CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId and CommercialConcept.languageID=1 and CommercialConcept.vendorid=VI.vendorid
+   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId 
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;

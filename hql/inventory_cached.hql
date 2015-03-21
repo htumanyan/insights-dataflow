@@ -10,8 +10,8 @@ CREATE TABLE inventory_report_cached
                            VI.makeref,
                            SCD.SaleChannelId,
                            VI.SaleChannel,
-                           CommercialConcept.Description as CommercialConceptName,
-                           CommercialConcept.SaleChannelTypeId as CommercialConceptId,
+                           case when BVP.directsaleid > 0 then 'Direct Sale' else 
+                           CommercialConcept.salechanneltypename end as CommercialConceptName,
                            ST.id as TacticId,
                            ST.SalesTacticName as TacticName, 
                            SS.id as SalesSessionID,
