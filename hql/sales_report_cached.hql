@@ -8,8 +8,8 @@ CREATE TABLE sales_report_cached
                            VI.derivativeid,
                            VI.RegistrationDate,
                            VI.createddt as CreationDate,
+                           BVP.SaleChannelId,
                            VI.SaleChannel,
-                           SCD.SaleChannelId,
                            VI.VendorTradingName,
                            VI.VendorID, 
                            VI.VehicleAgeInDays,
@@ -88,8 +88,7 @@ from
    LEFT OUTER  JOIN psa.Address_stg AD ON AD.ID = BVP.BuyerDeliveryLocationID
    LEFT OUTER  JOIN psa.Country_stg CU ON  AD.CountryID = CU.ID
    LEFT OUTER  JOIN psa.UnitType_stg U ON U.ID = VI.UnitType
-   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.SaleChannelTypeId 
+   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = BVP.SaleChannelTypeId 
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
