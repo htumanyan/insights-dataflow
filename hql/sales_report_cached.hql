@@ -86,7 +86,7 @@ from
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
-   LEFT OUTER  JOIN psa.BuyerAdress_stg BAD ON BAD.buyerid = BVP.buyerid
+   LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BVP.addressid
    LEFT OUTER  JOIN psa.Country_stg BC ON BC.id = BD.countryid
    LEFT OUTER  JOIN psa.BuyerType_stg BuyerType ON B.BuyerTypeId = BuyerType.BuyerTypeId
