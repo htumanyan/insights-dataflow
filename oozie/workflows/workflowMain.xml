@@ -3,13 +3,12 @@
 	<fork name="forkingMain">
         <path start="sqoop-subFlow1"/>
         <path start="sqoop-subFlow2"/>
-		<path start="sqoop-subFlow3"/>
+	<path start="sqoop-subFlow3"/>
         <path start="sqoop-subFlow4"/>
         <path start="sqoop-subFlow5"/>
         <path start="sqoop-subFlow6"/>
         <path start="sqoop-subFlow7"/>
         <path start="sqoop-subFlow8"/>
-        <path start="sqoop-subFlow9"/>
     </fork>
     <action name="sqoop-subFlow1">
         <sub-workflow>
