@@ -75,14 +75,6 @@
         <ok to="joiningMain"/>
 		<error to="joiningMain"/>
     </action>
-    <action name="sqoop-subFlow9">
-        <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_9.xml</app-path>
-            <propagate-configuration/>
-        </sub-workflow>
-        <ok to="joiningMain"/>
-		<error to="joiningMain"/>
-    </action>
     <join name="joiningMain" to="endMain"/>
     <kill name="failMain">
 		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
