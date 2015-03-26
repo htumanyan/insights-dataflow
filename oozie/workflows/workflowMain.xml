@@ -8,7 +8,6 @@
         <path start="sqoop-subFlow5"/>
         <path start="sqoop-subFlow6"/>
         <path start="sqoop-subFlow7"/>
-        <path start="sqoop-subFlow8"/>
     </fork>
     <action name="sqoop-subFlow1">
         <sub-workflow>
@@ -61,14 +60,6 @@
     <action name="sqoop-subFlow7">
         <sub-workflow>
             <app-path>${nameNode}/user/oozie/share/workflow_7.xml</app-path>
-            <propagate-configuration/>
-        </sub-workflow>
-        <ok to="joiningMain"/>
-		<error to="joiningMain"/>
-    </action>
-    <action name="sqoop-subFlow8">
-        <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_8.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
