@@ -24,4 +24,4 @@ unittype^1
 salessessionsteps^1
 buyeraddress^1
 salechanneltypemaster^1^--map-column-hive^TimeStamp=String
-useraudit^12
+useraudit^12^--split-by^ID
