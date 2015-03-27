@@ -85,6 +85,7 @@ for action in actions:
 	ET.SubElement(sqoop, 'arg').text = '-m'
 	ET.SubElement(sqoop, 'arg').text = str(action.mapTasks)
 	ET.SubElement(sqoop, 'arg').text = '--hive-import'
+	ET.SubElement(sqoop, 'arg').text = '--hive-overwrite'
 	ET.SubElement(sqoop, 'arg').text = '--hive-table'
 	ET.SubElement(sqoop, 'arg').text = 'psa.' + action.tableName + '_stg'
 	if action.mapColumn!=0:
