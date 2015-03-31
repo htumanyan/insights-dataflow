@@ -53,7 +53,7 @@ CREATE TABLE sales_report_cached
                            SalesTacticSession.tacticid AS TacticId,
                            case when BVP.directsaleid > 0 then 'Direct Sale' else 
                            CommercialConcept.salechanneltypename end as CommercialConceptName,
-                           VI.countryid as CountryId,
+                           CU.ID as CountryId,
                            CU.Name as CountryName,
                            VI.totaldamagesnetprice AS totaldamagesnetprice,
                            VI.fueltype AS fueltype,
