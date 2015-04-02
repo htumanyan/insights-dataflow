@@ -2,7 +2,7 @@
 	<start to="cached-hql-action1" />
 	<action name="cached-hql-action1">
 		<hive xmlns="uri:oozie:hive-action:0.2">
-			<job-traker>${jobTracker}</job-tracker>
+			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node<name />
 			<configuration>
 				<property>
