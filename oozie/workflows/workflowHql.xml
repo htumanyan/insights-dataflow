@@ -1,7 +1,7 @@
 <workflow-app xmlns="uri:oozie:workflow:0.4" name="hive-2-workflow">
 	<start to="cached-hql-action1" />
 	<action name="cached-hql-action1">
-		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+		<hive xmlns="uri:oozie:hive-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node/>
 			<configuration>
@@ -13,8 +13,15 @@
 					<name>oozie.hive.defaults</name>
 					<value>tmp/oozie-hive-site.xml</value>
 				</property>
+				<property>
+			        <name>oozie.action.sharelib.for.hive</name>
+			        <value>hive2</value>
+			    </property>
+			    <property>
+			        <name>oozie.launcher.action.main.class</name>
+			        <value>org.apache.oozie.action.hadoop.Hive2Main</value>
+			    </property>
 			</configuration>
-			<jdbc-url>jdbc:hive2://10.140.10.12:13001</jdbc-url>
 			<script>/home/hdfs/nusla-dataflow/hql/${scriptName}</script>
 		</hive2>
 		<ok to="end"/>
