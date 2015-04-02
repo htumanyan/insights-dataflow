@@ -23,7 +23,7 @@
 			    </property>
 			</configuration>
 			<script>/home/hdfs/nusla-dataflow/hql/${scriptName}</script>
-		</hive2>
+		</hive>
 		<ok to="end"/>
 		<error to="fail"/>
 	</action>
