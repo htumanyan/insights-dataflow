@@ -639,3 +639,4 @@ salessessionvehiclespriceadjustments^12^
 soldqueue^12^
 buyerdocuments^12^--map-column-hive^Document=Binary^--split-by^ID
 vehicleinstanceaudit^12^--map-column-hive^TimeStamp=String^--split-by^ID^
+useraudit^12
