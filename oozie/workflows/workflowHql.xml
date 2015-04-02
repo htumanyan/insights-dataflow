@@ -3,7 +3,7 @@
 	<action name="cached-hql-action1">
 		<hive xmlns="uri:oozie:hive-action:0.2">
 			<job-tracker>${jobTracker}</job-tracker>
-			<name-node>${nameNode}</name-node<name />
+			<name-node>${nameNode}</name-node>
 			<configuration>
 				<property>
 					<name>mapred.job.queue.name</name>
