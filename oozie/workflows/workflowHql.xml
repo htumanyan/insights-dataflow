@@ -13,6 +13,14 @@
 					<name>oozie.hive.defaults</name>
 					<value>tmp/oozie-hive-site.xml</value>
 				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
 			</configuration>
 			<jdbc-url>jdbc:hive2://10.140.10.12:13001</jdbc-url>
 			<script>/home/hdfs/nusla-dataflow/hql/${scriptName}</script>
