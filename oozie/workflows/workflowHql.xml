@@ -22,7 +22,7 @@
 			        <value>org.apache.oozie.action.hadoop.Hive2Main</value>
 			    </property>
 			</configuration>
-			<script>/usr/oozie/share/hql/${scriptName}</script>
+			<script>/user/oozie/share/hql/${scriptName}</script>
 		</hive>
 		<ok to="end"/>
 		<error to="fail"/>
