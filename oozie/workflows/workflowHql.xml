@@ -1,9 +1,9 @@
 <workflow-app xmlns="uri:oozie:workflow:0.4" name="hive-2-workflow">
 	<start to="cached-hql-action1" />
 	<action name="cached-hql-action1">
-		<hive xmlns="uri:oozie:hive-action:0.2">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
-			<name-node>${nameNode}</name-node>
+			<name-node>${nameNode}</name-node/>
 			<configuration>
 				<property>
 					<name>mapred.job.queue.name</name>
@@ -12,14 +12,6 @@
 				<property>
 					<name>oozie.hive.defaults</name>
 					<value>tmp/oozie-hive-site.xml</value>
-				</property>
-				<property>
-					<name>oozie.action.sharelib.for.hive</name>
-					<value>hive</value>
-				</property>
-				<property>
-					<name>oozie.launcher.action.main.class</name>
-					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
 				</property>
 			</configuration>
 			<jdbc-url>jdbc:hive2://10.140.10.12:13001</jdbc-url>
