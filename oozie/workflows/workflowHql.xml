@@ -27,7 +27,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
-					<value>${nameNode}/user/oozie/share/hql/vehicle_information_with_bands.hql</value>
+					<value>/home/hdfs/nusla-dataflow/hql/vehicle_information_with_bands.hql</value>
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
