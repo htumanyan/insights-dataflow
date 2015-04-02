@@ -22,7 +22,7 @@
 			        <value>org.apache.oozie.action.hadoop.Hive2Main</value>
 			    </property>
 			</configuration>
-			<script>/user/oozie/share/hql/vehicle_information_bands.hql</script>
+			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
 		</hive>
 		<ok to="end"/>
 		<error to="fail"/>
