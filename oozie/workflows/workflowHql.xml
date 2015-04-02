@@ -1,7 +1,7 @@
 <workflow-app xmlns="uri:oozie:workflow:0.4" name="hive-2-workflow">
 	<start to="cached-hql-action1" />
 	<action name="cached-hql-action1">
-		<hive xmlns="uri:oozie:hive-action:0.1">
+		<hive xmlns="uri:oozie:hive-action:0.2">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node/>
 			<configuration>
