@@ -15,7 +15,7 @@ CREATE TABLE inventory_report_cached
                            ST.SalesTacticName as TacticName, 
                            SS.id as SalesSessionID,
                            SS.name as SalesSessionName, 
-                           VI.VendorTradingName,
+                           V.Name,
                            VI.VendorID, 
                            VI.Derivative,
                            VI.derivativeid,
@@ -49,6 +49,7 @@ CREATE TABLE inventory_report_cached
 FROM
    psa.VehicleInformation_stg VI
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
+   JOIN psa.Vendor_stg V on VI.Vendorid = V.id
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
    LEFT OUTER JOIN psa.SalesSessionVehicles_stg SSV ON SSV.VehicleInstanceId = VI.vehicleInstanceid
