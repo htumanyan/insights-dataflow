@@ -25,6 +25,10 @@
 					<name>oozie.hive2.jdbc.url</name>
 					<value>jdbc:hive2://10.140.10.12:13001</value>
 				</property>
+				<property>
+					<name>oozie.hive2.script</name>
+					<value>/user/oozie/share/hql/vehicle_information_with_bands.hql</value>
+				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
 		</hive>
