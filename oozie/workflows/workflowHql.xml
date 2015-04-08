@@ -1,6 +1,6 @@
 <workflow-app xmlns="uri:oozie:workflow:0.4" name="hive-2-workflow">
-	<start to="cached-hql-action1" />
-	<action name="cached-hql-action1">
+	<start to="cached-hql-stored-procedures" />
+	<action name="cached-hql-stored-procedures">
 		<hive xmlns="uri:oozie:hive-action:0.2">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
@@ -25,12 +25,194 @@
 					<name>oozie.hive2.jdbc.url</name>
 					<value>jdbc:hive2://10.140.10.12:13001</value>
 				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/create_storedprocedures.hql</script>
+		</hive>
+		<ok to="cached-hql-create-views"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-create-views">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
 				<property>
-					<name>oozie.hive2.script</name>
-					<value>/home/oozie/insights-dataflow/hql/vehicle_information_with_bands.hql</value>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/create_views.hql</script>
+		</hive>
+		<ok to="cached-hql-viwb"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-viwb">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
+		</hive>
+		<ok to="cached-hql-sstc"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-sstc">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/sales_session_tactics_cached.hql</script>
+		</hive>
+		<ok to="cached-hql-inventory"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-inventory">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/inventory_cached.hql</script>
+		</hive>
+		<ok to="cached-hql-sales-report"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-sales-report">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/sales_report_cached.hql</script>
+		</hive>
+		<ok to="cached-hql-bll"/>
+		<error to="fail"/>
+	</action>
+	<action name="cached-hql-bll">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>jdbc:hive2://10.140.10.12:13001</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/buyer_last_login_cached.hql</script>
 		</hive>
 		<ok to="end"/>
 		<error to="fail"/>

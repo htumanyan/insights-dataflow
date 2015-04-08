@@ -1,4 +1,4 @@
-!connect jdbc:hive2://10.140.10.12:13001 hdfs PASSWORD org.apache.hive.jdbc.HiveDriver
+!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
 drop table if exists vehicle_dimension_bands;
 create table vehicle_dimension_bands as 
@@ -107,4 +107,4 @@ select
             WHEN VI.mileage >=100000 AND VI.mileage <150000 THEN 7
             WHEN VI.mileage >=150000 AND VI.mileage <999999 THEN 8
 end mileageBandId
-     from psa.vehicleinformation_stg VI ORDER BY field(mileageBandName, '0-10 000', '10 001-20 000', '20 001-30 000', '30 001-40 000', '40 001-50 000', '50 001-75 000', '75001-100 000', '100 001-150 000', '> 150 000');
+     from psa.vehicleinformation_stg VI;
