@@ -16,7 +16,7 @@ CREATE TABLE inventory_report_cached_tmp
                            ST.SalesTacticName as TacticName, 
                            SS.id as SalesSessionID,
                            SS.name as SalesSessionName, 
-                           V.Name as VendorTradingName,,
+                           V.Name as VendorTradingName,
                            VI.VendorID, 
                            VI.Derivative,
                            VI.derivativeid,
