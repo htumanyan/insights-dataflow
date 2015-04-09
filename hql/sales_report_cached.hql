@@ -8,6 +8,7 @@ CREATE TABLE sales_report_cached
                            VI.Derivative,
                            VI.derivativeid,
                            VI.RegistrationDate,
+                           VI.exteriorcolor,
                            VI.createddt as CreationDate,
                            BVP.SaleChannelId,
                            VI.SaleChannel,
