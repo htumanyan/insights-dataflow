@@ -78,15 +78,21 @@ CREATE TABLE sales_report_cached
                            VDB.mileagebandname,
                            VDB.mileagebandid,
                            BC.name as buyercountry,
-                           BC.id as buyercountryid
+                           BC.id as buyercountryid,
+                           User.Name as VendorUserName,
+                           VD.town as VendorTown,
+                            CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId 
 from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
+   LEFT OUTER JOIN  join psa.user_stg User ON BVP.createduserid=User.id
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = BVP.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = BVP.vendorid
+   LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
    LEFT OUTER  JOIN psa.Country_stg BC ON BC.id = BD.countryid
