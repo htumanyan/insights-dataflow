@@ -1,4 +1,5 @@
 use psa_shark;
+drop table sales_report_cached;
 CREATE TABLE sales_report_cached
  AS SELECT VI.Make,
                            VI.Makeref, 
@@ -90,7 +91,7 @@ from
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN  join psa.user_stg User ON BVP.createduserid=User.id
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
-   LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = BVP.vendorid
+   LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
    LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = BVP.vendorid
    LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
@@ -104,4 +105,4 @@ from
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
-
+cache table sales_report_cached;
