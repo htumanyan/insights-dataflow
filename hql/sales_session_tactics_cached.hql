@@ -9,5 +9,6 @@ SELECT
     SalesTactics.id as TacticID,
     SalesTactics.SalesTacticName as TacticName
 FROM
-    psa.SalesSessionSteps_stg SessionSteps INNER JOIN psa.SalesSessions_stg SalesSessions ON SessionSteps.SalesSessionID = SalesSessions.ID
-    LEFT OUTER JOIN psa.SalesTactics_stg  SalesTactics ON SalesTactics.ID = SalesSessions.SalesTacticID;   
+    psa.SalesSessionSteps_stg SessionSteps 
+INNER JOIN psa.SalesSessions_stg SalesSessions ON SessionSteps.SalesSessionID = SalesSessions.ID
+LEFT OUTER JOIN psa.SalesTactics_stg SalesTactics ON SalesTactics.ID = SalesSessions.SalesTacticID;   
