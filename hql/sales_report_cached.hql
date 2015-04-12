@@ -9,10 +9,11 @@ CREATE TABLE sales_report_cached
                            VI.Derivative,
                            VI.derivativeid,
                            VI.RegistrationDate,
+                           VI.exteriorcolour,
                            VI.createddt as CreationDate,
                            BVP.SaleChannelId,
                            VI.SaleChannel,
-                           VI.VendorTradingName,
+                           V.name as VendorTradingName,
                            VI.VendorID, 
                            VI.VehicleAgeInDays,
                            BVP.VehiclePurchaseDt AS SoldDate,
@@ -42,7 +43,6 @@ CREATE TABLE sales_report_cached
                            VI.ModelYear,
                            VI.ModelRef AS Model_Code,
                            VI.Mileage,
-                           VI.ExteriorColour,
                            VI.DaysOnSale,
                            VI.AuctionPrice,
                            VI.Transmission, 
@@ -80,14 +80,22 @@ CREATE TABLE sales_report_cached
                            VDB.mileagebandname,
                            VDB.mileagebandid,
                            BC.name as buyercountry,
-                           BC.id as buyercountryid
+                           BC.id as buyercountryid,
+                           VU.UserName as VendorUserName,
+                           VD.town as VendorTown,
+                            CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId 
 from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
+   LEFT OUTER JOIN psa.vendorusers_stg VU on  BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
+   LEFT OUTER JOIN  psa.user_stg User ON VU.userid=User.id
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
+   LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = V.id 
+   LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
    LEFT OUTER  JOIN psa.Country_stg BC ON BC.id = BD.countryid
@@ -99,4 +107,4 @@ from
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
-
+cache table sales_report_cached;
