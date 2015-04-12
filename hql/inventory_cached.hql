@@ -1,5 +1,6 @@
+!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
-drop table inventory_report_cached;
+DROP TABLE IF EXISTS inventory_report_cached;
 CREATE TABLE inventory_report_cached
  AS SELECT 
                            VI.vehicleid,

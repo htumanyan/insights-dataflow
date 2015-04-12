@@ -1,4 +1,6 @@
+!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
+drop table if exists vehicle_dimension_bands;
 create table vehicle_dimension_bands as 
 select 
      VI.vehicleinstanceid,
@@ -84,7 +86,7 @@ select
            WHEN VI.totaldamagesnetprice >=500 AND VI.totaldamagesnetprice <750 THEN 2
            WHEN VI.totaldamagesnetprice >=750 AND VI.totaldamagesnetprice <100000 THEN 3
       end as damagesBandId,
-     order by case WHEN VI.mileage >=0 AND VI.mileage <10000 THEN '0-10 000'
+     case WHEN VI.mileage >=0 AND VI.mileage <10000 THEN '0-10 000'
           WHEN VI.mileage >=10000 AND VI.mileage <20000 THEN '10 001-20 000'
           WHEN VI.mileage >=20000 AND VI.mileage <30000 THEN '20 001-30 000'
           WHEN VI.mileage >=30000 AND VI.mileage <40000 THEN '30 001-40 000'
