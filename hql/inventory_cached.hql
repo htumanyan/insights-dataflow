@@ -1,5 +1,6 @@
 use psa_shark;
-CREATE TABLE inventory_report_cached_tmp
+drop table inventory_report_cached;
+CREATE TABLE inventory_report_cached
  AS SELECT 
                            VI.vehicleid,
                            VI.vin,
@@ -59,8 +60,5 @@ FROM
    LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid;
-uncache table inventory_report_cached;
-drop table inventory_report_cached;
-alter table inventory_report_cached_temp rename to inventory_report_cached;
 cache table inventory_report_cached; 
 
