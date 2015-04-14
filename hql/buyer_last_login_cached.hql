@@ -1,3 +1,6 @@
+!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
+use psa_shark;
+DROP TABLE IF EXISTS buyer_last_login_cached;
 CREATE TABLE buyer_last_login_cached AS
 SELECT U.id,
         U.username,
