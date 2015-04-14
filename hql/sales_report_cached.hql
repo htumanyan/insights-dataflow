@@ -80,7 +80,7 @@ CREATE TABLE sales_report_cached
                            VDB.mileagebandid,
                            BC.name as buyercountry,
                            BC.id as buyercountryid,
-                           VU.UserName as VendorUserName,
+                           UU.UserName as VendorUserName,
                            VD.town as VendorTown,
                             CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId 
 from  
@@ -89,8 +89,8 @@ from
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
-   LEFT OUTER JOIN psa.vendorusers_stg VU on  BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
-   LEFT OUTER JOIN  psa.user_stg User ON VU.userid=User.id
+   LEFT OUTER JOIN psa.vendorusers_stg VU on BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
+   LEFT OUTER JOIN psa.user_stg UU ON VU.userid=UU.id
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
    LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = V.id 
