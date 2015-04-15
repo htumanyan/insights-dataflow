@@ -1,5 +1,6 @@
+!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
-drop table sales_report_cached;
+DROP TABLE IF EXISTS sales_report_cached;
 CREATE TABLE sales_report_cached
  AS SELECT VI.Make,
                            VI.Makeref, 
@@ -91,8 +92,8 @@ from
    LEFT OUTER JOIN psa.location_stg L on L.vendorid=V.id
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
-   LEFT OUTER JOIN psa.vendorusers_stg VU on  BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
-   LEFT OUTER JOIN  psa.user_stg User ON VU.userid=User.id
+   LEFT OUTER JOIN psa.vendorusers_stg VU on BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
+   LEFT OUTER JOIN psa.user_stg UU ON VU.userid=UU.id
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
