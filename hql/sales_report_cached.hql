@@ -1,5 +1,6 @@
-!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
+SET spark.sql.shuffle.partitions=6;
 use psa_shark;
+uncache table sales_report_cached;
 DROP TABLE IF EXISTS sales_report_cached;
 CREATE TABLE sales_report_cached
  AS SELECT VI.Make,
@@ -82,18 +83,18 @@ CREATE TABLE sales_report_cached
                            BC.name as buyercountry,
                            BC.id as buyercountryid,
                            L.id as locationid,
-                           L.locationname as locationname
+                           L.locationname as locationname,
                            CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId 
 from  
    psa.VehicleInformation_stg VI
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
-   INNER JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
-   LEFT OUTER JOIN psa.location_stg L on L.vendorid=V.id
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN psa.vendorusers_stg VU on BVP.createduserid=VU.userid and VI.vendorid=VU.vendorid
    LEFT OUTER JOIN psa.user_stg UU ON VU.userid=UU.id
+   LEFT OUTER JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
+   LEFT OUTER JOIN psa.locations_stg L on L.vendorid=VI.vendorid
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
@@ -107,3 +108,4 @@ from
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
 cache table sales_report_cached;
+SET spark.sql.shuffle.partitions=1;
