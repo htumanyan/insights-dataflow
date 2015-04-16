@@ -1,4 +1,4 @@
-!connect jdbc:hive2://10.140.10.12:13001/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
+!connect ${connectString}/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
 DROP TABLE IF EXISTS sales_report_cached;
 CREATE TABLE sales_report_cached
