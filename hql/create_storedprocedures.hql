@@ -1,4 +1,3 @@
-!connect ${connectString}/psa dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa;
 drop table buyerpremiumcharge_stg;
 CREATE TABLE  buyerpremiumcharge_stg as SELECT  VC.VehicleInstanceID as vehicleinstanceid,  VC.Price + VC.Vat AS buyerpremiumcharge 

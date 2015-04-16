@@ -1,4 +1,3 @@
-!connect ${connectString}/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
 UNCACHE TABLE inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
