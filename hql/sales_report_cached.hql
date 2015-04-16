@@ -1,5 +1,6 @@
 !connect ${connectString}/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
+UNCACHE TABLE sales_report_cached;
 DROP TABLE IF EXISTS sales_report_cached;
 CREATE TABLE sales_report_cached
  AS SELECT VI.Make,

@@ -1,5 +1,6 @@
 !connect ${connectString}/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa_shark;
+UNCACHE TABLE inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
 CREATE TABLE inventory_report_cached
  AS SELECT 
@@ -61,5 +62,4 @@ FROM
    LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid;
-cache table inventory_report_cached; 
-
+CACHE TABLE inventory_report_cached;
