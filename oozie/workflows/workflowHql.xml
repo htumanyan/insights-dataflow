@@ -23,7 +23,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -31,7 +31,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/create_storedprocedures.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-create-views"/>
 		<error to="fail"/>
@@ -59,7 +58,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -67,7 +66,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/create_views.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-viwb"/>
 		<error to="fail"/>
@@ -95,7 +93,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -103,7 +101,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-sstc"/>
 		<error to="fail"/>
@@ -131,7 +128,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -139,7 +136,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/sales_session_tactics_cached.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-inventory"/>
 		<error to="fail"/>
@@ -167,7 +163,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -175,7 +171,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/inventory_cached.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-sales-report"/>
 		<error to="fail"/>
@@ -203,7 +198,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -211,7 +206,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/sales_report_cached.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="cached-hql-bll"/>
 		<error to="fail"/>
@@ -239,7 +233,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>jdbc:hive2://10.140.10.12:13001</value>
+					<value>${jdbcUrl}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -247,7 +241,6 @@
 				</property>
 			</configuration>
 			<script>/user/oozie/share/hql/buyer_last_login_cached.hql</script>
-				<param>connectString=${connectString}</param>
 		</hive>
 		<ok to="end"/>
 		<error to="fail"/>

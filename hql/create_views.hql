@@ -1,4 +1,3 @@
-!connect ${connectString}/psa_shark dummy dummy org.apache.hive.jdbc.HiveDriver
 use psa;
 DROP TABLE if EXISTS vehicleinformationwithoptions_stg;
 CREATE TABLE vehicleinformationwithoptions_stg AS SELECT
