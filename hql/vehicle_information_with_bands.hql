@@ -3,7 +3,7 @@ drop table if exists vehicle_dimension_bands;
 create table vehicle_dimension_bands as 
 select 
      VI.vehicleinstanceid,
-     CASE WHEN vehicleageindays/7 >= 0 AND vehicleageindays/7 < 3 THEN 'less than 3'
+     CASE WHEN vehicleageindays/7 >= 0 AND vehicleageindays/7 < 3 THEN 'under 3'
              WHEN vehicleageindays/7 >= 3 AND vehicleageindays/7 < 8 THEN '3-8'
              WHEN vehicleageindays/7 >= 8 AND vehicleageindays/7 < 14 THEN '9-14'
              WHEN vehicleageindays/7 >= 14 AND vehicleageindays/7 < 20 THEN '15-20'
@@ -39,7 +39,7 @@ select
              WHEN vehicleageindays/7 >= 86 AND vehicleageindays/7 < 92 THEN 15
              ELSE 16
      END as ageInWeeksBandId,
-     CASE WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN '< 1 '
+     CASE WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN 'under 1 '
             WHEN VI.stockage/7 >=8 AND VI.stockage/7 <=14 THEN '1 - 2'
             WHEN VI.stockage/7 >=15 AND VI.stockage/7 <=21 THEN '2 - 3'
             WHEN VI.stockage/7 >=22 AND VI.stockage/7 <=28 THEN '3 - 4'
@@ -55,7 +55,7 @@ select
             WHEN VI.stockage/7 >=92 AND VI.stockage/7 <=98 THEN '13 - 14'
             WHEN VI.stockage/7 >=99 AND VI.stockage/7 <=105 THEN '14 - 15'
             WHEN VI.stockage/7 >=106 AND VI.stockage/7 <=112 THEN '15 - 16'
-            WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN '> 16'
+            WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN 'over 16'
       end as stockageWeeksBandName,
       CASE  WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN 0
             WHEN VI.stockage/7 >=8 AND VI.stockage/7 <=14 THEN 1
@@ -75,10 +75,10 @@ select
             WHEN VI.stockage/7 >=106 AND VI.stockage/7 <=112 THEN 15
             WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN 16
       end as stockageWeeksBandId,
-      CASE WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <99 THEN '<100'
+      CASE WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <99 THEN 'under 100'
            WHEN VI.totaldamagesnetprice >=100 AND VI.totaldamagesnetprice <500 THEN '100 - 500'
            WHEN VI.totaldamagesnetprice >=500 AND VI.totaldamagesnetprice <750 THEN '501 - 750'
-           WHEN VI.totaldamagesnetprice >=750 AND VI.totaldamagesnetprice <100000 THEN '> 750'
+           WHEN VI.totaldamagesnetprice >=750 AND VI.totaldamagesnetprice <100000 THEN 'over 750'
       end as damagesBandName,
       case WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <100 THEN 0
            WHEN VI.totaldamagesnetprice >=100 AND VI.totaldamagesnetprice <500 THEN 1
@@ -93,7 +93,7 @@ select
           WHEN VI.mileage >=50000 AND VI.mileage <75000 THEN '50 001-75 000'
           WHEN VI.mileage >=75000 AND VI.mileage <100000 THEN '75001-100 000'
           WHEN VI.mileage >=100000 AND VI.mileage <150000 THEN '100 001-150 000'
-          WHEN VI.mileage >=150000 AND VI.mileage <999999 THEN '> 150 000'
+          WHEN VI.mileage >=150000 AND VI.mileage <999999 THEN 'over 150 000'
       end mileageBandName,
     case
             WHEN VI.mileage >=0 AND VI.mileage <10000 THEN 0
