@@ -39,7 +39,7 @@ select
              WHEN vehicleageindays/7 >= 86 AND vehicleageindays/7 < 92 THEN 15
              ELSE 16
      END as ageInWeeksBandId,
-     CASE WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN '< 1 '
+     CASE WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN 'under 1 '
             WHEN VI.stockage/7 >=8 AND VI.stockage/7 <=14 THEN '1 - 2'
             WHEN VI.stockage/7 >=15 AND VI.stockage/7 <=21 THEN '2 - 3'
             WHEN VI.stockage/7 >=22 AND VI.stockage/7 <=28 THEN '3 - 4'
@@ -75,10 +75,10 @@ select
             WHEN VI.stockage/7 >=106 AND VI.stockage/7 <=112 THEN 15
             WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN 16
       end as stockageWeeksBandId,
-      CASE WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <99 THEN '<100'
+      CASE WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <99 THEN 'under 100'
            WHEN VI.totaldamagesnetprice >=100 AND VI.totaldamagesnetprice <500 THEN '100 - 500'
            WHEN VI.totaldamagesnetprice >=500 AND VI.totaldamagesnetprice <750 THEN '501 - 750'
-           WHEN VI.totaldamagesnetprice >=750 AND VI.totaldamagesnetprice <100000 THEN '> 750'
+           WHEN VI.totaldamagesnetprice >=750 AND VI.totaldamagesnetprice <100000 THEN 'over 750'
       end as damagesBandName,
       case WHEN VI.totaldamagesnetprice >=0 AND VI.totaldamagesnetprice <100 THEN 0
            WHEN VI.totaldamagesnetprice >=100 AND VI.totaldamagesnetprice <500 THEN 1
