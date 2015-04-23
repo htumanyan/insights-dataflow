@@ -3,7 +3,7 @@ drop table if exists vehicle_dimension_bands;
 create table vehicle_dimension_bands as 
 select 
      VI.vehicleinstanceid,
-     CASE WHEN vehicleageindays/7 >= 0 AND vehicleageindays/7 < 3 THEN 'less than 3'
+     CASE WHEN vehicleageindays/7 >= 0 AND vehicleageindays/7 < 3 THEN 'under 3'
              WHEN vehicleageindays/7 >= 3 AND vehicleageindays/7 < 8 THEN '3-8'
              WHEN vehicleageindays/7 >= 8 AND vehicleageindays/7 < 14 THEN '9-14'
              WHEN vehicleageindays/7 >= 14 AND vehicleageindays/7 < 20 THEN '15-20'
@@ -55,7 +55,7 @@ select
             WHEN VI.stockage/7 >=92 AND VI.stockage/7 <=98 THEN '13 - 14'
             WHEN VI.stockage/7 >=99 AND VI.stockage/7 <=105 THEN '14 - 15'
             WHEN VI.stockage/7 >=106 AND VI.stockage/7 <=112 THEN '15 - 16'
-            WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN '> 16'
+            WHEN VI.stockage/7 >=113 AND VI.stockage/7 <=100000 THEN 'over 16'
       end as stockageWeeksBandName,
       CASE  WHEN VI.stockage/7 >=0 AND VI.stockage/7 <=7 THEN 0
             WHEN VI.stockage/7 >=8 AND VI.stockage/7 <=14 THEN 1
@@ -93,7 +93,7 @@ select
           WHEN VI.mileage >=50000 AND VI.mileage <75000 THEN '50 001-75 000'
           WHEN VI.mileage >=75000 AND VI.mileage <100000 THEN '75001-100 000'
           WHEN VI.mileage >=100000 AND VI.mileage <150000 THEN '100 001-150 000'
-          WHEN VI.mileage >=150000 AND VI.mileage <999999 THEN '> 150 000'
+          WHEN VI.mileage >=150000 AND VI.mileage <999999 THEN 'over 150 000'
       end mileageBandName,
     case
             WHEN VI.mileage >=0 AND VI.mileage <10000 THEN 0
