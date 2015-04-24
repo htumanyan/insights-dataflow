@@ -15,6 +15,8 @@ CREATE TABLE sales_report_cached
                            BVP.SaleChannelId,
                            VI.SaleChannel,
                            V.name as VendorTradingName,
+                           VC.countryid as vendorcountryid,
+                           VC.countryname as vendorcountryname, 
                            VI.VendorID, 
                            VI.VehicleAgeInDays,
                            BVP.VehiclePurchaseDt AS SoldDate,
@@ -94,6 +96,9 @@ from
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
+   LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
+   LEFT OUTER  JOIN psa.Country_stg VC ON VC.id = VD.countryid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
    LEFT OUTER  JOIN psa.Country_stg BC ON BC.id = BD.countryid
