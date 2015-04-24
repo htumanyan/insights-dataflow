@@ -68,6 +68,7 @@ CREATE TABLE sales_report_cached
                            Source.sourcename,
                            BuyerType.BuyerTypeId,
                            BuyerType.BuyerTypeName,
+                           BuyerType.BuyerTypeDesc,
                            BVP.NetPriceAmt AS PriceExcludingVat,
                            BVP.directsaleid as directsaleid, 
                            Company.name as SellerName,
