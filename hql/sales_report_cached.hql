@@ -1,8 +1,6 @@
 use psa_shark;
-uncache table sales_report_cached;
 SET spark.sql.shuffle.partitions=6;
-DROP TABLE IF EXISTS sales_report_cached;
-CREATE TABLE sales_report_cached
+CREATE TABLE sales_report_cached_tmp;
  AS SELECT VI.Make,
                            VI.Makeref, 
                            VI.Registration,
@@ -111,5 +109,8 @@ from
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
+DROP TABLE IF EXISTS sales_report_cached;
+alter table sales_report_cached_tmp rename to sales_report_cached;
+uncache table sales_report_cached;
 cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;
