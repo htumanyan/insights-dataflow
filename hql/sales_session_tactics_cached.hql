@@ -11,5 +11,4 @@ FROM
     psa.SalesSessionSteps_stg SessionSteps 
 INNER JOIN psa.SalesSessions_stg SalesSessions ON SessionSteps.SalesSessionID = SalesSessions.ID
 LEFT OUTER JOIN psa.SalesTactics_stg SalesTactics ON SalesTactics.ID = SalesSessions.SalesTacticID;
-UNCACHE TABLE sales_sessions_tactic_cached;
 CACHE TABLE sales_sessions_tactic_cached;

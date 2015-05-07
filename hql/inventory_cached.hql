@@ -62,6 +62,5 @@ FROM
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid;
 DROP TABLE IF EXISTS inventory_report_cached;
 alter table inventory_report_cached_tmp rename to inventory_report_cached;
-uncache table inventory_report_cached;
 cache table inventory_report_cached;
 SET spark.sql.shuffle.partitions=1;

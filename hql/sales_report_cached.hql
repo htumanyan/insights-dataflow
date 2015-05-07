@@ -111,6 +111,5 @@ from
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
 DROP TABLE IF EXISTS sales_report_cached;
 alter table sales_report_cached_tmp rename to sales_report_cached;
-uncache table sales_report_cached;
 cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;

@@ -1,5 +1,4 @@
 use psa_shark;
-UNCACHE TABLE buyer_last_login_cached;
 DROP TABLE IF EXISTS buyer_last_login_cached;
 CREATE TABLE buyer_last_login_cached AS
 SELECT U.id,

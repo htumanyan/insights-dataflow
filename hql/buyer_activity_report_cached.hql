@@ -15,6 +15,5 @@ join psa.Buyer_stg Buyer ON Buyer.Id = BU.buyerid
 LEFT OUTER  JOIN psa.BuyerType_stg BuyerType ON Buyer.BuyerTypeId = BuyerType.BuyerTypeId;
 DROP TABLE IF EXISTS buyer_activity_report_cached;
 alter table buyer_activity_report_cached_tmp rename to buyer_activity_report_cached;
-uncache table buyer_activity_report_cached;
 cache table buyer_activity_report_cached;
 SET spark.sql.shuffle.partitions=1;
