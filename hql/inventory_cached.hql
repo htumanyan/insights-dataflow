@@ -1,5 +1,6 @@
 use psa_shark;
 SET spark.sql.shuffle.partitions=6;
+DROP TABLE IF EXISTS inventory_report_cached_tmp;
 CREATE TABLE inventory_report_cached_tmp
  AS SELECT 
                            VI.vehicleid,
