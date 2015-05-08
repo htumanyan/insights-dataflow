@@ -13,8 +13,8 @@ class sqoopCommand(object):
 		self.mapColumn = mapColumn
 		self.splitBy = splitBy
 	
-#ex startup: python generators/workflowsParse.py 9 tables/table.txt workflows/workflowFull_
-#ex startup: python generators/workflowsParse.py 8 tables/tablesUsed.txt workflows/workflow_
+#ex startup: python generators/workflowsParse.py 9 ../resource/table.txt workflows/workflowFull_
+#ex startup: python generators/workflowsParse.py 8 ../resource/tablesUsed.txt workflows/workflow_
 script, numSubFlows, inFilename, outFilePath = argv
 
 txt = open(inFilename, "r")
