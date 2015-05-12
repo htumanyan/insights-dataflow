@@ -82,6 +82,8 @@ CREATE TABLE sales_report_cached_tmp
                            VDB.damagesbandid, 
                            VDB.mileagebandname,
                            VDB.mileagebandid,
+                           VI.Stockage/7 as stockageweeks,
+                           VI.VehicleAgeInDays/7 as vehicleageweeks, 
                            BC.name as buyercountry,
                            BC.id as buyercountryid,
                            L.locationname as vendortown,
