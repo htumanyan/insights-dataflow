@@ -1,5 +1,4 @@
 use psa_shark;
-UNCACHE TABLE sales_sessions_tactic_cached;
 DROP TABLE IF EXISTS sales_sessions_tactic_cached;
 CREATE TABLE sales_sessions_tactic_cached AS 
 SELECT

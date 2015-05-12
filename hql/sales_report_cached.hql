@@ -1,8 +1,7 @@
 use psa_shark;
-uncache table sales_report_cached;
 SET spark.sql.shuffle.partitions=6;
-DROP TABLE IF EXISTS sales_report_cached;
-CREATE TABLE sales_report_cached
+DROP TABLE IF EXISTS sales_report_cached_tmp;
+CREATE TABLE sales_report_cached_tmp
  AS SELECT VI.Make,
                            VI.Makeref, 
                            VI.Registration,
@@ -15,6 +14,8 @@ CREATE TABLE sales_report_cached
                            BVP.SaleChannelId,
                            VI.SaleChannel,
                            V.name as VendorTradingName,
+                           VC.countryid as vendorcountryid,
+                           VC.countryname as vendorcountryname, 
                            VI.VendorID, 
                            VI.VehicleAgeInDays,
                            BVP.VehiclePurchaseDt AS SoldDate,
@@ -66,6 +67,7 @@ CREATE TABLE sales_report_cached
                            Source.sourcename,
                            BuyerType.BuyerTypeId,
                            BuyerType.BuyerTypeName,
+                           BuyerType.BuyerTypeDesc,
                            BVP.NetPriceAmt AS PriceExcludingVat,
                            BVP.directsaleid as directsaleid, 
                            Company.name as SellerName,
@@ -94,6 +96,9 @@ from
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid
    LEFT OUTER  JOIN psa.Vendor_stg V ON V.ID = VI.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
+   LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
+   LEFT OUTER  JOIN psa.Country_stg VC ON VC.id = VD.countryid
    LEFT OUTER  JOIN psa.BuyerAddress_stg BAD ON BAD.buyerid = BVP.buyerid
    LEFT OUTER  JOIN psa.Address_stg BD ON BD.ID = BAD.addressid
    LEFT OUTER  JOIN psa.Country_stg BC ON BC.id = BD.countryid
@@ -105,5 +110,7 @@ from
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
+DROP TABLE IF EXISTS sales_report_cached;
+alter table sales_report_cached_tmp rename to sales_report_cached;
 cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;
