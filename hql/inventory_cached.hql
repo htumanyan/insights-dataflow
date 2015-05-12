@@ -39,6 +39,8 @@ CREATE TABLE inventory_report_cached_tmp
                            VI.Registration,
                            VI.VendorStatusId,
                            VI.VehicleAgeInDays,
+                           floor(VI.Stockage/7) as stockageweeks,
+                           floor(VI.VehicleAgeInDays/7) as vehicleageweeks, 
                            VDB.ageinweeksbandname,
                            VDB.ageinweeksbandid,
                            VDB.stockageweeksbandname,
