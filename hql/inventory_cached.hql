@@ -57,10 +57,7 @@ FROM
    JOIN psa.Vendor_stg V on VI.Vendorid = V.id
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT OUTER JOIN psa.SalesSessionVehicles_stg SSV ON SSV.VehicleInstanceId = VI.vehicleInstanceid
-   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SSV.saleschanneltypeid 
-   LEFT OUTER JOIN psa.SalesSessions_stg SS ON SS.id = SSV.SalesSessionID
-   LEFT OUTER JOIN psa.SalesTactics_stg ST ON SS.salestacticid=ST.id
+   LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.salechanneltypeid 
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid;
 uncache table inventory_report_cached;
