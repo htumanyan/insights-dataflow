@@ -108,7 +108,7 @@ for workFlow in workFlows:
 	root = workFlow.getroot()
 	failEmail = ET.SubElement(root, 'action', name='failEmail')
 	esubFail = ET.SubElement(failEmail, 'email', xmlns='uri:oozie:email-action:0.1')
-	ET.SubElement(esubFail, 'to').text = 'tchap00@gmail.com'
+	ET.SubElement(esubFail, 'to').text = '${alertEmail}'
 	ET.SubElement(esubFail, 'subject').text = 'oozie job failure'
 	ET.SubElement(esubFail, 'body').text = 'The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}'
 	ET.SubElement(failEmail, 'ok', to='fail')

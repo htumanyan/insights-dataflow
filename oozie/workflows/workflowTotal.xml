@@ -1,4 +1,4 @@
-<workflow-app xmlns="uri:oozie:workflow:0.4" name="sqoop-wf">
+<workflow-app xmlns="uri:oozie:workflow:0.4" xmlns:sla="uri:oozie:sla:0.2" name="sqoop-wf">
     <start to="forkingMain"/>
 	<fork name="forkingMain">
         <path start="sqoop-subFlow1"/>
@@ -285,6 +285,13 @@
 		<ok to="endMain"/>
 		<error to="fail"/>
 	</action>
+	<sla:info>
+		<sla:nominal-time>${nominal-time}</sla:nominal-time>
+		<sla:should-end>${1 * MINUTES}</sla:should-end>
+		<sla:max-duration>${5 * MINUTES}</sla:max-duration>
+		<sla:alert-events>end_miss,duration_miss</sla:alert-events>
+		<sla:alert-contact>${alertEmail}</sla:alert-contact>
+	</sla:info>
 	<kill name="fail">
 		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
 	</kill>
