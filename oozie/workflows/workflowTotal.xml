@@ -108,7 +108,7 @@
 			<script>/user/oozie/share/hql/create_storedprocedures.hql</script>
 		</hive>
 		<ok to="cached-hql-viwb"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
 	</action>
 	<action name="cached-hql-viwb">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -143,7 +143,7 @@
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
 		</hive>
 		<ok to="cached-hql-sstc"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
 	</action>
 	<action name="cached-hql-sstc">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -178,7 +178,7 @@
 			<script>/user/oozie/share/hql/sales_session_tactics_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-inventory"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
 	</action>
 	<action name="cached-hql-inventory">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -213,7 +213,7 @@
 			<script>/user/oozie/share/hql/inventory_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-sales-report"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
 	</action>
 	<action name="cached-hql-sales-report">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -248,7 +248,7 @@
 			<script>/user/oozie/share/hql/sales_report_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-bll"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
 	</action>
 	<action name="cached-hql-bll">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -283,12 +283,18 @@
 			<script>/user/oozie/share/hql/buyer_last_login_cached.hql</script>
 		</hive>
 		<ok to="endMain"/>
-		<error to="fail"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="failEmail">
+		<email xmlns="uri:oozie:email-action:0.1">
+			<to>${alertEmail}</to>
+			<subject>oozie job failure</subject>
+			<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
+		</email>
+		<ok to="fail" />
+		<error to="fail" />
 	</action>
 	<kill name="fail">
-		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
-	</kill>
-    <kill name="failMain">
 		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
 	</kill>
 	<end name="endMain"/>
