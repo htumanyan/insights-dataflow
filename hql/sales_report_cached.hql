@@ -112,6 +112,7 @@ from
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.company_stg Company on VI.vendorid = Company.VendorId
    LEFT OUTER  JOIN psa_shark.sales_sessions_tactic_cached SalesTacticSession ON BVP.salessessionstepid = SalesTacticSession.stepid;
+uncache table sales_report_cached;
 DROP TABLE IF EXISTS sales_report_cached;
 alter table sales_report_cached_tmp rename to sales_report_cached;
 cache table sales_report_cached;
