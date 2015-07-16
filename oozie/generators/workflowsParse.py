@@ -76,9 +76,9 @@ for action in actions:
 	ET.SubElement(sqoop, 'arg').text = '--connect'
 	ET.SubElement(sqoop, 'arg').text = '${sqlServer};databaseName=${dbName};'
 	ET.SubElement(sqoop, 'arg').text = '--username'
-	ET.SubElement(sqoop, 'arg').text = 'Hadoop'
+	ET.SubElement(sqoop, 'arg').text = '${sqlUser}'
 	ET.SubElement(sqoop, 'arg').text = '--password'
-	ET.SubElement(sqoop, 'arg').text = 'RMS_H@d00p'
+	ET.SubElement(sqoop, 'arg').text = '${sqlPass}'
 	ET.SubElement(sqoop, 'arg').text = '--table'
 	ET.SubElement(sqoop, 'arg').text = action.tableName
 	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/psa/'
