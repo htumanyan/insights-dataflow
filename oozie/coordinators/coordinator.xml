@@ -16,6 +16,10 @@
 					<value>${queueName}</value>
 				</property>
 				<property>
+					<name>nominal_time</name>
+					<value>${coord:nominalTime()}</value>
+				</property>
+				<property>
 					<name>oozie.use.system.libpath</name>
 					<value>true</value>
 				</property>
@@ -25,12 +29,5 @@
 				</property>
 			</configuration>
 		</workflow>
-		<sla:info>
-			<sla:nominal-time>${coord:nominalTime()}</sla:nominal-time>
-			<sla:should-end>${1 * MINUTES}</sla:should-end>
-			<sla:max-duration>${5 * MINUTES}</sla:max-duration>
-			<sla:alert-events>end_miss,duration_miss</sla:alert-events>
-			<sla:alert-contact>${alertEmail}</sla:alert-contact>
-		</sla:info>
 	</action>
 </coordinator-app>

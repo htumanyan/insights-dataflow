@@ -294,15 +294,14 @@
 		<ok to="fail" />
 		<error to="fail" />
 	</action>
-	<sla:info>
-		<sla:nominal-time>${nominal_time}</sla:nominal-time>
-		<sla:should-end>${1 * MINUTES}</sla:should-end>
-		<sla:max-duration>${5 * MINUTES}</sla:max-duration>
-		<sla:alert-events>end_miss,duration_miss</sla:alert-events>
-		<sla:alert-contact>${alertEmail}</sla:alert-contact>
-	</sla:info>
 	<kill name="fail">
 		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
 	</kill>
 	<end name="endMain"/>
+	<sla:info>
+		<sla:nominal-time>${nominal_time}</sla:nominal-time>
+		<sla:should-end>${30 * MINUTES}</sla:should-end>
+		<sla:alert-events>end_miss</sla:alert-events>
+		<sla:alert-contact>${alertEmail}</sla:alert-contact>
+	</sla:info>
 </workflow-app>
