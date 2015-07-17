@@ -300,8 +300,9 @@
 	<end name="endMain"/>
 	<sla:info>
 		<sla:nominal-time>${nominal_time}</sla:nominal-time>
-		<sla:should-end>${30 * MINUTES}</sla:should-end>
-		<sla:alert-events>end_miss</sla:alert-events>
+		<sla:should-end>${45 * MINUTES}</sla:should-end>
+		<sla:max-duration>${45 * MINUTES}</sla:max-duration>
+		<sla:alert-events>duration_miss</sla:alert-events>
 		<sla:alert-contact>${alertEmail}</sla:alert-contact>
 	</sla:info>
 </workflow-app>
