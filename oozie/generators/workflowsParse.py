@@ -14,7 +14,7 @@ class sqoopCommand(object):
 		self.splitBy = splitBy
 	
 #ex startup: python generators/workflowsParse.py 9 ../resource/table.txt workflows/workflowFull_
-#ex startup: python generators/workflowsParse.py 8 ../resource/tablesUsed.txt workflows/workflow_
+#ex startup: python generators/workflowsParse.py 3 ../resource/tablesUsed.txt workflows/devflows/workflow_
 script, numSubFlows, inFilename, outFilePath = argv
 
 txt = open(inFilename, "r")
@@ -76,9 +76,9 @@ for action in actions:
 	ET.SubElement(sqoop, 'arg').text = '--connect'
 	ET.SubElement(sqoop, 'arg').text = '${sqlServer};databaseName=${dbName};'
 	ET.SubElement(sqoop, 'arg').text = '--username'
-	ET.SubElement(sqoop, 'arg').text = 'Hadoop'
+	ET.SubElement(sqoop, 'arg').text = '${sqlUser}'
 	ET.SubElement(sqoop, 'arg').text = '--password'
-	ET.SubElement(sqoop, 'arg').text = 'RMS_H@d00p'
+	ET.SubElement(sqoop, 'arg').text = '${sqlPass}'
 	ET.SubElement(sqoop, 'arg').text = '--table'
 	ET.SubElement(sqoop, 'arg').text = action.tableName
 	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/psa/'
