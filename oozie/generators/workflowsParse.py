@@ -74,7 +74,7 @@ for action in actions:
 	ET.SubElement(property2, 'value').text = 'tmp/oozie-hive-site.xml'
 	ET.SubElement(sqoop, 'arg').text = 'import'
 	ET.SubElement(sqoop, 'arg').text = '--connect'
-	ET.SubElement(sqoop, 'arg').text = '${sqlServer};databaseName=${dbName};'
+	ET.SubElement(sqoop, 'arg').text = '${jdbcUrl};'
 	ET.SubElement(sqoop, 'arg').text = '--username'
 	ET.SubElement(sqoop, 'arg').text = '${sqlUser}'
 	ET.SubElement(sqoop, 'arg').text = '--password'

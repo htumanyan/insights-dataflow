@@ -35,7 +35,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
