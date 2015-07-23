@@ -39,10 +39,10 @@
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
-					<value>hql-dummy-procedure.hql</value>
+					<value>inventory.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/rpm/hql-dummy-procedure.hql</script>
+			<script>/user/oozie/share/hql/rpm/inventory.hql</script>
 		</hive>
 		<ok to="endMain"/>
 		<error to="failEmail"/>
