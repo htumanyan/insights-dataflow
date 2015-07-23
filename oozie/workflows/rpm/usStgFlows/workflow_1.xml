@@ -19,7 +19,7 @@
 			</configuration>
 			<arg>import</arg>
 			<arg>--connect</arg>
-			<arg>${jdbcUrl}</arg>
+			<arg>${jdbcUrl};</arg>
 			<arg>--username</arg>
 			<arg>${sqlUser}</arg>
 			<arg>--password</arg>
