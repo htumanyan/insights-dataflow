@@ -17,9 +17,9 @@ V.id,
  0 as sourceid,
  'n/a' as sourcename,
  AD.estimated_repair_cost as totaldamagesnetprice,
- G.mileage,
- datediff(to_date(G.created_at),
- from_unixtime(unix_timestamp())) as stockage,
+G.mileage,
+G.stockage, 
+from_unixtime(unix_timestamp())) as stockage,
  AV.fuel_type as fueltype,
  V.model,
  V.model as modelref,
@@ -32,10 +32,44 @@ V.id,
  'n/a' as registration,
  0 as vendorstatusid,
  0 as vehicleageindays,
- datediff(to_date(G.created_at), from_unixtime(unix_timestamp()))/7 as stockageinweeks,
+ G.stockage/7 as stockageinweeks,
  0 as vehicleageweeks,
- '' as stockageweeksbandname,
- 0 as stockageweeksbandid,
+     CASE WHEN G.stockage/7 >=0 AND G.stockage/7 <=7 THEN 'under 1 '
+            WHEN G.stockage/7 >=8 AND G.stockage/7 <=14 THEN '1 - 2'
+            WHEN G.stockage/7 >=15 AND G.stockage/7 <=21 THEN '2 - 3'
+            WHEN G.stockage/7 >=22 AND G.stockage/7 <=28 THEN '3 - 4'
+            WHEN G.stockage/7 >=29 AND G.stockage/7 <=35 THEN '4 - 5'
+            WHEN G.stockage/7 >=36 AND G.stockage/7 <=42 THEN '5 - 6'
+            WHEN G.stockage/7 >=43 AND G.stockage/7 <=49 THEN '6 - 7'
+            WHEN G.stockage/7 >=50 AND G.stockage/7 <=56 THEN '7 - 8'
+            WHEN G.stockage/7 >=57 AND G.stockage/7 <=63 THEN '8 - 9'
+            WHEN G.stockage/7 >=64 AND G.stockage/7 <=70 THEN '9 - 10'
+            WHEN G.stockage/7 >=71 AND G.stockage/7 <=77 THEN '10 - 11'
+            WHEN G.stockage/7 >=78 AND G.stockage/7 <=84 THEN '11 - 12'
+            WHEN G.stockage/7 >=85 AND G.stockage/7 <=91 THEN '12 - 13'
+            WHEN G.stockage/7 >=92 AND G.stockage/7 <=98 THEN '13 - 14'
+            WHEN G.stockage/7 >=99 AND G.stockage/7 <=105 THEN '14 - 15'
+            WHEN G.stockage/7 >=106 AND G.stockage/7 <=112 THEN '15 - 16'
+            WHEN G.stockage/7 >=113 AND G.stockage/7 <=100000 THEN 'over 16'
+      end as stockageWeeksBandName,
+      CASE  WHEN G.stockage/7 >=0 AND G.stockage/7 <=7 THEN 0
+            WHEN G.stockage/7 >=8 AND G.stockage/7 <=14 THEN 1
+            WHEN G.stockage/7 >=15 AND G.stockage/7 <=21 THEN 2
+            WHEN G.stockage/7 >=22 AND G.stockage/7 <=28 THEN 3
+            WHEN G.stockage/7 >=29 AND G.stockage/7 <=35 THEN 4
+            WHEN G.stockage/7 >=36 AND G.stockage/7 <=42 THEN 5
+            WHEN G.stockage/7 >=43 AND G.stockage/7 <=49 THEN 6
+            WHEN G.stockage/7 >=50 AND G.stockage/7 <=56 THEN 7
+            WHEN G.stockage/7 >=57 AND G.stockage/7 <=63 THEN 8
+            WHEN G.stockage/7 >=64 AND G.stockage/7 <=70 THEN 9
+            WHEN G.stockage/7 >=71 AND G.stockage/7 <=77 THEN 10
+            WHEN G.stockage/7 >=78 AND G.stockage/7 <=84 THEN 11
+            WHEN G.stockage/7 >=85 AND G.stockage/7 <=91 THEN 12
+            WHEN G.stockage/7 >=92 AND G.stockage/7 <=98 THEN 13
+            WHEN G.stockage/7 >=99 AND G.stockage/7 <=105 THEN 14
+            WHEN G.stockage/7 >=106 AND G.stockage/7 <=112 THEN 15
+            WHEN G.stockage/7 >=113 AND G.stockage/7 <=100000 THEN 16
+      end as stockageWeeksBandId,
  '' as ageinweeksbandname,
  0 as ageinweeksbandid,
       CASE WHEN AD.estimated_repair_cost >=0 AND AD.estimated_repair_cost <99 THEN 'under 100'
@@ -72,7 +106,7 @@ end mileageBandId,
  0 as statusid,
  'n/a' as statusdescription  
 FROM rpm.vehicles_stg V 
- left outer join rpm.groundings_stg G on G.vehicle_id=V.id 
+ left outer join (select * ,  datediff(to_date(created_at), from_unixtime(unix_timestamp())) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
  inner join rpm.aim_damages_stg AD on AD.aim_vehicle_id=AV.id;
