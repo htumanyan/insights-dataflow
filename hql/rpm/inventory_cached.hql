@@ -16,7 +16,7 @@ V.id,
  0 as derivativeid,
  0 as sourceid,
  'n/a' as sourcename,
- AD.estimated_repair_cost as totaldamagesnetprice,
+ AD.repair_cost as totaldamagesnetprice,
 G.mileage,
 G.stockage, 
  AV.fuel_type as fueltype,
@@ -71,15 +71,15 @@ G.stockage,
       end as stockageWeeksBandId,
  '' as ageinweeksbandname,
  0 as ageinweeksbandid,
-      CASE WHEN AD.estimated_repair_cost >=0 AND AD.estimated_repair_cost <99 THEN 'under 100'
-           WHEN AD.estimated_repair_cost >=100 AND AD.estimated_repair_cost <500 THEN '100 - 500'
-           WHEN AD.estimated_repair_cost >=500 AND AD.estimated_repair_cost <750 THEN '501 - 750'
-           WHEN AD.estimated_repair_cost >=750 AND AD.estimated_repair_cost <100000 THEN 'over 750'
+      CASE WHEN AD.repair_cost >=0 AND AD.repair_cost <99 THEN 'under 100'
+           WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN '100 - 500'
+           WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN '501 - 750'
+           WHEN AD.repair_cost >=750 AND AD.repair_cost <100000 THEN 'over 750'
       end as damagesBandName,
-      case WHEN AD.estimated_repair_cost >=0 AND AD.estimated_repair_cost <100 THEN 0
-           WHEN AD.estimated_repair_cost >=100 AND AD.estimated_repair_cost <500 THEN 1
-           WHEN AD.estimated_repair_cost >=500 AND AD.estimated_repair_cost <750 THEN 2
-           WHEN AD.estimated_repair_cost >=750 AND AD.estimated_repair_cost <100000 THEN 3
+      case WHEN AD.repair_cost >=0 AND AD.repair_cost <100 THEN 0
+           WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN 1
+           WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN 2
+           WHEN AD.repair_cost >=750 AND AD.repair_cost <100000 THEN 3
       end as damagesBandId,
      case WHEN G.mileage >=0 AND G.mileage <10000 THEN '0-10 000'
           WHEN G.mileage >=10000 AND G.mileage <20000 THEN '10 001-20 000'
@@ -108,4 +108,4 @@ FROM rpm.vehicles_stg V
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
- inner join (select aim_vehicle_id, SUM(estimated_repair_cost) from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id;
+ inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id;
