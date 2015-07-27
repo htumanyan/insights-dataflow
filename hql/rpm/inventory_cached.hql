@@ -105,7 +105,7 @@ end mileageBandId,
  0 as statusid,
  'n/a' as statusdescription  
 FROM rpm.vehicles_stg V 
- left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
+ inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
- inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id;
+ left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id; 
