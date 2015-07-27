@@ -68,7 +68,7 @@ V.id,
             WHEN G.mileage >=75000 AND G.mileage <100000 THEN 6
             WHEN G.mileage >=100000 AND G.mileage <150000 THEN 7
             WHEN G.mileage >=150000 AND G.mileage <999999 THEN 8
-end mileageBandId
+end mileageBandId,
  0 as statusid,
  'n/a' as statusdescription  
 FROM rpm.vehicles_stg V 
