@@ -33,6 +33,8 @@ G.stockage,
  0 as vehicleageindays,
  G.stockage/7 as stockageinweeks,
  0 as vehicleageweeks,
+ '' as ageinweeksbandname,
+ 0 as ageinweeksbandid,
      CASE WHEN G.stockage/7 >=0 AND G.stockage/7 <=7 THEN 'under 1 '
             WHEN G.stockage/7 >=8 AND G.stockage/7 <=14 THEN '1 - 2'
             WHEN G.stockage/7 >=15 AND G.stockage/7 <=21 THEN '2 - 3'
@@ -69,8 +71,6 @@ G.stockage,
             WHEN G.stockage/7 >=106 AND G.stockage/7 <=112 THEN 15
             WHEN G.stockage/7 >=113 AND G.stockage/7 <=100000 THEN 16
       end as stockageWeeksBandId,
- '' as ageinweeksbandname,
- 0 as ageinweeksbandid,
       CASE WHEN AD.repair_cost >=0 AND AD.repair_cost <99 THEN 'under 100'
            WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN '100 - 500'
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN '501 - 750'
