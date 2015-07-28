@@ -73,5 +73,4 @@ CREATE  TABLE `sales_report_cached`(
    `buyercountryid` int COMMENT '',                                                             
    `vendortown` string COMMENT '',                                                              
    `locationid` int COMMENT '',                                                                 
-   `commercialconcepttypeid` int COMMENT '')                                                    
- STORED AS PARQUET;                                                                          
+   `commercialconcepttypeid` int COMMENT '');                                                    
