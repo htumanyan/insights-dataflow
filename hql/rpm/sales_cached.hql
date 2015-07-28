@@ -1,10 +1,11 @@
-INSERT OVERWRITE into  sales_report_cached SELECT
+INSERT OVERWRITE TABLE sales_report_cached SELECT
  v.make,
  v.make as makeref,
  'n/a' as registration,
  'n/a' as chassis,
  'n/a' as derivative,
  0 as derivativeid,
+'n/a' as registrationdate,
  V.color as exteriorcolour,
 P.created_at as creationdate,
 0 as salechannelid,
@@ -14,8 +15,8 @@ P.created_at as creationdate,
 'United States' as vendorcountryname,
  D.id as vendorid,
 0 as vehicleageindays,
-P.date_of_purchase,
-P.updated_at,
+P.date_of_purchase as solddate,
+unix_timestamp(P.updated_at) as solddatets ,
 'n/a' as vatqualified,
 P.purchase_price as sold_price,
 0 as buyerpremium,
@@ -24,17 +25,18 @@ P.purchase_price as sold_price,
 0 as buyerid, 
 'n/a' as buyercode,
 0 as deliverylocation,
-!P.in_progress as activesale,
+false as activesale,
  V.model,
 'n/a' as code,
  V.model_year as modelyear,
  V.model as model,
  V.model_serial_number as model_code,
-datediff(from_unixtime(P.created_at), from_unixtime(G.created_at)) as daysonsale,
+G.mileage,
+datediff(P.created_at, G.created_at) as daysonsale,
 0 as auctionprice,
  V.transmission_type as transmission,
  0 as transmissionid,
- G.stockage/7 as stockageinweeks,
+ G.stockage,
 'Car' as vehicle_type,
 'none' as salessession,
 0 as salesessionid, 
@@ -49,20 +51,17 @@ V.id as vehicleid,
  V.vin,
 0 as sourceid,
 'n/a' as sourcename, 
-case when P.purchase_type='Lessee Purchase' then 1
-     when P.purchase_type='Dealer Purchase' then 2
-     else 0 end as buyertypeid,
+case when P.purchase_type='Lessee Purchase' then 1 when P.purchase_type='Dealer Purchase' then 2 else 0 end as buyertypeid,
 P.purchase_type as buyertypename,
 P.purchase_type as buyertypedesc,
 P.purchase_price as priceexcludingvat,
 P.id as directsaleid,
 'n/a' as sellername,
 0 as sellerid,
-year(P.date_of_purchase),
-month(P.date_of_purchase),
+year(P.date_of_purchase) as soldyear,
+month(P.date_of_purchase) as soldmonth,
  '' as ageinweeksbandname,
  0 as ageinweeksbandid,
-
      CASE WHEN G.stockage/7 >=0 AND G.stockage/7 <=7 THEN 'under 1 '
             WHEN G.stockage/7 >=8 AND G.stockage/7 <=14 THEN '1 - 2'
             WHEN G.stockage/7 >=15 AND G.stockage/7 <=21 THEN '2 - 3'
@@ -131,6 +130,8 @@ month(P.date_of_purchase),
             WHEN G.mileage >=100000 AND G.mileage <150000 THEN 7
             WHEN G.mileage >=150000 AND G.mileage <999999 THEN 8
 end mileageBandId,
+G.stockage/7 as stockageweeks,
+0 as vehicleageweeks,
 'n/a' as buyercountry,
 0 as buyercountryid,
 'n/a' as vendortown,
@@ -138,9 +139,9 @@ end mileageBandId,
 0 as commercialconcepttypeid
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
-join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groudings_stg) G on G.vehicle_id = V.id
+left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
+left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id;
+join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
-join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
-join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id);
 
 
