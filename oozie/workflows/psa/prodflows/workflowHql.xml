@@ -1,35 +1,5 @@
-<workflow-app xmlns="uri:oozie:workflow:0.5" xmlns:sla="uri:oozie:sla:0.2" name="sqoop-wf">
-    <start to="forkingMain"/>
-	<fork name="forkingMain">
-        <path start="sqoop-subFlow1"/>
-        <path start="sqoop-subFlow2"/>
-		<path start="sqoop-subFlow3"/>
-    </fork>
-    <action name="sqoop-subFlow1">
-        <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_1.xml</app-path>
-            <propagate-configuration/>
-        </sub-workflow>
-        <ok to="joiningMain"/>
-		<error to="joiningMain"/>
-    </action>
-    <action name="sqoop-subFlow2">
-        <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_2.xml</app-path>
-            <propagate-configuration/>
-        </sub-workflow>
-        <ok to="joiningMain"/>
-		<error to="joiningMain"/>
-    </action>
-    <action name="sqoop-subFlow3">
-        <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_3.xml</app-path>
-            <propagate-configuration/>
-        </sub-workflow>
-        <ok to="joiningMain"/>
-		<error to="joiningMain"/>
-    </action>
-    <join name="joiningMain" to="cached-hql-stored-procedures"/>
+<workflow-app xmlns="uri:oozie:workflow:0.4" name="hive-2-workflow">
+	<start to="cached-hql-stored-procedures" />
 	<action name="cached-hql-stored-procedures">
 		<hive xmlns="uri:oozie:hive-action:0.2">
 			<job-tracker>${jobTracker}</job-tracker>
@@ -53,7 +23,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -63,7 +33,7 @@
 			<script>/user/oozie/share/hql/create_storedprocedures.hql</script>
 		</hive>
 		<ok to="cached-hql-viwb"/>
-		<error to="failEmail"/>
+		<error to="fail"/>
 	</action>
 	<action name="cached-hql-viwb">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -88,7 +58,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -98,7 +68,7 @@
 			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
 		</hive>
 		<ok to="cached-hql-sstc"/>
-		<error to="failEmail"/>
+		<error to="fail"/>
 	</action>
 	<action name="cached-hql-sstc">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -123,7 +93,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -133,7 +103,7 @@
 			<script>/user/oozie/share/hql/sales_session_tactics_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-inventory"/>
-		<error to="failEmail"/>
+		<error to="fail"/>
 	</action>
 	<action name="cached-hql-inventory">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -158,7 +128,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -168,7 +138,7 @@
 			<script>/user/oozie/share/hql/inventory_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-sales-report"/>
-		<error to="failEmail"/>
+		<error to="fail"/>
 	</action>
 	<action name="cached-hql-sales-report">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -193,7 +163,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -203,7 +173,7 @@
 			<script>/user/oozie/share/hql/sales_report_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-bll"/>
-		<error to="failEmail"/>
+		<error to="fail"/>
 	</action>
 	<action name="cached-hql-bll">
 		<hive xmlns="uri:oozie:hive-action:0.2">
@@ -228,7 +198,7 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
@@ -237,27 +207,11 @@
 			</configuration>
 			<script>/user/oozie/share/hql/buyer_last_login_cached.hql</script>
 		</hive>
-		<ok to="endMain"/>
-		<error to="failEmail"/>
-	</action>
-	<action name="failEmail">
-		<email xmlns="uri:oozie:email-action:0.1">
-			<to>${alertEmail}</to>
-			<subject>oozie job failure</subject>
-			<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
-		</email>
-		<ok to="fail" />
-		<error to="fail" />
+		<ok to="end"/>
+		<error to="fail"/>
 	</action>
 	<kill name="fail">
 		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
 	</kill>
-	<end name="endMain"/>
-	<sla:info>
-		<sla:nominal-time>${nominal_time}</sla:nominal-time>
-		<sla:should-end>${30 * MINUTES}</sla:should-end>
-		<sla:max-duration>${30 * MINUTES}</sla:max-duration>
-		<sla:alert-events>duration_miss</sla:alert-events>
-		<sla:alert-contact>${alertEmail}</sla:alert-contact>
-	</sla:info>
+	<end name="end"/>
 </workflow-app>

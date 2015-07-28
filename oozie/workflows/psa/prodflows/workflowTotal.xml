@@ -98,14 +98,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>create_storedprocedures.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/create_storedprocedures.hql</script>
+			<script>/user/oozie/share/hql/psa/create_storedprocedures.hql</script>
 		</hive>
 		<ok to="cached-hql-viwb"/>
 		<error to="failEmail"/>
@@ -133,14 +133,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>vehicle_information_with_bands.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/vehicle_information_with_bands.hql</script>
+			<script>/user/oozie/share/hql/psa/vehicle_information_with_bands.hql</script>
 		</hive>
 		<ok to="cached-hql-sstc"/>
 		<error to="failEmail"/>
@@ -168,14 +168,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>sales_session_tactics_cached.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/sales_session_tactics_cached.hql</script>
+			<script>/user/oozie/share/hql/psa/sales_session_tactics_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-inventory"/>
 		<error to="failEmail"/>
@@ -203,14 +203,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>inventory_cached.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/inventory_cached.hql</script>
+			<script>/user/oozie/share/hql/psa/inventory_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-sales-report"/>
 		<error to="failEmail"/>
@@ -238,14 +238,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>sales_report_cached.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/sales_report_cached.hql</script>
+			<script>/user/oozie/share/hql/psa/sales_report_cached.hql</script>
 		</hive>
 		<ok to="cached-hql-bll"/>
 		<error to="failEmail"/>
@@ -273,14 +273,14 @@
 				</property>
 				<property>
 					<name>oozie.hive2.jdbc.url</name>
-					<value>${jdbcUrl}</value>
+					<value>${hive2Url}</value>
 				</property>
 				<property>
 					<name>oozie.hive2.script</name>
 					<value>buyer_last_login_cached.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/buyer_last_login_cached.hql</script>
+			<script>/user/oozie/share/hql/psa/buyer_last_login_cached.hql</script>
 		</hive>
 		<ok to="endMain"/>
 		<error to="failEmail"/>
