@@ -103,7 +103,8 @@ G.stockage,
             WHEN G.mileage >=150000 AND G.mileage <999999 THEN 8
 end mileageBandId,
  0 as statusid,
- 'n/a' as statusdescription  
+ 'n/a' as statusdescription, 
+1 as pl_id
 FROM rpm.vehicles_stg V 
  inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 

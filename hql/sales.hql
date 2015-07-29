@@ -73,5 +73,6 @@ CREATE  TABLE `sales_report_cached`(
    `buyercountryid` int COMMENT '',
    `vendortown` string COMMENT '',
    `locationid` int COMMENT '',
-   `commercialconcepttypeid` int COMMENT '');
+   `commercialconcepttypeid` int COMMENT '',
+   `pl_id` int COMMENT '');
  

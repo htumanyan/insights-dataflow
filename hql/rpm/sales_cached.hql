@@ -136,7 +136,8 @@ G.stockage/7 as stockageweeks,
 0 as buyercountryid,
 'n/a' as vendortown,
 0 as locationid,
-0 as commercialconcepttypeid
+0 as commercialconcepttypeid,
+1 as pl_id
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id

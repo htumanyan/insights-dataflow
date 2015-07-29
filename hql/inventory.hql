@@ -42,5 +42,5 @@
    `mileagebandname` string COMMENT '',                                                             
    `mileagebandid` int COMMENT '',                                                                  
    `statusid` int COMMENT '',                                                                       
-   `statusdescription` string COMMENT '')                                                           
- STORED STORED AS PARQUET; 
+   `statusdescription` string COMMENT '',
+   `pl_id` int COMMENT '');                                                           
