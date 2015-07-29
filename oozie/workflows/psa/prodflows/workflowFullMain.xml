@@ -3,7 +3,7 @@
 	<fork name="forkingFullMain">
         <path start="sqoop-subFlowFull1"/>
         <path start="sqoop-subFlowFull2"/>
-	<path start="sqoop-subFlowFull3"/>
+		<path start="sqoop-subFlowFull3"/>
         <path start="sqoop-subFlowFull4"/>
         <path start="sqoop-subFlowFull5"/>
         <path start="sqoop-subFlowFull6"/>
@@ -13,7 +13,7 @@
     </fork>
     <action name="sqoop-subFlowFull1">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_1.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_1.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -21,7 +21,7 @@
     </action>
     <action name="sqoop-subFlowFull2">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_2.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_2.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -29,7 +29,7 @@
     </action>
     <action name="sqoop-subFlowFull3">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_3.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_3.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -37,7 +37,7 @@
     </action>
     <action name="sqoop-subFlowFull4">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_4.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_4.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -45,7 +45,7 @@
     </action>
     <action name="sqoop-subFlowFull5">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_5.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_5.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -53,7 +53,7 @@
     </action>
     <action name="sqoop-subFlowFull6">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_6.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_6.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -61,7 +61,7 @@
     </action>
     <action name="sqoop-subFlowFull7">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_7.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_7.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -69,7 +69,7 @@
     </action>
     <action name="sqoop-subFlowFull8">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_8.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_8.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
@@ -77,7 +77,7 @@
     </action>
     <action name="sqoop-subFlowFull9">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflowFull_9.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/prodflows/workflowFull_9.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningFullMain"/>
