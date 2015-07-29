@@ -11,7 +11,7 @@
     </fork>
     <action name="sqoop-subFlow1">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_1.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_1.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -19,7 +19,7 @@
     </action>
     <action name="sqoop-subFlow2">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_2.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_2.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -27,7 +27,7 @@
     </action>
     <action name="sqoop-subFlow3">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_3.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_3.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -35,7 +35,7 @@
     </action>
     <action name="sqoop-subFlow4">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_4.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_4.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -43,7 +43,7 @@
     </action>
     <action name="sqoop-subFlow5">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_5.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_5.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -51,7 +51,7 @@
     </action>
     <action name="sqoop-subFlow6">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_6.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_6.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -59,7 +59,7 @@
     </action>
     <action name="sqoop-subFlow7">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflows/rpm/usStgFlows/workflow_7.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflow_7.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
