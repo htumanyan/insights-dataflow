@@ -1,3 +1,4 @@
+use insights;
 CREATE  TABLE `sales_report_cached`(                                                           
    `make` string COMMENT '',
    `makeref` string COMMENT '',

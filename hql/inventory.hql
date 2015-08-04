@@ -1,3 +1,4 @@
+use insights;
  CREATE  TABLE `inventory_report_cached`(                                                           
    `vehicleid` int COMMENT '',                                                                      
    `vin` string COMMENT '',                                                                         
