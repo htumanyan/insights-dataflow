@@ -1,18 +1,19 @@
 use vdm;
+drop  table packages;
 CREATE EXTERNAL TABLE `packages`(
-`vehicle_id` string,
-`model_year` string,
-`make`  string,
-`model` string,
+`vb_vehicle_id` string,
+`vb_model_year` string,
+`vb_make` string,
+`vb_model` string,
 `p_package_id` int,
-`build_package_code` string,
-`marketing_package_code` string,
-`package_name` string,
-`options_list` string,
-`style_id` int,
-`defining_source` string,
-`description_type_code` string,
-`package_id` int 
+`p_build_package_code` string,
+`p_marketing_package_code` string,
+`p_package_name` string,
+`p_options_list` string,
+`p_style_id` int,
+`p_defining_source` string,
+`p_description_type_code` string,
+`po_package_id` int
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\n'
 STORED AS TEXTFILE
