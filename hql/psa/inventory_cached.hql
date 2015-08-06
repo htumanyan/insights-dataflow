@@ -46,7 +46,8 @@ CREATE TABLE inventory_report_cached_tmp
                            VDB.mileagebandname,
                            VDB.mileagebandid,
                            VS.BaseStatusId as StatusID,
-                           VS.Description as StatusDescription
+                           VS.Description as StatusDescription,
+                           0 as pl_id
 FROM
    psa.VehicleInformation_stg VI
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId

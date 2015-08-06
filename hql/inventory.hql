@@ -1,3 +1,4 @@
+use insights;
  CREATE  TABLE `inventory_report_cached`(                                                           
    `vehicleid` int COMMENT '',                                                                      
    `vin` string COMMENT '',                                                                         
@@ -42,5 +43,5 @@
    `mileagebandname` string COMMENT '',                                                             
    `mileagebandid` int COMMENT '',                                                                  
    `statusid` int COMMENT '',                                                                       
-   `statusdescription` string COMMENT '')                                                           
- STORED STORED AS PARQUET; 
+   `statusdescription` string COMMENT '',
+   `pl_id` int COMMENT '');                                                           

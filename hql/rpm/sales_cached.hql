@@ -1,4 +1,5 @@
-INSERT OVERWRITE TABLE sales_report_cached SELECT
+
+INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
  v.make,
  v.make as makeref,
  'n/a' as registration,
@@ -136,12 +137,13 @@ G.stockage/7 as stockageweeks,
 0 as buyercountryid,
 'n/a' as vendortown,
 0 as locationid,
-0 as commercialconcepttypeid
+0 as commercialconcepttypeid,
+1 as pl_id
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
-left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id;
+left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
-join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
+join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number;
 
 

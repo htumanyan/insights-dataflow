@@ -88,7 +88,8 @@ CREATE TABLE sales_report_cached_tmp
                            BC.id as buyercountryid,
                            L.locationname as vendortown,
                            VI.locationid as locationid,
-                            CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId 
+                            CommercialConcept.SaleChannelTypeID as CommercialConceptTypeId,
+                           0 as pl_id 
 from  
    psa.VehicleInformation_stg VI
    JOIN psa.locations_stg L on L.id=VI.locationid
