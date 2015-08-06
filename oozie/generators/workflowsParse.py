@@ -13,9 +13,9 @@ class sqoopCommand(object):
 		self.mapColumn = mapColumn
 		self.splitBy = splitBy
 	
-#ex startup: python generators/workflowsParse.py 9 ../resource/table.txt workflows/workflowFull_
-#ex startup: python generators/workflowsParse.py 3 ../resource/tablesUsed.txt workflows/devflows/workflow_
-script, numSubFlows, inFilename, outFilePath = argv
+#ex startup: python generators/workflowsParse.py 9 psa ../resource/table.txt workflows/workflowFull_
+#ex startup: python generators/workflowsParse.py 3 rpm ../resource/tablesUsed.txt workflows/devflows/workflow_
+script, numSubFlows, dataSource, inFilename, outFilePath = argv
 
 txt = open(inFilename, "r")
 
@@ -64,7 +64,7 @@ for action in actions:
 	ET.SubElement(sqoop, 'job-tracker').text = '${jobTracker}'
 	ET.SubElement(sqoop, 'name-node').text = '${nameNode}'
 	prepare = ET.SubElement(sqoop, 'prepare')
-	ET.SubElement(prepare, 'delete', path='/data/database/psa/' + action.tableName)
+	ET.SubElement(prepare, 'delete', path='/data/database/' + dataSource + '/' + action.tableName)
 	configuration = ET.SubElement(sqoop, 'configuration')
 	property = ET.SubElement(configuration, 'property')
 	ET.SubElement(property, 'name').text = 'mapred.job.queue.name'
@@ -81,13 +81,13 @@ for action in actions:
 	ET.SubElement(sqoop, 'arg').text = '${sqlPass}'
 	ET.SubElement(sqoop, 'arg').text = '--table'
 	ET.SubElement(sqoop, 'arg').text = action.tableName
-	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/psa/'
+	ET.SubElement(sqoop, 'arg').text = '--warehouse-dir=/data/database/' + dataSource + '/'
 	ET.SubElement(sqoop, 'arg').text = '-m'
 	ET.SubElement(sqoop, 'arg').text = str(action.mapTasks)
 	ET.SubElement(sqoop, 'arg').text = '--hive-import'
 	ET.SubElement(sqoop, 'arg').text = '--hive-overwrite'
 	ET.SubElement(sqoop, 'arg').text = '--hive-table'
-	ET.SubElement(sqoop, 'arg').text = 'psa.' + action.tableName + '_stg'
+	ET.SubElement(sqoop, 'arg').text = dataSource + '.' + action.tableName + '_stg'
 	if action.mapColumn!=0:
 		ET.SubElement(sqoop, 'arg').text = '--map-column-hive'
 		ET.SubElement(sqoop, 'arg').text = action.mapColumn

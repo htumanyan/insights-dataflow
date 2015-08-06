@@ -2,6 +2,12 @@
     <start to="forkingMain"/>
 	<fork name="forkingMain">
         <path start="sqoop-subFlow1"/>
+        <path start="sqoop-subFlow2"/>
+        <path start="sqoop-subFlow3"/>
+        <path start="sqoop-subFlow4"/>
+        <path start="sqoop-subFlow5"/>
+        <path start="sqoop-subFlow6"/>
+        <path start="sqoop-subFlow7"/>
     </fork>
     <action name="sqoop-subFlow1">
         <sub-workflow>
@@ -11,8 +17,56 @@
         <ok to="joiningMain"/>
 		<error to="joiningMain"/>
     </action>
-    <join name="joiningMain" to="hql-dummy-procedure"/>
-	<action name="hql-dummy-procedure">
+    <action name="sqoop-subFlow2">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_2.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <action name="sqoop-subFlow3">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_3.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <action name="sqoop-subFlow4">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_4.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <action name="sqoop-subFlow5">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_5.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <action name="sqoop-subFlow6">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_6.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <action name="sqoop-subFlow7">
+        <sub-workflow>
+            <app-path>${nameNode}/user/oozie/share/workflow_7.xml</app-path>
+            <propagate-configuration/>
+        </sub-workflow>
+        <ok to="joiningMain"/>
+		<error to="joiningMain"/>
+    </action>
+    <join name="joiningMain" to="inventory-procedure"/>
+	<action name="inventory-procedure">
 		<hive xmlns="uri:oozie:hive-action:0.2">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
@@ -42,7 +96,42 @@
 					<value>inventory.hql</value>
 				</property>
 			</configuration>
-			<script>/user/oozie/share/hql/rpm/inventory.hql</script>
+			<script>/user/oozie/share/hql/rpm/inventory_cached.hql</script>
+		</hive>
+		<ok to="sales-procedure"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="sales-procedure">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive2</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>${hive2Url}</value>
+				</property>
+				<property>
+					<name>oozie.hive2.script</name>
+					<value>inventory.hql</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/rpm/sales_cached.hql</script>
 		</hive>
 		<ok to="endMain"/>
 		<error to="failEmail"/>
@@ -62,6 +151,7 @@
 	<end name="endMain"/>
 	<sla:info>
 		<sla:nominal-time>${nominal_time}</sla:nominal-time>
+		<sla:should-start>${10 * MINUTES}</sla:should-start>
 		<sla:should-end>${30 * MINUTES}</sla:should-end>
 		<sla:max-duration>${30 * MINUTES}</sla:max-duration>
 		<sla:alert-events>duration_miss</sla:alert-events>

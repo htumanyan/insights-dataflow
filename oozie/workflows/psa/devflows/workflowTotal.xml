@@ -7,7 +7,7 @@
     </fork>
     <action name="sqoop-subFlow1">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_1.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/devflows/workflow_1.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -15,7 +15,7 @@
     </action>
     <action name="sqoop-subFlow2">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_2.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/devflows/workflow_2.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
@@ -23,7 +23,7 @@
     </action>
     <action name="sqoop-subFlow3">
         <sub-workflow>
-            <app-path>${nameNode}/user/oozie/share/workflow_3.xml</app-path>
+            <app-path>${nameNode}/user/oozie/share/workflows/psa/devflows/workflow_3.xml</app-path>
             <propagate-configuration/>
         </sub-workflow>
         <ok to="joiningMain"/>
