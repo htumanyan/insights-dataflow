@@ -1,4 +1,5 @@
-
+use insights;
+uncache table sales_report_cached;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
  v.make,
  v.make as makeref,
@@ -26,11 +27,10 @@ P.purchase_price as sold_price,
 0 as buyerid, 
 'n/a' as buyercode,
 0 as deliverylocation,
-false as activesale,
+case when P.wizard_step=3 then 'N' else 'Y' end as activesale,
  V.model,
 'n/a' as code,
  V.model_year as modelyear,
- V.model as model,
  V.model_serial_number as model_code,
 G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
@@ -145,5 +145,5 @@ left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number;
-
+cache table sales_report_cached;
 
