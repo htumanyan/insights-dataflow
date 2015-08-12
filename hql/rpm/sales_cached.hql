@@ -28,7 +28,7 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when P.wizard_step=3 then 'N' else 'Y' end as activesale,
-coalesce(vdmv.model, V.model) as model,
+coalesce(vdmv.vb_model, V.model) as model,
 'n/a' as code,
  V.model_year as modelyear,
  V.model_serial_number as model_code,
@@ -145,6 +145,6 @@ left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
-join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
+join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number;
 cache table sales_report_cached;
 
