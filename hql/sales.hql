@@ -1,5 +1,4 @@
 use insights;
-
 CREATE  TABLE `sales_report_cached`(                                                           
    `make` string COMMENT '',
    `makeref` string COMMENT '',
@@ -76,5 +75,7 @@ CREATE  TABLE `sales_report_cached`(
    `vendortown` string COMMENT '',
    `locationid` int COMMENT '',
    `commercialconcepttypeid` int COMMENT '',
-   `pl_id` int COMMENT '');
+   `pl_id` int COMMENT '',
+   `vdm_options_desc_map` Map<Int, String>,
+   `vdm_options_group_map` Map<Int, String>);
  
