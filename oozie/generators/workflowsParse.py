@@ -71,7 +71,7 @@ for action in actions:
 	ET.SubElement(property, 'value').text = '${queueName}'
 	property2 = ET.SubElement(configuration, 'property')
 	ET.SubElement(property2, 'name').text = 'oozie.hive.defaults'
-	ET.SubElement(property2, 'value').text = 'tmp/oozie-hive-site.xml'
+	ET.SubElement(property2, 'value').text = '/tmp/oozie-hive-site.xml'
 	ET.SubElement(sqoop, 'arg').text = 'import'
 	ET.SubElement(sqoop, 'arg').text = '--connect'
 	ET.SubElement(sqoop, 'arg').text = '${jdbcUrl}'

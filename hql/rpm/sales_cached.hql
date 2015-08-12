@@ -5,8 +5,8 @@ INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
  v.make as makeref,
  'n/a' as registration,
  'n/a' as chassis,
- 'n/a' as derivative,
- 0 as derivativeid,
+ v.trim_level as derivative,
+abs(hash(v.trim_level)) as derivativeid,
 'n/a' as registrationdate,
  V.color as exteriorcolour,
 P.created_at as creationdate,
@@ -28,7 +28,7 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when P.wizard_step=3 then 'N' else 'Y' end as activesale,
- V.model,
+coalesce(vdmv.model, V.model) as model,
 'n/a' as code,
  V.model_year as modelyear,
  V.model_serial_number as model_code,
@@ -36,7 +36,7 @@ G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
 0 as auctionprice,
  V.transmission_type as transmission,
- 0 as transmissionid,
+abs(hash(V.transmission_type)) as transmissionid,
  G.stockage,
 'Car' as vehicle_type,
 'none' as salessession,
@@ -141,9 +141,10 @@ G.stockage/7 as stockageweeks,
 1 as pl_id
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
+left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
-join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number;
+join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 cache table sales_report_cached;
 
