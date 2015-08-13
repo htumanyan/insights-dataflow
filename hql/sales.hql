@@ -77,5 +77,10 @@ CREATE  TABLE `sales_report_cached`(
    `commercialconcepttypeid` int COMMENT '',
    `pl_id` int COMMENT '',
    `vdm_options_desc_map` Map<Int, String>,
-   `vdm_options_group_map` Map<Int, String>);
+   `vdm_options_group_map` Map<Int, String>),
+   `mmr.mmr_body` as body,
+   `mmr.mmr_edition` as mmr_edition,
+   `mmr.mmr_algorithm` as mmr_algorithm,
+   `mmr.mmr_national_value` as mmr_nationalvalue,
+   `mmr.mmr_national_sample_size` as mmr_nationalsamplesize;
  
