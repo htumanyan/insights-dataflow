@@ -4,7 +4,6 @@ DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
 uncache table sales_report_cached;
-
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
  v.make,
  v.make as makeref,
@@ -144,8 +143,77 @@ G.stockage/7 as stockageweeks,
 0 as locationid,
 0 as commercialconcepttypeid,
 1 as pl_id,
-vdmo.option_desc as vdm_options_desc_map,
-vdmo.option_group as vdm_options_group_map 
+vdmo.vdm_options_desc_map,
+vdmo.vdm_options_group_map,
+vdmv.b_vehicle_id as vdm_b_vehicle_id,
+vdmv.vb_vin as vdm_vb_vin,
+vdmv.vb_associate_vin as vdm_vb_associate_vin,
+vdmv.vb_vehicle_type as vdm_vb_vehicle_type,
+vdmv.vb_model_year as vdm_vb_model_year,
+vdmv.vb_make as vdm_vb_make,
+vdmv.vb_model as vdm_vb_model,
+vdmv.ev_trim as vdm_ev_trim,
+vdmv.ev_manufacturer_trim as vdm_ev_manufacturer_trim,
+vdmv.ev_style_id as vdm_ev_style_id,
+vdmv.ev_manufacturer_style_id as vdm_ev_manufacturer_style_id,
+vdmv.vb_subdivision_name as vdm_vb_subdivision_name,
+vdmv.ev_msrp as vdm_ev_msrp,
+vdmv.vb_half_year_ind as vdm_vb_half_year_ind,
+vdmv.vb_manufacturer as vdm_vb_manufacturer,
+vdmv.vb_number_of_wheels as vdm_vb_number_of_wheels,
+vdmv.vb_gvwr as vdm_vb_gvwr,
+vdmv.vb_language_code as vdm_vb_language_code,
+vdmv.vb_source_code as vdm_vb_source_code,
+vdmv.vb_country_of_origin_code as vdm_vb_country_of_origin_code,
+vdmv.vb_country_code as vdm_vb_country_code,
+vdmv.vb_ext_color_generic_descr as vdm_vb_ext_color_generic_descr,
+vdmv.vb_ext_color_mfr_rgb_code as vdm_vb_ext_color_mfr_rgb_code,
+vdmv.vb_ext_color_mfr_code as vdm_vb_ext_color_mfr_code,
+vdmv.vb_ext_color_mfr_description as vdm_vb_ext_color_mfr_description,
+vdmv.vb_ext_color_generic_descr2 as vdm_vb_ext_color_generic_descr2,
+vdmv.vb_ext_color_mfr_rgb_code_2 as vdm_vb_ext_color_mfr_rgb_code_2,
+vdmv.vb_ext_color_mfr_code_2 as vdm_vb_ext_color_mfr_code_2,
+vdmv.vb_ext_color_mfr_description_2 as vdm_vb_ext_color_mfr_description_2,
+vdmv.vb_int_color_mfr_code as vdm_vb_int_color_mfr_code,
+vdmv.vb_int_color_mfr_description as vdm_vb_int_color_mfr_description,
+vdmv.ev_region_code as vdm_ev_region_code,
+vdmv.ev_market_class_id as vdm_ev_market_class_id,
+vdmv.ev_model_id as vdm_ev_model_id,
+vdmv.ev_transmission as vdm_ev_transmission,
+vdmv.ev_drivetrain as vdm_ev_drivetrain,
+vdmv.ev_wheelbase as vdm_ev_wheelbase,
+vdmv.ev_market_class_description as vdm_ev_market_class_description,
+vdmv.ev_number_of_doors as vdm_ev_number_of_doors,
+vdmv.ev_passenger_capacity as vdm_ev_passenger_capacity,
+vdmv.ev_fuel_economy_city_ville as vdm_ev_fuel_economy_city_ville,
+vdmv.ev_fuel_economy_highway_route as vdm_ev_fuel_economy_highway_route,
+vdmv.ev_fuel_eco_units_of_measure as vdm_ev_fuel_eco_units_of_measure,
+vdmv.ev_style_name_without_trim as vdm_ev_style_name_without_trim,
+vdmv.ev_body_type_primary as vdm_ev_body_type_primary,
+vdmv.ev_body_type_secondary as vdm_ev_body_type_secondary,
+vdmv.ev_odometer_reading as vdm_ev_odometer_reading,
+vdmv.ev_odometer_reading_capture_ts as vdm_ev_odometer_reading_capture_ts,
+vdmv.ev_odometer_digits as vdm_ev_odometer_digits,
+vdmv.ev_odometer_units_of_measure as vdm_ev_odometer_units_of_measure,
+vdmv.ev_odometer_status as vdm_ev_odometer_status,
+vdmv.ev_odometer_type as vdm_ev_odometer_type,
+vdmv.ev_engine_type as vdm_ev_engine_type,
+vdmv.ev_engine_displacement as vdm_ev_engine_displacement,
+vdmv.ev_engine_induction as vdm_ev_engine_induction,
+vdmv.ev_engine_fuel_type_descr as vdm_ev_engine_fuel_type_descr,
+vdmv.ev_engine_horse_power as vdm_ev_engine_horse_power,
+vdmv.ev_vehicle_sub_type as vdm_ev_vehicle_sub_type,
+vdmv.ev_line_name as vdm_ev_line_name,
+vdmv.ev_ag_series_code as vdm_ev_ag_series_code,
+vdmv.ev_in_service_date as vdm_ev_in_service_date,
+vdmv.ev_mid as vdm_ev_mid,
+vdmv.ev_invoice_wholesale as vdm_ev_invoice_wholesale,
+vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
+vdmv.vb_created_by as vdm_vb_created_by,
+vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
+vdmv.vb_last_update_by as vdm_vb_last_update_by
+
+
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
@@ -153,7 +221,6 @@ left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
-left join (select b_vehicle_id, to_map(o_option_id, o_option_description) as option_desc,  to_map(o_option_id, o_option_group) as option_group from vdm.options group by b_vehicle_id ) vdmo on vdmo.b_vehicle_id = vdmv.b_vehicle_id;
-
+left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin ;
 cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;
