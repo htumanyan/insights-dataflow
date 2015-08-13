@@ -5,7 +5,7 @@ CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
 uncache table sales_report_cached;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
- v.make,
+coalesce(v.make, mmr.m_make) as make,
  v.make as makeref,
  'n/a' as registration,
  'n/a' as chassis,
@@ -32,9 +32,9 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when P.wizard_step=3 then 'N' else 'Y' end as activesale,
-coalesce(vdmv.vb_model, V.model) as model,
+coalesce(vdmv.vb_model, V.model, mmr.m_model) as model,
 'n/a' as code,
- V.model_year as modelyear,
+coalesce(V.model_year, mmr.m_model_year) as modelyear,
  V.model_serial_number as model_code,
 G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
@@ -212,12 +212,16 @@ vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
 vdmv.vb_created_by as vdm_vb_created_by,
 vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
 vdmv.vb_last_update_by as vdm_vb_last_update_by
-
-
+mmr.m_body as body,
+mmr.m_edition as mmr_edition,
+mmr.m_algorithm as mmr_algorithm,
+mmr.m_national_value as mmr_nationalvalue,
+mmr.m_national_sample_size as mmr_nationalsamplesize
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
+left join mmr.m_sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
