@@ -5,7 +5,7 @@ CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
 uncache table sales_report_cached;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
-coalesce(v.make, mmr.m_make) as make,
+coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
  'n/a' as registration,
  'n/a' as chassis,
@@ -32,9 +32,9 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when P.wizard_step=3 then 'N' else 'Y' end as activesale,
-coalesce(vdmv.vb_model, V.model, mmr.m_model) as model,
+coalesce(vdmv.vb_model, V.model, mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(V.model_year, mmr.m_model_year) as modelyear,
+coalesce(V.model_year, mmr.mmr_model_year) as modelyear,
  V.model_serial_number as model_code,
 G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
@@ -212,11 +212,11 @@ vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
 vdmv.vb_created_by as vdm_vb_created_by,
 vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
 vdmv.vb_last_update_by as vdm_vb_last_update_by
-mmr.m_body as body,
-mmr.m_edition as mmr_edition,
-mmr.m_algorithm as mmr_algorithm,
-mmr.m_national_value as mmr_nationalvalue,
-mmr.m_national_sample_size as mmr_nationalsamplesize
+mmr.mmr_body as mmr_body,
+mmr.mmr_edition as mmr_edition,
+mmr.mmr_algorithm as mmr_algorithm,
+mmr.mmr_national_value as mmr_nationalvalue,
+mmr.mmr_national_sample_size as mmr_nationalsamplesize
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 

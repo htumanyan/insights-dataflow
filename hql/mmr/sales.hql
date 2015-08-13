@@ -8,14 +8,14 @@ CREATE EXTERNAL TABLE `sales`(
 `m_make` string,
 `m_model` string, 
 `m_derivative` string,
-`m_model_year` int,
-`m_make` string,
-`m_model` string,
-`m_body` string,
-`m_edition` string,
-`m_algorithm` string,
-`m_national_value` string,
-`m_national_sample_size` int
+`mmr_model_year` int,
+`mmr_make` string,
+`mmr_model` string,
+`mmr_body` string,
+`mmr_edition` string,
+`mmr_algorithm` string,
+`mmr_national_value` string,
+`mmr_national_sample_size` int
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','  lines terminated by '\n'
 STORED AS TEXTFILE
