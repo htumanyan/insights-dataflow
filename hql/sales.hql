@@ -146,10 +146,10 @@ CREATE  TABLE `sales_report_cached`(
 `vdm_vb_created_by` string,
 `vdm_vb_last_update_timestamp` string,
 `vdm_vb_last_update_by` string,
-`mmr.mmr_body` string,
-`mmr.mmr_edition` string,
-`mmr.mmr_algorithm` string,
-`mmr.mmr_national_value` string,
-`mmr.mmr_national_sample_size` int
+`mmr_body` string,
+`mmr_edition` string,
+`mmr_algorithm` string,
+`mmr_national_value` string,
+`mmr_national_sample_size` int
 );
  
