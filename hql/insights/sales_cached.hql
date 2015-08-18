@@ -22,7 +22,7 @@ P.created_at as creationdate,
  D.id as vendorid,
 0 as vehicleageindays,
 P.date_of_purchase as solddate,
-unix_timestamp(P.updated_at) as solddatets ,
+unix_timestamp(P.updated_at) as solddatets,
 'n/a' as vatqualified,
 P.purchase_price as sold_price,
 0 as buyerpremium,
@@ -211,7 +211,7 @@ vdmv.ev_invoice_wholesale as vdm_ev_invoice_wholesale,
 vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
 vdmv.vb_created_by as vdm_vb_created_by,
 vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
-vdmv.vb_last_update_by as vdm_vb_last_update_by
+vdmv.vb_last_update_by as vdm_vb_last_update_by,
 mmr.mmr_body as mmr_body,
 mmr.mmr_edition as mmr_edition,
 mmr.mmr_algorithm as mmr_algorithm,
@@ -221,10 +221,10 @@ from  rpm.purchases_stg P
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
-left join mmr.m_sales mmr on V.vin = mmr.m_vin
+left join mmr.sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
-left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin ;
+left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin;
 cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;
