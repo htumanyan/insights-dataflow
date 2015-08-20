@@ -1,5 +1,5 @@
 use mmr;
-drop table sales;
+drop table if exists sales;
 CREATE EXTERNAL TABLE `sales`(
 `m_vin` string,
 `m_saledate` string,

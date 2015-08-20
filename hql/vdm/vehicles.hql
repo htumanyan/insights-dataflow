@@ -1,8 +1,8 @@
 use vdm;
-drop table vehicles;
+drop table if exists vehicles;
 CREATE EXTERNAL TABLE `vehicles`(
 `b_vehicle_id` int,
-`vb_vin` string` ,
+`vb_vin` string ,
 `vb_associate_vin` string,
 `vb_vehicle_type` string,
 `vb_model_year` string,
@@ -26,7 +26,7 @@ CREATE EXTERNAL TABLE `vehicles`(
 `vb_ext_color_mfr_rgb_code` string,
 `vb_ext_color_mfr_code` string,
 `vb_ext_color_mfr_description` string,
-`vb_ext_color_generic_descr2` string,,
+`vb_ext_color_generic_descr2` string,
 `vb_ext_color_mfr_rgb_code_2` string,
 `vb_ext_color_mfr_code_2` string,
 `vb_ext_color_mfr_description_2` string,
@@ -48,7 +48,7 @@ CREATE EXTERNAL TABLE `vehicles`(
 `ev_body_type_primary` string,
 `ev_body_type_secondary` string,
 `ev_odometer_reading` int,
-`ev_odometer_reading_capture_ts` `` long,
+`ev_odometer_reading_capture_ts`  int,
 `ev_odometer_digits` int,
 `ev_odometer_units_of_measure` string,
 `ev_odometer_status` string,
@@ -69,7 +69,7 @@ CREATE EXTERNAL TABLE `vehicles`(
 `vb_last_update_timestamp` string,
 `vb_last_update_by` string
 )
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\r'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\n'
 STORED AS TEXTFILE
 LOCATION '/data/database/vdm/vehicles/*.dsv'
 tblproperties ("skip.header.line.count"="1");
