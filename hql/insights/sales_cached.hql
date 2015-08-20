@@ -220,7 +220,7 @@ mmr.mmr_national_sample_size as mmr_nationalsamplesize
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
+left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join mmr.sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
