@@ -8,7 +8,7 @@ TodayFile=$Filename$Today$Filetype
 YesterdayFile=$Filename$Yesterday.no_head$Filetype
 Server='mft.manheim.com'
 User='rms_insights_mmr'
-LDirectory='/mnt/resource/mmr/inbox'
+LDirectory='/mnt/resource/'
 EDirectory='Inbox/MMR/'
 Password='rm$instsmm9'
 
@@ -21,5 +21,5 @@ bye
 End-Of-Session
 
 sed '1d' $TodayFile > $Filename$Today.nohead$Filetype
-hdfs dfs -put $YesterdayFile /data/database/mmr/
+hdfs dfs -put $Filename$Today.nohead$Filetype /data/database/mmr/
 hdfs dfs -rm $YesterdayFile /data/database/mmr/
