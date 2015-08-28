@@ -1,4 +1,5 @@
-CREATE TABLE mytable(
+drop table if exists manheim.sales;
+CREATE TABLE manheim.sales(
    sc_transfer_time string 
   ,`sauci`            string
   ,`sdndiv`           int
@@ -11,9 +12,9 @@ CREATE TABLE mytable(
   ,`dmsalwk`          int 
   ,`dmweekday`        string 
   ,`ssleyr`           int 
-  ,`sdtesl`           int  
+  ,`sdtesl`           DATE  
   ,`sfasdin`          int  
-  ,`sdtesa`           int  
+  ,`sdtesa`           DATE  
   ,`sdteab`           int
   ,`sdtevd`           int  
   ,`sdtere`           int 
@@ -52,7 +53,7 @@ CREATE TABLE mytable(
   ,`slane`            int 
   ,`srun`             int 
   ,`stimes`           int 
-  ,`stmrun`           Infeger
+  ,`stmrun`           int 
   ,`swo`              int 
   ,`sblu`             int 
   ,`dmmafs`           string
@@ -269,9 +270,9 @@ CREATE TABLE mytable(
   ,`dmopcsuid`        string 
   ,`agetofund`        int
   ,`agetofundf`       string 
-  ,`dmcrtypei`         string 
+  ,`dmcrtype`         string 
 )
-ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\n'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','  lines terminated by '\n'
 STORED AS TEXTFILE
 LOCATION '/data/database/manheim/sales/*'
 tblproperties ("skip.header.line.count"="1");

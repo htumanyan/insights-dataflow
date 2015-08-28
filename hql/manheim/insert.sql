@@ -1,5 +1,11 @@
-INSERT INTO insights.sales_report_cached SELECT
-m.dmmake as  make,
+
+
+
+
+
+
+INSERT INTO TABLE insights.sales_report_cached SELECT
+m.dmmake as make,
 m.dmmake as makeref,
 m.SDTESA as registration,
 'n/a' as chassis,
@@ -8,7 +14,7 @@ abs(hash(m.SSUBSE)) as derivativeid,
 m.SDTESA as registrationdate,
 m.SCOLOR as exteriorcolor,
 m.DMSTDESL as creationdate,
- 
+abs(hash(m.DMTRANTYPE)) as salechannelid,
 m.DMTRANTYPE as salechannel,
 m.DMSELLRNM as vendortradingname,
 0 as vendorcountryid,
@@ -31,29 +37,29 @@ m.DMMODEL as model,
 m.DMMODELYR as modelyear,
 m.DMMODEL as modelcode,
 m.SMILES as mileageG,
-m.AGEDAYS as daysonsale,
-m.DMHIGHBID s auctionprice,
+m.AGEDDAYS as daysonsale,
+m.DMHIGHBID as auctionprice,
 case m.STRN when 'A' then  'Automatic' when '3' then '3 Speed' when '4' then '4 Speed' when '5' then '5 Speed' when '6' then '6 Speed' when 'M' then 'Manual' end,
 abs(hash(m.STRN)) as transmissionid,
-datediff(current_date(), m.SDTESI) as stockage,
+datediff(from_unixtime(unix_timestamp()), m.SDTESI) as stockage,
 m.SVEHIC as vehicle_type,
 'none' as salessession,
 0 as salesessionid, 
 'none' as tacticname, 
 0 as tacticid,
-DMTRANSUBTYPE as commercialconceptname,
+DMTRANSUB as commercialconceptname,
 1 as countryid,
 'United States' as countryname,
 m.SCHGS as totaldamagesnetprice,
-vdm.ev_engine_fuel_type_descr as fueltype,
-vdm.b_vehicle_id as vehicleid,
+vdmv.ev_engine_fuel_type_descr as fueltype,
+vdmv.b_vehicle_id as vehicleid,
 m.SSER17 as vin,
 0 as sourceid,
 'n/a' as sourcename, 
 abs(hash(m.DMCAT)) as buyertypeid,
 m.DMCAT as buyertypename,
 m.DMCAT as buyertypedesc,
-m.SLEPR as priceexcludingvat,
+m.SSLEPR as priceexcludingvat,
 0 as directsaleid,
 m.DMSELLRNM as sellername,
 m.SUID as sellerid,
@@ -129,6 +135,7 @@ m.DMMONTH as soldmonth,
             WHEN m.SMILES >=150000 AND m.SMILES <999999 THEN 8
 end mileageBandId,
 m.stockage/7 as stockageweeks,
+0 as vehicleageweeks,
 'n/a' as buyercountry,
 0 as buyercountryid,
 'n/a' as vendortown,
@@ -209,9 +216,9 @@ mmr.mmr_edition as mmr_edition,
 mmr.mmr_algorithm as mmr_algorithm,
 mmr.mmr_national_value as mmr_nationalvalue,
 mmr.mmr_national_sample_size as mmr_nationalsamplesize
-from 
-(select *,  datediff( from_unixtime(unix_timestamp()), to_date(SDTESA))  from manheim.sales) m
- join on  vdm.vehicles vdmv on vdmv.vb_vin=m.SSER17 
-left join mmr.sales mmr on m.SSER17 = mmr.vin;
+from  (select *, datediff(to_date(from_unixtime(unix_timestamp())), SDTESA) as stockage from manheim.sales) m 
+ join  vdm.vehicles vdmv on vdmv.vb_vin=m.SSER17 
+left join insights.vdm_options_packages vdmo on vdmv.vb_vin = vdmo.vin
+left join mmr.sales mmr on m.SSER17 = mmr.m_vin;
 cache table sales_report_cached;
 
