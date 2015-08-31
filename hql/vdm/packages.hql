@@ -1,5 +1,5 @@
 use vdm;
-drop  table packages;
+drop  table if exists packages;
 CREATE EXTERNAL TABLE `packages`(
 `vb_vehicle_id` string,
 `vb_model_year` string,

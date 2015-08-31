@@ -1,5 +1,5 @@
 use insights;
- add jar hdfs://rmsus-lxhdn01.cloudapp.net:8020/user/oozie/share/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
+add jar '/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar';
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;

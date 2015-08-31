@@ -4,7 +4,7 @@ Today=`date +"%Y%m%d"`
 Filename='INTS_MMR_INPUT_$Today.csv'
 Server='mftstg.manheim.com'
 User='rms_insights_mmr'
-LDirectory='/mnt/resource/mmr/outbox'
+LDirectory='/mnt/resource/'
 RDirectory='Outbox/MMR/INTS'
 Password='password'
 

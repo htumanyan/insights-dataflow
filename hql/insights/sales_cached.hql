@@ -1,5 +1,5 @@
 use insights;
- add jar hdfs://rmsus-lxhdn01.cloudapp.net:8020/user/oozie/share/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
+add jar '/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar';
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
@@ -108,7 +108,6 @@ month(P.date_of_purchase) as soldmonth,
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN '501 - 750'
            WHEN AD.repair_cost >=750 AND AD.repair_cost <100000 THEN 'over 750'
       end as damagesBandName,
-
       case WHEN AD.repair_cost >=0 AND AD.repair_cost <100 THEN 0
            WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN 1
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN 2
@@ -220,7 +219,7 @@ mmr.mmr_national_sample_size as mmr_nationalsamplesize
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join  rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
+left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join mmr.sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
