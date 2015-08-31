@@ -108,7 +108,6 @@ month(P.date_of_purchase) as soldmonth,
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN '501 - 750'
            WHEN AD.repair_cost >=750 AND AD.repair_cost <100000 THEN 'over 750'
       end as damagesBandName,
-
       case WHEN AD.repair_cost >=0 AND AD.repair_cost <100 THEN 0
            WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN 1
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN 2
