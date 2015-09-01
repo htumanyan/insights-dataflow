@@ -1,41 +1,6 @@
 <workflow-app name="shell-wf" xmlns="uri:oozie:workflow:0.5">
-    <start to="mmr-hql-procedure"/>
-	<action name="mmr-hql-procedure">
-		<hive xmlns="uri:oozie:hive-action:0.2">
-			<job-tracker>${jobTracker}</job-tracker>
-			<name-node>${nameNode}</name-node>
-			<configuration>
-				<property>
-					<name>mapred.job.queue.name</name>
-					<value>${queueName}</value>
-				</property>
-				<property>
-					<name>oozie.hive.defaults</name>
-					<value>/tmp/oozie-hive-site.xml</value>
-				</property>
-				<property>
-					<name>oozie.action.sharelib.for.hive</name>
-					<value>hive-0.13</value>
-				</property>
-				<property>
-					<name>oozie.launcher.action.main.class</name>
-					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
-				</property>
-				<property>
-					<name>oozie.hive2.jdbc.url</name>
-					<value>${hive2Url}</value>
-				</property>
-				<property>
-					<name>oozie.hive2.script</name>
-					<value>upload.hql</value>
-				</property>
-			</configuration>
-			<script>/user/oozie/share/hql/mmr/upload.hql</script>
-		</hive>
-		<ok to="mmr-upload-flow"/>
-		<error to="failEmail"/>
-	</action>
-	<action name="mmr-upload-flow">
+    <start to="mmr-download-flow"/>
+	<action name="mmr-download-flow">
 		<shell xmlns="uri:oozie:shell-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
@@ -45,8 +10,13 @@
 					<value>${queueName}</value>
 				</property>
 			</configuration>
-			<exec>${mmrUploadShellScript}</exec>
-			<file>${mmrUploadPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
+			<exec>${mmrDownloadShellScript}</exec>
+			<argument>${downloadFilename}</argument>
+			<argument>${downloadServer}</argument>
+			<argument>${downloadUser}</argument>
+			<argument>${downloadLDirectory}</argument>
+			<argument>${downloadRDirectory}</argument>
+			<argument>${downloadPassword}</argument>	<file>${mmrDownloadPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
 			<capture-output/>
 		</shell>
 		<ok to="endMain"/>
