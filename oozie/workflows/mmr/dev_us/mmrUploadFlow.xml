@@ -1,0 +1,68 @@
+<workflow-app name="shell-wf" xmlns="uri:oozie:workflow:0.5">
+    <start to="mmr-hql-procedure"/>
+	<action name="mmr-hql-procedure">
+		<hive xmlns="uri:oozie:hive-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive</name>
+					<value>hive-0.13</value>
+				</property>
+				<property>
+					<name>oozie.launcher.action.main.class</name>
+					<value>org.apache.oozie.action.hadoop.Hive2Main</value>
+				</property>
+				<property>
+					<name>oozie.hive2.jdbc.url</name>
+					<value>${hive2Url}</value>
+				</property>
+				<property>
+					<name>oozie.hive2.script</name>
+					<value>upload.hql</value>
+				</property>
+			</configuration>
+			<script>/user/oozie/share/hql/mmr/upload.hql</script>
+		</hive>
+		<ok to="mmr-upload-flow"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="mmr-upload-flow">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${mmrUploadShellScript}</exec>
+			<file>${mmrUploadPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="endMain"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="failEmail">
+		<email xmlns="uri:oozie:email-action:0.1">
+			<to>${alertEmail}</to>
+			<subject>oozie job failure</subject>
+			<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
+		</email>
+		<ok to="fail" />
+		<error to="fail"/>
+	</action>
+	<kill name="fail">
+		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<end name="endMain"/>
+</workflow-app>
