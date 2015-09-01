@@ -16,7 +16,8 @@
 			<argument>${downloadUser}</argument>
 			<argument>${downloadLDirectory}</argument>
 			<argument>${downloadRDirectory}</argument>
-			<argument>${downloadPassword}</argument>	<file>${mmrDownloadPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
+			<argument>${downloadPassword}</argument>
+			<file>${mmrDownloadPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
 			<capture-output/>
 		</shell>
 		<ok to="endMain"/>
