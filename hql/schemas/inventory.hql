@@ -114,7 +114,16 @@ drop table if exists inventory_report_cached;
 `vdm_vb_created_timestamp` string,
 `vdm_vb_created_by` string,
 `vdm_vb_last_update_timestamp` string,
-`vdm_vb_last_update_by` string 
+`vdm_vb_last_update_by` string, 
+`rpm_lease_start_date` string,
+`rpm_lease_start_year` int,
+`rpm_lease_start_month` int,
+`rpm_lease_start_day` int,
+`rpm_lease_end_date` string,
+`rpm_lease_end_year` int,
+`rpm_lease_end_month` int,
+`rpm_lease_end_day` int
+
 );
 
 

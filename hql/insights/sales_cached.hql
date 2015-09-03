@@ -1,5 +1,5 @@
 use insights;
-add jar '/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar';
+add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
@@ -225,5 +225,4 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin;
-cache table sales_report_cached;
 SET spark.sql.shuffle.partitions=1;

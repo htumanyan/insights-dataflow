@@ -175,8 +175,15 @@ vdmv.ev_invoice_wholesale as vdm_ev_invoice_wholesale,
 vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
 vdmv.vb_created_by as vdm_vb_created_by,
 vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
-vdmv.vb_last_update_by as vdm_vb_last_update_by
-
+vdmv.vb_last_update_by as vdm_vb_last_update_by,
+V.lease_start_date as rpm_lease_start_date,
+year(V.lease_start_date) as rpm_lease_start_year,
+month(V.lease_start_date) as rpm_lease_start_month,
+day(V.lease_start_date) as rpm_lease_start_day,
+V.lease_end_date as rpm_lease_end_date,
+year(V.lease_end_date) as rpm_lease_end_year,
+month(V.lease_end_date) as rpm_lease_end_month,
+day(V.lease_end_date) as rpm_lease_end_day
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 

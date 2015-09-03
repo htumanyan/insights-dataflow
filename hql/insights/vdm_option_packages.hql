@@ -1,7 +1,7 @@
 use insights;
-add jar '/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar';
-DROP FUNCTION IF EXISTS to_map;
-CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
+add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
+DROP FUNCTION IF EXISTS insights.to_map;
+CREATE FUNCTION  insights.to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
 DROP TABLE if exists  vdm_options_packages;
 CREATE TABLE insights.vdm_options_packages as SELECT
