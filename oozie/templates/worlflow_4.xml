@@ -1,0 +1,376 @@
+<workflow-app name="sqoop-wf" xmlns="uri:oozie:workflow:0.2">
+	<start to="sqoop_action_4" />
+	
+	<action name="sqoop_action_4">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/account_snapshots" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.account_snapshots_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_9" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_9">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/aim_inspections" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.aim_inspections_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_14" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_14">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/background_job_item_messages" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.background_job_item_messages_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_19" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_19">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/comments" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.comments_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_24" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_24">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/fee_charges" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.fee_charges_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_29" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_29">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/leases" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.leases_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_34" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_34">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/schema_migrations" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.schema_migrations_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_39" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_39">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/user_permissions" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.user_permissions_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="sqoop_action_44" />
+		<error to="failEmail" />
+	</action>
+	
+	<action name="sqoop_action_44">
+		<sqoop xmlns="uri:oozie:sqoop-action:0.2">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<prepare>
+				<delete path="/data/database//rpm/worklists" />
+			</prepare>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+			</configuration>
+				<arg>import</arg>
+				<arg>--connect</arg>
+				<arg>${jdbcUrl}</arg>
+				<arg>--username</arg>
+				<arg>${sqlUser}</arg>
+				<arg>--password</arg>
+				<arg>${sqlPass}</arg>
+				<arg>--table</arg>
+				<arg>account_snapshots</arg>
+				<arg>--warehouse-dir=/data/database//rpm/</arg>
+				<arg>-m</arg>
+				<arg>1
+</arg>
+				<arg>--hive-import</arg>
+				<arg>--hive-overwrite</arg>
+				<arg>--hive-table</arg>
+				<arg>rpm.worklists_stg</arg>
+												<file>/tmp/hive-site.xml#hive-site.xml</file>
+		</sqoop>
+		<ok to="end" />
+		<error to="failEmail" />
+	</action>
+	<action name="failEmail">
+<email xmlns="uri:oozie:email-action:0.1">
+<to>${alertEmail}</to>
+<subject>oozie job failure</subject>
+<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
+</email>
+<ok to="fail" />
+<error to="fail" />
+</action>
+<kill name="fail">
+<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+</kill>
+<end name="end" />
+</workflow-app>

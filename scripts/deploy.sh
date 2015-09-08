@@ -1,7 +1,14 @@
 #!/bin/bash
 
+
+NUM_MACHINES=$1
+
+
+sudo pip install quik 
 sudo su - oozie -c '/usr/hdp/current/oozie-server/bin/oozie-setup.sh sharelib create -fs /user/oozie/share/lib/' 
 libpath=`sudo su - oozie -c 'oozie admin -sharelibupdate' | grep sharelibDirNew | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'` #find out where is the sharelib
+python oozie/generators/workflowGenerator.py rpm $NUM_MACHINES conf/rpm_tables.conf oozie/templates/ oozie/workflows/rpm/
+python oozie/generators/workflowGenerator.py psa $NUM_MACHINES conf/psa_tables.conf oozie/templates/ oozie/workflows/psa/
 hadoop fs -copyFromLocal -f hql /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/workflows /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/standalone_jars/* /user/oozie/share/lib
