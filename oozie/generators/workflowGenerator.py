@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from quik import FileLoader
 import sys
+import os
 
 class Action(object):
 	def __init__(self, id, tableName, mapTasks, mapColumn, splitBy):
@@ -28,14 +29,14 @@ def getSubflows(conf_file, num_flows ):
 		objects = line.split("^")
 		action = None
 		subflow_id = i%num_flows
-		if len(objects)==2:
+		if len(objects)<=3:
 			action = Action(i, objects[0], objects[1], None, None)
 		if len(objects)==4:
 			if objects[2]=='--split-by':
 				action = Action(i, objects[0], objects[1], None, objects[3])
 			if objects[2]=='--map-column-hive':
 				action = Action(i, objects[0], objects[1], objects[3], None)
-		if len(objects)==6:
+		if len(objects)>=6:
 			if objects[2]=='--split-by':
 				action = Action(i, objects[0], objects[1], objects[5], objects[3])
 			if objects[4]=='--split-by':
@@ -51,6 +52,9 @@ num_subflows = int(sys.argv[2])
 sqoop_conf_file = sys.argv[3]
 templates_dir = sys.argv[4]
 output_dir = sys.argv[5]
+
+if not os.path.exists(output_dir):
+	os.makedirs(output_dir)
 
 print "Generating workflows for "+db_name+" with "+str(num_subflows)+" workflows"
 subflows = getSubflows(sqoop_conf_file, num_subflows)
@@ -72,6 +76,7 @@ context = Context(db_name, '/data/database/',None)
 template = loader.load_template("workflowTotal.xml.template")
 rendered_xml = template.render({'subflows': subflow_names, 'context':context},
                       loader=loader).encode('utf-8')
+
 
 output_subflow_file=open(output_dir+"/workflow.xml", "w")
 output_subflow_file.write(rendered_xml)
