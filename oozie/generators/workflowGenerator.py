@@ -52,8 +52,7 @@ sqoop_conf_file = sys.argv[3]
 templates_dir = sys.argv[4]
 output_dir = sys.argv[5]
 
-print "Generating workflows for "+db_name+" with "+str(num_subflows+" workflows"
-
+print "Generating workflows for "+db_name+" with "+str(num_subflows)+" workflows"
 subflows = getSubflows(sqoop_conf_file, num_subflows)
 subflow_names = []
 loader = FileLoader(templates_dir)

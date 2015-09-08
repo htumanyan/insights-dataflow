@@ -3,8 +3,7 @@
 
 NUM_MACHINES=$1
 
-
-sudo pip install quik 
+sudo easy_install  quik 
 sudo su - oozie -c '/usr/hdp/current/oozie-server/bin/oozie-setup.sh sharelib create -fs /user/oozie/share/lib/' 
 libpath=`sudo su - oozie -c 'oozie admin -sharelibupdate' | grep sharelibDirNew | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'` #find out where is the sharelib
 python oozie/generators/workflowGenerator.py rpm $NUM_MACHINES conf/rpm_tables.conf oozie/templates/ oozie/workflows/rpm/
@@ -17,7 +16,7 @@ hadoop fs -copyFromLocal -f oozie/sharelib/*  /user/oozie/share/lib/$libpath/
  hadoop fs -copyFromLocal /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/oozie-hive-site.xml
 sudo su - oozie -c 'oozie admin -sharelibupdate' #update the sharlib for realz
 sudo su - oozie -c 'oozie admin -shareliblist'|  grep 'hive-0.13'
-if   `sudo su - oozie -c 'oozie admin -shareliblist'|  grep 'hive-0.13'`
+if   `sudo su - oozie -c "oozie admin -shareliblist|  grep 'hive-0.13'"`
 then
 	echo '....sharelib deployed successfully...'
 else
