@@ -3,7 +3,6 @@ add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
-uncache table sales_report_cached;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,

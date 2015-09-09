@@ -1,4 +1,3 @@
-use insights;
 SET spark.sql.shuffle.partitions=6;
 INSERT OVERWRITE TABLE insights.inventory_report_cached  SELECT 
 V.id,
@@ -191,5 +190,4 @@ left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin ;
-
 SET spark.sql.shuffle.partitions=1;
