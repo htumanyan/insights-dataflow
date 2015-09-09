@@ -16,8 +16,8 @@ hadoop fs -copyFromLocal -f hql /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/workflows /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/standalone_jars/* /user/oozie/share/lib
 hadoop fs -copyFromLocal -f oozie/sharelib/*  /user/oozie/share/lib/$libpath/ 
- hadoop fs -copyFromLocal /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/hive-site.xml
- hadoop fs -copyFromLocal /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/oozie-hive-site.xml
+ hadoop fs -copyFromLocal -f /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/hive-site.xml
+ hadoop fs -copyFromLocal -f /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/oozie-hive-site.xml
 sudo su -m -l oozie -c 'oozie admin -sharelibupdate' #update the sharlib for real
 
 
