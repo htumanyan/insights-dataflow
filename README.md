@@ -97,4 +97,59 @@ in the case of new rows you have to make sure that the new rows are added to the
 
 In general, if the data is pushed from an external source and doesnt require pre-processing after loading, you dont need to change anything for oozie, since external tables are updated when the data changes on hdfs. However, if there is pre-processing required( as in case of vdm when we join options and packages), you have to create a new workflow.  
 
+in oozie/workflows/ create a new directory with the name of the db( e.g. manheim), and add a new workflow called workflow.xml. An example of a workflow with one action is
+```
+<workflow-app xmlns="uri:oozie:workflow:0.5" xmlns:sla="uri:oozie:sla:0.2" name="sqoop-wf">
+    <start to="vdm_vehicles_options_packages"/>
+	<action name="vdm_vehicles_options_packages">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/vdm/vdm_option_packages.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="endMain"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="failEmail">
+		<email xmlns="uri:oozie:email-action:0.1">
+			<to>${alertEmail}</to>
+			<subject>oozie job failure</subject>
+			<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
+		</email>
+		<ok to="fail" />
+		<error to="fail" />
+	</action>
+	<kill name="fail">
+		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<end name="endMain"/>
+	<sla:info>
+		<sla:nominal-time>${nominal_time}</sla:nominal-time>
+		<sla:should-start>${10 * MINUTES}</sla:should-start>
+		<sla:should-end>${30 * MINUTES}</sla:should-end>
+		<sla:max-duration>${30 * MINUTES}</sla:max-duration>
+		<sla:alert-events>duration_miss</sla:alert-events>
+		<sla:alert-contact>${alertEmail}</sla:alert-contact>
+	</sla:info>
+</workflow-app>
+```
+
+change the name of the action, and the path to the hql script. run the deploy.sh after any change to workflows and hqls for changes to take effect. 
+
 
