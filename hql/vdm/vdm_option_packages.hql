@@ -1,4 +1,4 @@
-use insights;
+use vdm;
 add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
 DROP FUNCTION IF EXISTS insights.to_map;
 CREATE FUNCTION  insights.to_map as "com.adaltas.UDAFToMap";

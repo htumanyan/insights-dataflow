@@ -12,5 +12,5 @@ db=$2
 
 current_time=`date -u +%FT%TZ`
 
-current_sharelib=`oozie admin -sharelibupdate | grep sharelibDirNew | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'`
-oozie job -config '`pwd`'/oozie/configs/standalone_jobs/'$db'.properties -run -Ddb_name=$db -Dcurrent_sharelib='$current_sharelib -Dnamenode-host=$NAMENODE_HOST -Dedgenode_host=$EDGENODE_HOST -Dsql_user=$SQL_USER -Dsql_pass=$SQL_PASS -Dnominal_time=$currrent_time 
+current_sharelib=`sudo -E -u oozie "oozie admin -sharelibupdate | grep sharelibDirNew | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'"`
+sudo -u oozie -E 'oozie job -config '`pwd`'/oozie/configs/standalone_jobs/'$db'.properties -run -Ddb_name=$db -Dcurrent_sharelib='$current_sharelib -Dnamenode-host=$NAMENODE_HOST -Dedgenode_host=$EDGENODE_HOST -Dsql_user=$SQL_USER -Dsql_pass=$SQL_PASS -Dnominal_time=$currrent_time 
