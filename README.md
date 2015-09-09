@@ -25,3 +25,18 @@ to  run a coordinator, run
 
 this will  run oozie jobs for a db at a given frequency in minutes
 
+both for coordinator and the standalone job, the script execution will print the oozie job id. 
+to check the status of the job, sudo to oozie, and run 
+
+oozie job -info \<job/coordinator id\>
+
+for a running job it will state the hadoop job id. to check the logs of the job in case of a failure, first run 
+
+hadoop job -logs \<hadoop job id\>
+
+find out the attempt id and run the command again 
+
+hadoop job -logs \<hadoop job id\> \<attempt id\>
+
+
+
