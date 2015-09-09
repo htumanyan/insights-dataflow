@@ -214,7 +214,15 @@ mmr.mmr_body as mmr_body,
 mmr.mmr_edition as mmr_edition,
 mmr.mmr_algorithm as mmr_algorithm,
 mmr.mmr_national_value as mmr_nationalvalue,
-mmr.mmr_national_sample_size as mmr_nationalsamplesize
+mmr.mmr_national_sample_size as mmr_nationalsamplesize,
+V.lease_start_date as rpm_lease_start_date,
+year(V.lease_start_date) as rpm_lease_start_year,
+month(V.lease_start_date) as rpm_lease_start_month,
+day(V.lease_start_date) as rpm_lease_start_day,
+V.lease_end_date as rpm_lease_end_date,
+year(V.lease_end_date) as rpm_lease_end_year,
+month(V.lease_end_date) as rpm_lease_end_month,
+day(V.lease_end_date) as rpm_lease_end_day
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 

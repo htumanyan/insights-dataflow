@@ -2,7 +2,7 @@
 
 
 NUM_MACHINES=`hadoop dfsadmin -report | grep "Live datanodes"| sed 's/.*(\([0-9]*\)):/\1/g'` #we assume that we have equal amount of node manangers and data nodes
-eche 'running deploy for '$NUM_MACHINES' nodes'
+echo 'running deploy for '$NUM_MACHINES' nodes'
 sudo easy_install  quik 
 sudo su -m -l oozie -c '/usr/hdp/current/oozie-server/bin/oozie-setup.sh sharelib create -fs /user/oozie/share/lib/' 
 libpath=`sudo su -m -l oozie -c "oozie admin -sharelibupdate | grep sharelibDirNew | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'"` #find out where is the sharelib
