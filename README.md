@@ -46,6 +46,18 @@ find out the attempt id and run the command again
 hadoop job -logs <hadoop job id> <attempt id>
 ```
 
+before you launch coordinators, is a good idea to run each of the jobs at least once, to seed the database. run them in this order
+
+```
+./scripts/launch_standalone.sh rpm
+./scripts/launch_standalone.sh vdm hive
+./scripts/launch_standalone.sh mmr
+./scripts/launch_standalone.sh insights
+```
+
+after each run, check that the job completed before running the next one.
+
+
 # adding new tables and databases
 
 To add a new table and database, you need to write a hql script that will create the database. an example of a script that creates a external table is vdm.options,located in hql/vdm/options.hql
