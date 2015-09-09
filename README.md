@@ -15,13 +15,13 @@ this script will create the necessary hive databases and tables for static datab
 
 to launch stanadlong oozie jobs, run 
 
-./scripts/launch_stanalone.sh <db_name> [hive] 
+./scripts/launch_stanalone.sh \<db_name\> [hive] 
 
 this will run the oozie injestion for a single run. currently  you can run ingestions for vdm, rpm, insights and manheim. You can  add the hive parameter to make the job run  through usual mapreduce hive, instead of spark. This is preferrable for vdm and other long running joins. 
 
 to  run a coordinator, run 
 
-./scripts/launch_coordinator.sh <db_name> <frequency> 
+./scripts/launch_coordinator.sh \<db_name\> \<frequency\> 
 
 this will  run oozie jobs for a db at a given frequency in minutes
 
