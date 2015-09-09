@@ -1,5 +1,5 @@
 <workflow-app xmlns="uri:oozie:workflow:0.5" xmlns:sla="uri:oozie:sla:0.2" name="sqoop-wf">
-    <start to="inventory_procedure"/>
+    <start to="inventory-procedure"/>
 	<action name="inventory-procedure">
 		<hive2 xmlns="uri:oozie:hive2-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
