@@ -1,6 +1,5 @@
-use vdm;
-drop  table if exists options;
-CREATE EXTERNAL TABLE `options`(
+drop  table if exists vdm.options;
+CREATE EXTERNAL TABLE `vdm.options`(
 `b_vehicle_id` string,
 `vb_model_year` string,
 `vb_make` string,

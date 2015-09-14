@@ -47,6 +47,31 @@
 			<script>/user/oozie/share/hql/insights/sales_cached.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
+		<ok to="mainheim-insert"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="manheim-insert">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/manheim/insert.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
 		<ok to="cache_tables"/>
 		<error to="failEmail"/>
 	</action>
