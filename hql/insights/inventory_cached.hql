@@ -182,7 +182,9 @@ day(V.lease_start_date) as rpm_lease_start_day,
 V.lease_end_date as rpm_lease_end_date,
 year(V.lease_end_date) as rpm_lease_end_year,
 month(V.lease_end_date) as rpm_lease_end_month,
-day(V.lease_end_date) as rpm_lease_end_day
+day(V.lease_end_date) as rpm_lease_end_day,
+unix_timestamp(V.lease_start_date, 'yyyy-MM-dd') as rpm_lease_start_ts,
+unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
