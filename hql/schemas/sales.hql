@@ -150,6 +150,14 @@ CREATE  TABLE `sales_report_cached`(
 `mmr_edition` string,
 `mmr_algorithm` string,
 `mmr_national_value` string,
-`mmr_national_sample_size` int
+`mmr_national_sample_size` int,
+`rpm_lease_start_date` string,
+`rpm_lease_start_year` int,
+`rpm_lease_start_month` int,
+`rpm_lease_start_day` int,
+`rpm_lease_end_date` string,
+`rpm_lease_end_year` int,
+`rpm_lease_end_month` int,
+`rpm_lease_end_day` int
 );
  

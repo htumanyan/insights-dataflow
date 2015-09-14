@@ -26,7 +26,7 @@
 				<arg>--password</arg>
 				<arg>${sqlPass}</arg>
 				<arg>--table</arg>
-				<arg>account_snapshots</arg>
+				<arg>@{action.table_name}</arg>
 				<arg>--warehouse-dir=@{context.warehouse_dir}/@{context.db_name}/</arg>
 				<arg>-m</arg>
 				<arg>@action.map_tasks</arg>

@@ -1,18 +1,19 @@
 #!/bin/bash 
 
 db=$1 
-hive_port=130001
+hive_port=13001
 
-if [$2 = 'hive' ] 
+echo $2
+if [ 'hive' == $2 ] 
 then
-$hive_port=10000
+	hive_port=10000
 fi
 
-NAMENODE_HOST='dev-na-lxhdn01.cloudapp.net'
-EDGENODE_HOST='dev-na-LXHDE01'
-SQL_SERVER_HOST='dev-na-LXHDE01'
-MYSQL_HOST='dev-na-LXHDE01'
-JDBC_URL='jdbc:mysql://dev-na-LXHDE01/rpm'
+NAMENODE_HOST='stg-na-lxhdn01.cloudapp.net'
+EDGENODE_HOST='stg-na-LXHDE01'
+SQL_SERVER_HOST='stg-na-LXHDE01'
+MYSQL_HOST='stg-na-LXHDE01'
+JDBC_URL='jdbc:mysql://stg-na-LXHDE01/rpm'
 SQL_USER='insights'
 SQL_PASS='M@ins3a'
 

@@ -68,7 +68,7 @@
 					<value>hive-0.13</value>
 				</property>
 			</configuration>
-			<jdbc-url>${hive2Url}</jdbc-url>
+			<jdbc-url>${sparkUrl}</jdbc-url>
 			<script>/user/oozie/share/hql/insights/cache_tables.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
