@@ -14,6 +14,7 @@ sudo chown -R oozie /home/oozie/insights-dataflow/oozie
 
 hadoop fs -copyFromLocal -f hql /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/workflows /user/oozie/share
+hadoop fs -copyFromLocal -f oozie/coordinators /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/standalone_jars/* /user/oozie/share/lib
 hadoop fs -copyFromLocal -f oozie/sharelib/*  /user/oozie/share/lib/$libpath/ 
  hadoop fs -copyFromLocal /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/hive-site.xml

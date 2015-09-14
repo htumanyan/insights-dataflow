@@ -16,4 +16,4 @@ echo $current_time
 
 current_sharelib=`sudo su -m -l oozie -c"oozie admin -sharelibupdate" | grep 'sharelibDirNew' | sed 's/.*oozie\/share\/lib\/\(.*\)/\1/'`
 echo 'current sharelib '$current_sharelib
-sudo su -m -l oozie -c "oozie job -config /home/oozie/insights-dataflow/oozie/configs/coordinators/coordinator.properties -run -Ddb_name=$db -Dcurrent_sharelib=$current_sharelib -Dnamenode_host=$NAMENODE_HOST -Dedgenode_host=$EDGENODE_HOST -Dsql_user=$SQL_USER -Dsql_pass=$SQL_PASS -Dnominal_time=$current_time -Dfrequency=$2"
+sudo su -m -l oozie -c "oozie job -config /home/oozie/insights-dataflow/oozie/configs/coordinators/coordinator.properties -run -Ddb_name=$db -Dcurrent_sharelib=$current_sharelib -Dnamenode_host=$NAMENODE_HOST -Dedgenode_host=$EDGENODE_HOST -Dsql_user=$SQL_USER -Dsql_pass=$SQL_PASS -Dstart_time=$current_time -Dfrequency=$2"
