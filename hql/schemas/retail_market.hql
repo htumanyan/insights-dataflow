@@ -1,12 +1,12 @@
-use vauto;
+use insights;
  add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/parquet-hive-bundle-1.6.0.jar ;
-DROP TABLE IF EXISTS vauto_recent_market_data;
-CREATE EXTERNAL TABLE IF NOT EXISTS vauto_recent_market_data
-(
+drop table IF EXISTS retail_market_cached;
+CREATE  TABLE IF NOT EXISTS `retail_market_cached`
+(      
 vin                             STRING,
 postal_code                     INT,
 stock_number                    STRING,
-model_year                      INT,
+modelyear                      INT,
 make                            STRING,
 model                           STRING,
 series                          STRING,
@@ -16,31 +16,31 @@ new_used                        STRING,
 is_certified                    INT,
 body_description                STRING,
 body_type                       STRING,
-body_door_count                 INT,
+number_of_doors                 INT,
 body_cab_style                  STRING,
 body_bed_style                  STRING,
 body_roof_style                 STRING,
 engine_description              STRING,
 engine_cylinder_count           INT,
 engine_displacement             FLOAT,
-engine_fuel_type                STRING,
+engine_fuel_type_desct                STRING,
 transmission_description        STRING,
 transmission_type               STRING,
 transmission_gear_count         INT,
 drive_train_type                STRING,
-exterior_color                  STRING,
+exteriorcolour                  STRING,
 exterior_base_color             STRING,
 interior_description            STRING,
 interior_color                  STRING,
 interior_material               STRING,
 categorized_equipment_ids       STRING,
-days_ininventory                INT,
+stockageweeks                   INT,
 veh_segment                     STRING,
 veh_type                        STRING,
-created                         STRING,
-last_seen                       STRING
+market_created                         BIGINT,
+market_last_seen                       BIGINT,
+sales_last_seen                 BIGINT,
+issold                         INT
 )
-COMMENT 'This table is for vAuto data source Recent Market Data daily files'
-STORED AS PARQUET 
-LOCATION  '/data/database/vauto/vauto_recent_market_data_nopart/'
-;
+STORED AS PARQUET;
+                                                     
