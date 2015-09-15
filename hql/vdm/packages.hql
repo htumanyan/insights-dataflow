@@ -17,5 +17,5 @@ CREATE EXTERNAL TABLE `packages`(
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\n'
 STORED AS TEXTFILE
-LOCATION '/data/database/vdm/packages/*.dsv'
+LOCATION '/data/database/vdm/packages/'
 tblproperties ("skip.header.line.count"="1");

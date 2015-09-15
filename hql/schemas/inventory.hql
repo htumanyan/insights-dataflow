@@ -122,7 +122,7 @@ drop table if exists inventory_report_cached;
 `rpm_lease_end_date` string,
 `rpm_lease_end_year` int,
 `rpm_lease_end_month` int,
-`rpm_lease_end_day` int
+`rpm_lease_end_day` int,
 `rpm_lease_start_ts` bigint,
 `rpm_lease_end_ts` bigint
 
