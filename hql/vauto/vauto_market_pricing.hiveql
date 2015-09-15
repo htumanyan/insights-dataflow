@@ -17,9 +17,13 @@ count                           INT,
 avg_odometer_adjustment         INT,
 avg_list_price                  INT
 )
-
 COMMENT 'This table is for vAuto data source Market Pricing daily files'
+PARTITIONED BY (
+  `theyear` smallint,
+  `themonth` smallint,
+  `theday` smallint
+)
 STORED AS PARQUET 
-LOCATION  '/data/database/vauto/vauto_market_pricing_nopart/'
+LOCATION  '/data/database/vauto/vauto_market_pricing/'
 ;
 
