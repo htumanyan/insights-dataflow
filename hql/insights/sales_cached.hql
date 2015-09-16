@@ -1,9 +1,8 @@
 use insights;
- add jar hdfs://rmsus-lxhdn01.cloudapp.net:8020/user/oozie/share/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
+add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
 DROP FUNCTION IF EXISTS to_map;
-CREATE FUNCTION  to_map as "com.adaltas.UDAFToMap";
+CREATE FUNCTION IF NOT EXISTS to_map as "com.adaltas.UDAFToMap";
 SET spark.sql.shuffle.partitions=6;
-uncache table sales_report_cached;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
@@ -108,7 +107,6 @@ month(P.date_of_purchase) as soldmonth,
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN '501 - 750'
            WHEN AD.repair_cost >=750 AND AD.repair_cost <100000 THEN 'over 750'
       end as damagesBandName,
-
       case WHEN AD.repair_cost >=0 AND AD.repair_cost <100 THEN 0
            WHEN AD.repair_cost >=100 AND AD.repair_cost <500 THEN 1
            WHEN AD.repair_cost >=500 AND AD.repair_cost <750 THEN 2
@@ -216,7 +214,18 @@ mmr.mmr_body as mmr_body,
 mmr.mmr_edition as mmr_edition,
 mmr.mmr_algorithm as mmr_algorithm,
 mmr.mmr_national_value as mmr_nationalvalue,
-mmr.mmr_national_sample_size as mmr_nationalsamplesize
+mmr.mmr_national_sample_size as mmr_nationalsamplesize,
+V.lease_start_date as rpm_lease_start_date,
+year(V.lease_start_date) as rpm_lease_start_year,
+month(V.lease_start_date) as rpm_lease_start_month,
+day(V.lease_start_date) as rpm_lease_start_day,
+V.lease_end_date as rpm_lease_end_date,
+year(V.lease_end_date) as rpm_lease_end_year,
+month(V.lease_end_date) as rpm_lease_end_month,
+day(V.lease_end_date) as rpm_lease_end_day,
+unix_timestamp(V.lease_start_date, 'yyy-mm-dd') as rpm_lease_start_ts,
+unix_timestamp(V.lease_end_date, 'yyy-mm-dd') as rpm_lease_end_ts
+
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
@@ -225,6 +234,5 @@ left join mmr.sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
-left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin;
-cache table sales_report_cached;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
 SET spark.sql.shuffle.partitions=1;

@@ -1,4 +1,3 @@
-use insights;
 SET spark.sql.shuffle.partitions=6;
 INSERT OVERWRITE TABLE insights.inventory_report_cached  SELECT 
 V.id,
@@ -175,14 +174,22 @@ vdmv.ev_invoice_wholesale as vdm_ev_invoice_wholesale,
 vdmv.vb_created_timestamp as vdm_vb_created_timestamp,
 vdmv.vb_created_by as vdm_vb_created_by,
 vdmv.vb_last_update_timestamp as vdm_vb_last_update_timestamp,
-vdmv.vb_last_update_by as vdm_vb_last_update_by
-
+vdmv.vb_last_update_by as vdm_vb_last_update_by,
+V.lease_start_date as rpm_lease_start_date,
+year(V.lease_start_date) as rpm_lease_start_year,
+month(V.lease_start_date) as rpm_lease_start_month,
+day(V.lease_start_date) as rpm_lease_start_day,
+V.lease_end_date as rpm_lease_end_date,
+year(V.lease_end_date) as rpm_lease_end_year,
+month(V.lease_end_date) as rpm_lease_end_month,
+day(V.lease_end_date) as rpm_lease_end_day,
+unix_timestamp(V.lease_start_date, 'yyyy-MM-dd') as rpm_lease_start_ts,
+unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
  inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id
-left join insights.vdm_options_packages vdmo on v.vin = vdmo.vin ;
-
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin ;
 SET spark.sql.shuffle.partitions=1;

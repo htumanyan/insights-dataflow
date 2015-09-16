@@ -25,7 +25,7 @@
 				</property>
 				<property>
 					<name>oozie.libpath</name>
-					<value>${libpath}</value>
+					<value>${libPath}</value>
 				</property>
 			</configuration>
 		</workflow>

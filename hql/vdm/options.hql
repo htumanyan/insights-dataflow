@@ -19,5 +19,5 @@ CREATE EXTERNAL TABLE `options`(
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'  lines terminated by '\n'
 STORED AS TEXTFILE
-LOCATION '/data/database/vdm/options/*.dsv'
+LOCATION '/data/database/vdm/options/'
 tblproperties ("skip.header.line.count"="1");
