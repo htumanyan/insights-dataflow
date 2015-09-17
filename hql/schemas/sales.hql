@@ -160,6 +160,22 @@ CREATE  TABLE `sales_report_cached`(
 `rpm_lease_end_month` int,
 `rpm_lease_end_day` int,
 `rpm_lease_start_ts` bigint,
-`rpm_lease_end_ts` bigint
+`rpm_lease_end_ts` bigint,
+`polk_corporation` string,
+`polk_report_year_month` string,
+`polk_transaction_date` string,
+`polk_transaction_ts` bigint,
+`polk_trans_price`  int,
+`polk_data_type` string,
+`polk_origin` string ,
+`polk_purchase_lease` string,
+`polk_vehicle_count` int,
+`polk_dealer_name` string,
+`polk_dealer_address` string,
+`polk_dealer_town` string,
+`polk_dealer_state` string,
+`polk_dealer_zip` string,
+`polk_dealer_dma` string,
+`polk_fran_ind` string 
 );
  
