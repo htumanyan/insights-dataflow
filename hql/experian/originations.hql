@@ -10,7 +10,7 @@
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"HONDA"|"PILOT"|"CUV - MID RANGE"|"36"|"Jan2015"|"1"|"1"
 
 use experian;
-add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+add jar ${hivevar:NameNode}/user/oozie/share/lib/hive-serde.jar ;
 drop  table if exists originations_stg;
 CREATE EXTERNAL TABLE `originations_stg`(
 `state_abbr` string,
