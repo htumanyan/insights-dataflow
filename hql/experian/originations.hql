@@ -52,8 +52,12 @@ CREATE TABLE `originations`(
 `lease_maturity_date` string ,
 `matched_cnt` int ,
 `estimated_market_cnt` int,
-`reporting_period_ts` timestamp,
-`lease_maturity_date_ts` timestamp
+`reporting_period_ts` int,
+`reporting_period_year` int,
+`reporting_period_month` int,
+`lease_maturity_date_ts` int,
+`lease_maturity_date_year` int,
+`lease_maturity_date_month` int
 );
 
 INSERT INTO TABLE originations SELECT
@@ -68,8 +72,12 @@ INSERT INTO TABLE originations SELECT
   lease_maturity_date,
   matched_cnt,
   estimated_market_cnt,
-  unix_timestamp(reporting_period, "yyyyMM") * 1000,
-  unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000
+  unix_timestamp(reporting_period, "yyyyMM"),
+  year(cast(unix_timestamp(reporting_period, "yyyyMM") * 1000 as timestamp)),
+  month(cast(unix_timestamp(reporting_period, "yyyyMM") * 1000 as timestamp)),
+  unix_timestamp(lease_maturity_date, "MMMyyyy"),
+  year(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
+  month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp))
 FROM originations_stg;
 
 drop table originations_stg;
