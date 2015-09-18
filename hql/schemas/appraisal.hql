@@ -1,3 +1,9 @@
+--
+-- Hive script to create the appraisal table that tracks market price information from various sources 
+--
+-- Hovhannes Tumanyan (hovhannes@nus.la)
+-- 
+use insights;
 drop table IF EXISTS appraisal;
 CREATE  TABLE IF NOT EXISTS `appraisal`
 (      
@@ -10,7 +16,6 @@ mileage                         INT,
 series                          STRING,
 segment                         STRING COMMENT 'Vehicle segment, Ex: COMPACT, LUXURY SUV etc.',
 series_detail                   STRING,
-new_used                        STRING,
 is_certified                    INT,
 body_description                STRING,
 body_type                       STRING,
@@ -44,7 +49,8 @@ country_code                    STRING,
 latitude                        DOUBLE,
 longitude                       DOUBLE,
 submarket                       STRING,
-sample_date                     BIGINT  COMMENT 'The date when appraisal took place',
+sample_date                     BIGINT  COMMENT 'The date when appraisal took place as a string',
+sample_date_ts                  BIGINT  COMMENT 'The date when appraisal took place as a timestamp',
 sample_size                     INT     COMMENT 'The size of the sample used for appraisal. Not always available',
 value                           INT     COMMENT 'Appraised value',
 algorithm                       STRING  COMMENT 'Textual identifier or description of the algorithm - some sources provide it',
@@ -53,4 +59,3 @@ source_type                     TINYINT COMMENT '1 - retail, 2 - wholesale'
 )
 COMMENT 'Captures vehicle appraisal information from various sources. Some of the sources are wholesale, while others are retail. This is a consolidated table that tracks them all and allows arbitrary selection of specific appraisal source or specific kind of source (wholesale vs. retail vs. anything else)'
 STORED AS PARQUET;
-                                                     
