@@ -40,7 +40,18 @@ veh_type                        STRING,
 market_created                         BIGINT,
 market_last_seen                       BIGINT,
 sales_last_seen                 BIGINT,
-issold                         INT
+issold                          INT,
+geo_dma_durable_key             STRING,
+geo_dma_code                    STRING,
+geo_dma_desc                    STRING,
+geo_city                        STRING,
+geo_state_code                  STRING,
+geo_county                      STRING,
+geo_country_code                STRING,
+geo_latitude                    DOUBLE,
+geo_longitude                   DOUBLE,
+geo_submarket                   STRING,
+geo_tim_zone_desc               STRING
 )
 STORED AS PARQUET;
                                                      

@@ -36,6 +36,18 @@ rm.veh_type                        ,
 unix_timestamp(rm.created, 'dd/mm/yyyy hh:mm:ss aaa')  as market_created                         ,
 unix_timestamp(rm.last_seen, 'dd/mm/yyyy hh:mm:ss aaa') as market_last_seen                         ,
 unix_timestamp(s.last_seen, 'dd/mm/yyyy hh:mm:ss aaa') as sales_last_seen, 
-case when  s.vin is not null then 1 else 0 end as issold 
-from  vauto.vauto_recent_market_data rm  left  join 
-vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin;
+case when  s.vin is not null then 1 else 0 end as issold,
+g.dma_durable_key as geo_dma_durable_key,
+g.dma_code as geo_dma_code,
+g.dma_desc as geo_dma_desc,
+g.city as geo_city,
+g.state_code as geo_state_code,
+g.county as geo_county,
+g.country_code as geo_country_code,
+g.latitude as geo_latitude,
+g.longitude as geo_longitude,
+g.submarket as geo_submarket,
+g.tim_zone_desc as geo_tim_zone_desc
+from vauto.vauto_recent_market_data rm  
+left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
+left join at.geo g on rm.postal_code = g.zip_code;
