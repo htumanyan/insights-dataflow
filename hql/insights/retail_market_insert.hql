@@ -1,4 +1,4 @@
-INSERT INTO insights.retail_market_cached SELECT 
+INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
 rm.stock_number                    ,
