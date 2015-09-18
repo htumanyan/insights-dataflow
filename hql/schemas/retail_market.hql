@@ -1,4 +1,5 @@
 use insights;
+ add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/parquet-hive-bundle-1.6.0.jar ;
 drop table IF EXISTS retail_market_cached;
 CREATE  TABLE IF NOT EXISTS `retail_market_cached`
 (      
@@ -33,14 +34,23 @@ interior_description            STRING,
 interior_color                  STRING,
 interior_material               STRING,
 categorized_equipment_ids       STRING,
-stockagedays                    INT,
+stockageweeks                   INT,
 veh_segment                     STRING,
 veh_type                        STRING,
-stockageweeks                   INT,
 market_created                         BIGINT,
 market_last_seen                       BIGINT,
 sales_last_seen                 BIGINT,
-issold                         INT,
+issold                          INT,
+geo_dma_durable_key             STRING,
+geo_dma_code                    STRING,
+geo_dma_desc                    STRING,
+geo_city                        STRING,
+geo_state_code                  STRING,
+geo_county                      STRING,
+geo_country_code                STRING,
+geo_latitude                    DOUBLE,
+geo_longitude                   DOUBLE,
+geo_submarket                   STRING,
+geo_tim_zone_desc               STRING
 )
 STORED AS PARQUET;
-                                                     
