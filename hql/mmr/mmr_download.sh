@@ -2,15 +2,15 @@
 
 Today=`date +"%Y%m%d"`
 Yesterday=`date --date='1 day ago' + %Y%m%d`
-Filename='INTS_MMR_OUTPUT_'
+Filename=$1
 Filetype='.csv'
 TodayFile=$Filename$Today$Filetype
 YesterdayFile=$Filename$Yesterday'.no_head'$Filetype
-Server='mft.manheim.com'
-User='rms_insights_mmr'
-LDirectory='/mnt/resource/'
-RDirectory='Inbox/MMR/'
-Password='rm$instsmm9'
+Server=$2
+User=$3
+LDirectory=$4
+RDirectory=$5
+Password=$6
 
 ftp -n $Server <<End-Of-Session
 user $User $Password
