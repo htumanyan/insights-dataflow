@@ -45,14 +45,8 @@
 					<value>${queueName}</value>
 				</property>
 			</configuration>
-			<exec>${mmrUploadShellScript}</exec>
-			<argument>${uploadFilename}</argument>
-			<argument>${uploadServer}</argument>
-			<argument>${uploadUser}</argument>
-			<argument>${uploadLDirectory}</argument>
-			<argument>${uploadRDirectory}</argument>
-			<argument>${uploadPassword}</argument>
-			<file>${mmrUploadPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
+			<exec>mmr_upload.sh</exec>
+			<file>/user/oozie/share/hql/mmr/mmr_upload.sh#mmr_upload.sh</file>
 			<capture-output/>
 		</shell>
 		<ok to="endMain"/>

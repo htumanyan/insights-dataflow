@@ -10,14 +10,8 @@
 					<value>${queueName}</value>
 				</property>
 			</configuration>
-			<exec>${mmrDownloadShellScript}</exec>
-			<argument>${downloadFilename}</argument>
-			<argument>${downloadServer}</argument>
-			<argument>${downloadUser}</argument>
-			<argument>${downloadLDirectory}</argument>
-			<argument>${downloadRDirectory}</argument>
-			<argument>${downloadPassword}</argument>
-			<file>${mmrDownloadPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
+			<exec>mmr_download.sh</exec>
+			<file>/user/oozie/share/hql/mmr/mmr_download.sh#mmr_download.sh</file>
 			<capture-output/>
 		</shell>
 		<ok to="endMain"/>
