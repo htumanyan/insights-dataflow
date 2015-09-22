@@ -22,6 +22,31 @@
 			<script>/user/oozie/share/hql/insights/inventory_cached.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
+		<ok to="retail-market-procedure"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="retail-market-procedure">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/insights/retail_market_insert.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
 		<ok to="sales-procedure"/>
 		<error to="failEmail"/>
 	</action>
