@@ -184,12 +184,29 @@ year(V.lease_end_date) as rpm_lease_end_year,
 month(V.lease_end_date) as rpm_lease_end_month,
 day(V.lease_end_date) as rpm_lease_end_day,
 unix_timestamp(V.lease_start_date, 'yyyy-MM-dd') as rpm_lease_start_ts,
-unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts
+unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts,
+pv.corporation as polk_corporation,
+pv.report_year_month as polk_report_year_month,
+pv.transaction_date as polk_transaction_date,
+unix_timestamp(pv.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
+pv.trans_price as polk_trans_price,
+pv.data_type as polk_data_type,
+pv.origin as polk_origin,
+pv.purchase_lease as polk_purchase_lease,
+pv.vehicle_count as polk_vehicle_count,
+pv.dealer_name as polk_dealer_name,
+pv.dealer_address as polk_dealer_address,
+pv.dealer_town as polk_dealer_town,
+pv.dealer_state as polk_dealer_state,
+pv.dealer_zip as polk_dealer_zip,
+pv.dealer_dma as polk_dealer_dma,
+pv.fran_ind as polk_fran_ind
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
  inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin ;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
+left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
 SET spark.sql.shuffle.partitions=1;

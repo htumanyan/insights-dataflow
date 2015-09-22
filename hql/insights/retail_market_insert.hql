@@ -1,4 +1,4 @@
-INSERT INTO insights.retail_market_cached SELECT 
+INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
 rm.stock_number                    ,
@@ -50,4 +50,4 @@ g.submarket as geo_submarket,
 g.tim_zone_desc as geo_tim_zone_desc
 from vauto.vauto_recent_market_data rm  
 left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
-left join at.geo g on rm.postal_code = g.zip_code;
+left join at.geo g on rm.postal_code = cast(g.zip_code as int);
