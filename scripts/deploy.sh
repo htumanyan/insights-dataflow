@@ -12,6 +12,8 @@ sudo mkdir -p /home/oozie/insights-dataflow/oozie/
 sudo cp -r oozie/configs /home/oozie/insights-dataflow/oozie/
 sudo chown -R oozie /home/oozie/insights-dataflow/oozie
 
+hadoop fs -mkdir /data/database/3rd_party/dma_bnd/
+hadoop fs -copyFromLocal data/dma_bnd4.csv /data/database/3rd_party/dma_bnd/dma_bnd.csv
 hadoop fs -copyFromLocal -f hql /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/workflows /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/coordinators /user/oozie/share
