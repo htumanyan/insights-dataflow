@@ -5,7 +5,7 @@ Yesterday=`date --date='1 day ago' +%Y%m%d`
 Filename=$1
 Filetype='.csv'
 TodayFile=$Filename$Today$Filetype
-YesterdayFile=$Filename$Yesterday'.no_head'$Filetype
+YesterdayFile=$Filename$Yesterday'.noquote'$Filetype
 Server=$2
 User=$3
 LDirectory=$4
@@ -21,8 +21,8 @@ bye
 End-Of-Session
 
 cd $LDirectory
-if sed '1d' $TodayFile > $Filename$Today'.nohead'$Filetype ; then
-    if hdfs dfs -put -f $Filename$Today'.nohead'$Filetype /data/database/mmr/ ; then
+if sed -e '1d' -e 's/\"//g' $TodayFile > $Filename$Today'.noquote'$Filetype ; then
+    if hdfs dfs -put -f $Filename$Today'.noquote'$Filetype /data/database/mmr/ ; then
         hdfs dfs -rm /data/database/mmr/$YesterdayFile
     else
         echo "hdfs put failed"
@@ -31,4 +31,4 @@ else
     echo "file editing failed"
 fi
 rm $TodayFile
-rm $Filename$Today'.nohead'$Filetype
+rm $Filename$Today'.noquote'$Filetype
