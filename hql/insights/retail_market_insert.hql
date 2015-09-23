@@ -1,4 +1,4 @@
-INSERT INTO insights.retail_market_cached SELECT 
+INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
 rm.stock_number                    ,
@@ -30,13 +30,24 @@ rm.interior_description            ,
 rm.interior_color                  ,
 rm.interior_material               ,
 rm.categorized_equipment_ids       ,
-rm.days_ininventory as stockagedays,
+rm.days_ininventory                ,
 rm.veh_segment                     ,
 rm.veh_type                        ,
-floor(rm.days_ininventory/7) as stockageweeks,
 unix_timestamp(rm.created, 'dd/mm/yyyy hh:mm:ss aaa')  as market_created                         ,
 unix_timestamp(rm.last_seen, 'dd/mm/yyyy hh:mm:ss aaa') as market_last_seen                         ,
 unix_timestamp(s.last_seen, 'dd/mm/yyyy hh:mm:ss aaa') as sales_last_seen, 
-case when  s.vin is not null then 1 else 0 end as issold 
-from  vauto.vauto_recent_market_data rm  left  join 
-vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin;
+case when  s.vin is not null then 1 else 0 end as issold,
+g.dma_durable_key as geo_dma_durable_key,
+g.dma_code as geo_dma_code,
+g.dma_desc as geo_dma_desc,
+g.city as geo_city,
+g.state_code as geo_state_code,
+g.county as geo_county,
+g.country_code as geo_country_code,
+g.latitude as geo_latitude,
+g.longitude as geo_longitude,
+g.submarket as geo_submarket,
+g.tim_zone_desc as geo_tim_zone_desc
+from vauto.vauto_recent_market_data rm  
+left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
+left join at.geo g on rm.postal_code = cast(g.zip_code as int);

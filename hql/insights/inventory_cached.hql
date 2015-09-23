@@ -188,7 +188,7 @@ unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts,
 pv.corporation as polk_corporation,
 pv.report_year_month as polk_report_year_month,
 pv.transaction_date as polk_transaction_date,
-pv.transaction_ts as polk_transaction_ts,
+unix_timestamp(pv.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
 pv.trans_price as polk_trans_price,
 pv.data_type as polk_data_type,
 pv.origin as polk_origin,
@@ -208,5 +208,5 @@ left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join 3rd_party.polk_filtered pf on pf.vin = v.vin;
+left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
 SET spark.sql.shuffle.partitions=1;
