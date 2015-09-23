@@ -1,7 +1,7 @@
 #!/bin/bash
 
 Today=`date +"%Y%m%d"`
-Yesterday=`date --date='1 day ago' + %Y%m%d`
+Yesterday=`date --date='1 day ago' +%Y%m%d`
 Filename=$1
 Filetype='.csv'
 TodayFile=$Filename$Today$Filetype
@@ -20,6 +20,15 @@ get $TodayFile
 bye
 End-Of-Session
 
-sed '1d' $TodayFile > $Filename$Today'.nohead'$Filetype
-hdfs dfs -put $Filename$Today'.nohead'$Filetype /data/database/mmr/
-hdfs dfs -rm $YesterdayFile /data/database/mmr/
+cd $LDirectory
+if sed '1d' $TodayFile > $Filename$Today'.nohead'$Filetype ; then
+    if hdfs dfs -put -f $Filename$Today'.nohead'$Filetype /data/database/mmr/ ; then
+        hdfs dfs -rm /data/database/mmr/$YesterdayFile
+    else
+        echo "hdfs put failed"
+    fi
+else
+    echo "file editing failed"
+fi
+rm $TodayFile
+rm $Filename$Today'.nohead'$Filetype

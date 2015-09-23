@@ -49,7 +49,7 @@
 			<argument>${uploadFilename}</argument>
 			<argument>${uploadServer}</argument>
 			<argument>${mmrUser}</argument>
-			<argument>${uploadLDirectory}</argument>
+			<argument>${mmrLDirectory}</argument>
 			<argument>${uploadRDirectory}</argument>
 			<argument>${uploadPassword}</argument>
 			<file>${mmrPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
@@ -72,7 +72,7 @@
 			<argument>${downloadFilename}</argument>
 			<argument>${downloadServer}</argument>
 			<argument>${mmrUser}</argument>
-			<argument>${downloadLDirectory}</argument>
+			<argument>${mmrLDirectory}</argument>
 			<argument>${downloadRDirectory}</argument>
 			<argument>${downloadPassword}</argument>
 			<file>${mmrPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
