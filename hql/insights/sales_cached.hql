@@ -240,7 +240,19 @@ pv.dealer_town as polk_dealer_town,
 pv.dealer_state as polk_dealer_state,
 pv.dealer_zip as polk_dealer_zip,
 pv.dealer_dma as polk_dealer_dma,
-pv.fran_ind as polk_fran_ind
+pv.fran_ind as polk_fran_ind,
+g.dma_durable_key as geo_dma_durable_key,
+g.dma_code as geo_dma_code,
+g.dma_desc as geo_dma_desc,
+g.city as geo_city,
+g.state_code as geo_state_code,	
+g.county as geo_county,
+g.country_code as geo_country_code,
+g.latitude as geo_latitude,
+g.longitude as geo_longitude,
+g.submarket as geo_submarket,
+g.tim_zone_desc as geo_tim_zone_desc,
+g.dma_id as geo_dma_id
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
@@ -251,4 +263,5 @@ join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at))
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
+left join at.geo g on g.zip_code = pv.dealer_zip;
 SET spark.sql.shuffle.partitions=1;
