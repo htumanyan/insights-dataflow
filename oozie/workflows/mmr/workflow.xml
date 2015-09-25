@@ -51,7 +51,7 @@
 			<argument>${mmrUser}</argument>
 			<argument>${mmrLDirectory}</argument>
 			<argument>${uploadRDirectory}</argument>
-			<argument>${uploadPassword}</argument>
+			<argument>${mmrPassword}</argument>
 			<file>${mmrPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
 			<capture-output/>
 		</shell>
@@ -74,7 +74,7 @@
 			<argument>${mmrUser}</argument>
 			<argument>${mmrLDirectory}</argument>
 			<argument>${downloadRDirectory}</argument>
-			<argument>${downloadPassword}</argument>
+			<argument>${mmrPassword}</argument>
 			<file>${mmrPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
 			<capture-output/>
 		</shell>
