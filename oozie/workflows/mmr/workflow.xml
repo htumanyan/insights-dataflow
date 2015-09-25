@@ -47,7 +47,7 @@
 			</configuration>
 			<exec>${mmrUploadShellScript}</exec>
 			<argument>${uploadFilename}</argument>
-			<argument>${uploadServer}</argument>
+			<argument>${mmrServer}</argument>
 			<argument>${mmrUser}</argument>
 			<argument>${mmrLDirectory}</argument>
 			<argument>${uploadRDirectory}</argument>
@@ -70,7 +70,7 @@
 			</configuration>
 			<exec>${mmrDownloadShellScript}</exec>
 			<argument>${downloadFilename}</argument>
-			<argument>${downloadServer}</argument>
+			<argument>${mmrServer}</argument>
 			<argument>${mmrUser}</argument>
 			<argument>${mmrLDirectory}</argument>
 			<argument>${downloadRDirectory}</argument>
