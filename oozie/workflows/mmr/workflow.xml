@@ -45,8 +45,37 @@
 					<value>${queueName}</value>
 				</property>
 			</configuration>
-			<exec>mmr_upload.sh</exec>
-			<file>/user/oozie/share/hql/mmr/mmr_upload.sh#mmr_upload.sh</file>
+			<exec>${mmrUploadShellScript}</exec>
+			<argument>${uploadFilename}</argument>
+			<argument>${mmrServer}</argument>
+			<argument>${mmrUser}</argument>
+			<argument>${mmrLDirectory}</argument>
+			<argument>${uploadRDirectory}</argument>
+			<argument>${mmrPassword}</argument>
+			<file>${mmrPath}${mmrUploadShellScript}#${mmrUploadShellScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="mmr-download-flow"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="mmr-download-flow">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${mmrDownloadShellScript}</exec>
+			<argument>${downloadFilename}</argument>
+			<argument>${mmrServer}</argument>
+			<argument>${mmrUser}</argument>
+			<argument>${mmrLDirectory}</argument>
+			<argument>${downloadRDirectory}</argument>
+			<argument>${mmrPassword}</argument>
+			<file>${mmrPath}${mmrDownloadShellScript}#${mmrDownloadShellScript}</file>
 			<capture-output/>
 		</shell>
 		<ok to="endMain"/>

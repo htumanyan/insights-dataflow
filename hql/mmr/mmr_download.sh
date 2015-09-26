@@ -1,25 +1,34 @@
 #!/bin/bash
 
 Today=`date +"%Y%m%d"`
-Yesterday=`date --date='1 day ago' + %Y%m%d`
-Filename='INTS_MMR_OUTPUT_'
+Yesterday=`date --date='1 day ago' +%Y%m%d`
+Filename=$1
 Filetype='.csv'
 TodayFile=$Filename$Today$Filetype
-YesterdayFile=$Filename$Yesterday.no_head$Filetype
-Server='mft.manheim.com'
-User='rms_insights_mmr'
-LDirectory='/mnt/resource/'
-EDirectory='Inbox/MMR/'
-Password='rm$instsmm9'
+YesterdayFile=$Filename$Yesterday'.noquote'$Filetype
+Server=$2
+User=$3
+LDirectory=$4
+RDirectory=$5
+Password=$6
 
 ftp -n $Server <<End-Of-Session
 user $User $Password
-cd $EDirectory
+cd $RDirectory
 lcd $LDirectory
 get $TodayFile
 bye
 End-Of-Session
 
-sed '1d' $TodayFile > $Filename$Today.nohead$Filetype
-hdfs dfs -put $Filename$Today.nohead$Filetype /data/database/mmr/
-hdfs dfs -rm $YesterdayFile /data/database/mmr/
+cd $LDirectory
+if sed -e '1d' -e 's/\"//g' $TodayFile > $Filename$Today'.noquote'$Filetype ; then
+    if hdfs dfs -put -f $Filename$Today'.noquote'$Filetype /data/database/mmr/ ; then
+        hdfs dfs -rm /data/database/mmr/$YesterdayFile
+    else
+        echo "hdfs put failed"
+    fi
+else
+    echo "file editing failed"
+fi
+rm $TodayFile
+rm $Filename$Today'.noquote'$Filetype
