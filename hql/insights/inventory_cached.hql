@@ -201,6 +201,22 @@ pv.dealer_state as polk_dealer_state,
 pv.dealer_zip as polk_dealer_zip,
 pv.dealer_dma as polk_dealer_dma,
 pv.fran_ind as polk_fran_ind,
+CASE WHEN AVL.id IS NOT NULL THEN AVL.address1
+     WHEN L.id IS NOT NULL THEN L.address1
+     ELSE NULL
+END rpm_vehicle_address,
+CASE WHEN AVL.id IS NOT NULL THEN AVL.city
+     WHEN L.id IS NOT NULL THEN L.city
+     ELSE NULL
+END rpm_vehicle_city,
+CASE WHEN AVL.id IS NOT NULL THEN AVL.state
+     WHEN L.id IS NOT NULL THEN L.state
+     ELSE NULL
+END rpm_vehicle_state,
+CASE WHEN AVL.id IS NOT NULL THEN AVL.zipcode
+     WHEN L.id IS NOT NULL THEN L.zip
+     ELSE NULL
+END rpm_vehicle_zip,
 g.dma_durable_key as geo_dma_durable_key,
 g.dma_code as geo_dma_code,
 g.dma_desc as geo_dma_desc,
@@ -212,14 +228,16 @@ g.latitude as geo_latitude,
 g.longitude as geo_longitude,
 g.submarket as geo_submarket,
 g.tim_zone_desc as geo_tim_zone_desc,
-g.dma_id as geo_dma_id
+g.dma_id as geo_dma_id 
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
- inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
+ inner join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number 
- left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
-left join at.geo g on g.zip_code = pv.dealer_zip;
+ left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin 
+left join 3rd_party.polk_filtered pv on pv.vin = v.vin 
+left join rpm.aim_vehicle_locations_stg AVL on V.id=AVL.aim_vehicle_id 
+left join rpm.leases_stg L on V.id=L.vehicle_id 
+left join at.geo g on (g.zip_code=AVL.zipcode or g.zip_code=L.zip);
 SET spark.sql.shuffle.partitions=1;
