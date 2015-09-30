@@ -228,7 +228,7 @@ g.latitude as geo_latitude,
 g.longitude as geo_longitude,
 g.submarket as geo_submarket,
 g.tim_zone_desc as geo_tim_zone_desc,
-g.dma_id as geo_dma_id 
+g.dma_id as geo_dma_id
 FROM rpm.vehicles_stg V 
  inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
@@ -239,5 +239,7 @@ left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join 3rd_party.polk_filtered pv on pv.vin = v.vin 
 left join rpm.aim_vehicle_locations_stg AVL on V.id=AVL.aim_vehicle_id 
 left join rpm.leases_stg L on V.id=L.vehicle_id 
-left join at.geo g on (g.zip_code=AVL.zipcode or g.zip_code=L.zip);
+left join at.geo g on (CASE WHEN V.id=AVL.aim_vehicle_id then g.zip_code=AVL.zipcode
+   WHEN  V.id=L.vehicle_id then g.zip_code=L.zip
+   END);
 SET spark.sql.shuffle.partitions=1;

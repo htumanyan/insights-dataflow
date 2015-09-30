@@ -159,4 +159,3 @@ drop table if exists inventory_report_cached;
 `geo_dma_id` smallint
 );
 
-
