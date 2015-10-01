@@ -50,6 +50,7 @@ geo_country_code                STRING,
 geo_latitude                    DOUBLE,
 geo_longitude                   DOUBLE,
 geo_submarket                   STRING,
-geo_tim_zone_desc               STRING
+geo_tim_zone_desc               STRING,
+geo_dma_id                      SMALLINT
 )
 STORED AS PARQUET;

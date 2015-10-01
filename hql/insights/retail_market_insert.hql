@@ -47,7 +47,8 @@ g.country_code as geo_country_code,
 g.latitude as geo_latitude,
 g.longitude as geo_longitude,
 g.submarket as geo_submarket,
-g.tim_zone_desc as geo_tim_zone_desc
+g.tim_zone_desc as geo_tim_zone_desc,
+g.dma_id as geo_dma_id
 from vauto.vauto_recent_market_data rm  
 left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
 left join at.geo g on rm.postal_code = cast(g.zip_code as int);
