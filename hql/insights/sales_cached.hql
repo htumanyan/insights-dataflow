@@ -30,7 +30,7 @@ P.purchase_price as sold_price,
 0 as buyerid, 
 'n/a' as buyercode,
 0 as deliverylocation,
-case when P.status='Sold' or P.status='Sold Upstream' then 'Y' else 'N' end as activesale,
+case when V.status='Sold' or V.status='Sold Upstream' then 'Y' else 'N' end as activesale,
 coalesce(vdmv.vb_model, V.model, mmr.mmr_model) as model,
 'n/a' as code,
 coalesce(cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
@@ -241,27 +241,34 @@ pv.dealer_state as polk_dealer_state,
 pv.dealer_zip as polk_dealer_zip,
 pv.dealer_dma as polk_dealer_dma,
 pv.fran_ind as polk_fran_ind,
-g.dma_durable_key as geo_dma_durable_key,
-g.dma_code as geo_dma_code,
-g.dma_desc as geo_dma_desc,
-g.city as geo_city,
-g.state_code as geo_state_code,	
-g.county as geo_county,
-g.country_code as geo_country_code,
-g.latitude as geo_latitude,
-g.longitude as geo_longitude,
-g.submarket as geo_submarket,
-g.tim_zone_desc as geo_tim_zone_desc,
-g.dma_id as geo_dma_id
+coalesce(AVL.address1, L.address1) as rpm_vehicle_address,
+coalesce(AVL.city, L.city) as rpm_vehicle_city,
+coalesce(AVL.state, L.state) as rpm_vehicle_state,
+coalesce(AVL.zipcode, L.zip) as rpm_vehicle_zip,
+coalesce(GEO1.dma_durable_key, GEO2.dma_durable_key) as geo_dma_durable_key,
+coalesce(GEO1.dma_code, GEO2.dma_code) as geo_dma_code,
+coalesce(GEO1.dma_desc, GEO2.dma_desc) as geo_dma_desc,
+coalesce(GEO1.city, GEO2.city) as geo_city,
+coalesce(GEO1.state_code, GEO2.state_code) as geo_state_code,
+coalesce(GEO1.county, GEO2.county) as geo_county,
+coalesce(GEO1.country_code, GEO2.country_code) as geo_country_code,
+coalesce(GEO1.latitude, GEO2.latitude) as latitude,
+coalesce(GEO1.longitude, GEO2.longitude) as geo_longitude,
+coalesce(GEO1.submarket, GEO2.submarket) as geo_submarket,
+coalesce(GEO1.tim_zone_desc, GEO2.tim_zone_desc) as geo_tim_zone_desc,
+coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join mmr.sales mmr on V.vin = mmr.m_vin
+left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
+left join rpm.aim_vehicle_locations_stg AVL on V.id=AVL.aim_vehicle_id
+left join at.geo GEO1 on GEO1.zip_code=Substring(AVL.zipcode, 1, 5) 
+left join rpm.leases_stg L on V.id=L.vehicle_id
+left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
-left join at.geo g on g.zip_code = pv.dealer_zip;
 SET spark.sql.shuffle.partitions=1;
