@@ -1,3 +1,9 @@
+--
+-- Hive script to populate the appraisals table from various sources
+-- (vAuto, Manheim, MMR etc.)
+--
+-- Hovhannes Tumanyan (hovhannes@nus.la)
+-- 
 INSERT INTO TABLE
     insights.appraisal
 SELECT
@@ -8,7 +14,7 @@ SELECT
     va.model         as    model,
     NULL             as    mileage,
     va.series        as    series,
-    NULL             as    segment,
+    sm.segment       as    segment,
     NULL             as    series_detail,
     NULL             as    is_certified,
     NULL             as    body_description,
@@ -44,7 +50,7 @@ SELECT
     NULL             as    latitude,
     NULL             as    submarket,
     printf("%d-%d-%d", theyear, themonth, theday) as sample_date,
-    unix_timestamp("yyyy-MM-dd", printf("%d-%d-%d", theyear, themonth, theday)) as sample_date_ts,
+    unix_timestamp( printf("%d-%02d-%d", theyear, themonth, theday), "yyyy-MM-dd") as sample_date_ts,
     va.count                 as sample_size,
     va.avg_list_price        as value,
     NULL                     as algorithm,
@@ -52,6 +58,8 @@ SELECT
     1                        as source_type
 FROM
     vauto.vauto_market_pricing va
+LEFT JOIN 
+    insights.segment_map sm ON va.make = sm.make and va.model = sm.model
 WHERE
     va.avg_list_price is not NULL
 ;

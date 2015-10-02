@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS 3rd_party.polk;
 CREATE EXTERNAL TABLE 3rd_party.polk(
   `data_type` STRING, 
   `vin` STRING, 
@@ -44,5 +45,5 @@ PARTITIONED BY (
   `year` smallint, 
   `month` smallint)
 STORED AS PARQUET
-LOCATION '/data/database/2rd_party/polk'
+LOCATION '/data/database/3rd_party/polk'
 ;
