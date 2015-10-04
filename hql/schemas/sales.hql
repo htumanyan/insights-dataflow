@@ -176,6 +176,22 @@ CREATE  TABLE `sales_report_cached`(
 `polk_dealer_state` string,
 `polk_dealer_zip` string,
 `polk_dealer_dma` string,
-`polk_fran_ind` string 
+`polk_fran_ind` string,
+`rpm_vehicle_address` string,
+`rpm_vehicle_city` string,
+`rpm_vehicle_state` string,
+`rpm_vehicle_zip` string,
+`geo_dma_durable_key` string,
+`geo_dma_code` string,
+`geo_dma_desc` string,
+`geo_city` string,
+`geo_state_code` string,
+`geo_county` string,
+`geo_country_code` string,
+`geo_latitude` double,
+`geo_longitude` double,
+`geo_submarket` string,
+`geo_tim_zone_desc` string,
+`geo_dma_id` smallint
 );
  
