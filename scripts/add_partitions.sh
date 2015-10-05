@@ -16,7 +16,7 @@ CLIENT_CMD=$HIVE_CLIENT_CMD
 CLIENT_PORT=$HIVE_CLIENT_PORT
 
 
-while getopts ":e:s:h:t:d:l:" opt; do
+while getopts ":e:sh:t:d:l:" opt; do
   case $opt in
     s)
       CLIENT_CMD=$SPARK_CLIENT_CMD
@@ -52,6 +52,19 @@ fi
 
 CLIENT_CMD_WITH_OPTS="$CLIENT_CMD --silent -u jdbc:hive2://$namenode_host:$CLIENT_PORT" 
 
+
+if [ -z "${table_name}" ]
+then
+  echo "Please, provide the table name with -t option"
+  exit 1
+fi
+
+if [ -z "${namenode_host}" ]
+then
+  echo "Please, provide the Name Node host name wwith -h option"
+  exit 1
+fi
+
 if [ ! -z "$db_name" ]
 then
   QUALIFIED_TABLE_NAME="${db_name}.${table_name}"
@@ -61,7 +74,13 @@ fi
 
 if [ -z "$TABLE_LOCATION" ]
 then
-  TABLE_LOCATION=`$CLIENT_CMD_WITH_OPTS -e "describe formatted $QUALIFIED_TABLE_NAME" 2>/dev/null | grep Location | awk -F '|' '{print $3}' |  sed -r 's|hdfs://.*[0-9]+(.*)|\1|g' | tr -d ' '`
+  TABLE_LOCATION=`$CLIENT_CMD_WITH_OPTS -e "describe formatted $QUALIFIED_TABLE_NAME" 2>/dev/null | grep Location | sed -rn 's|.*\shdfs://.*:[0-9]+(.*)\s.*|\1|p' | tr -d '[[:space:]]'`
+fi
+
+if [ -z "$TABLE_LOCATION" ]
+then
+  echo "Can't find the data location for $QUALIFIED_TABLE_NAME. Please, provide it with -l option"
+  exit 1
 fi
 
 echo "Adding partitions for $QUALIFIED_TABLE_NAME from $TABLE_LOCATION"
