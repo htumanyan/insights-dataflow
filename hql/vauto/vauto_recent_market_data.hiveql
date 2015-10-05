@@ -40,6 +40,11 @@ created                         STRING,
 last_seen                       STRING
 )
 COMMENT 'This table is for vAuto data source Recent Market Data daily files'
+PARTITIONED BY (
+  `theyear` smallint,
+  `themonth` smallint,
+  `theday` smallint)
+
 STORED AS PARQUET 
 LOCATION  '/data/database/vauto/vauto_recent_market_data/'
 ;

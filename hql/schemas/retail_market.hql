@@ -43,6 +43,7 @@ issold                          INT,
 geo_dma_durable_key             STRING,
 geo_dma_code                    STRING,
 geo_dma_desc                    STRING,
+geo_dma_id                      SMALLINT,
 geo_city                        STRING,
 geo_state_code                  STRING,
 geo_county                      STRING,
@@ -50,6 +51,18 @@ geo_country_code                STRING,
 geo_latitude                    DOUBLE,
 geo_longitude                   DOUBLE,
 geo_submarket                   STRING,
-geo_tim_zone_desc               STRING
+geo_tim_zone_desc               STRING,
+polk_dealer_dma                 STRING,
+polk_dealer_dma_durable_key                 STRING,
+polk_dealer_dma_id                      SMALLINT,
+polk_reg_dma                    STRING,
+polk_reg_dma_durable_key                 STRING,
+polk_reg_dma_id                      SMALLINT,
+polk_report_year_month          STRING,
+polk_report_year                STRING,
+polk_report_month               STRING,
+polk_purchase_lease             STRING 
+=======
+>>>>>>> cf0d3acc579dc9d5d2443351d6b22c5a2c028a0d
 )
 STORED AS PARQUET;
