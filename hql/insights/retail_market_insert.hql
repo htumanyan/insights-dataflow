@@ -1,3 +1,4 @@
+
 INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
@@ -30,7 +31,7 @@ rm.interior_description            ,
 rm.interior_color                  ,
 rm.interior_material               ,
 rm.categorized_equipment_ids       ,
-rm.days_ininventory                ,
+coalesce(s.days_ininventory, rm.days_ininventory)                ,
 rm.veh_segment                     ,
 rm.veh_type                        ,
 unix_timestamp(rm.created, 'dd/mm/yyyy hh:mm:ss aaa')  as market_created                         ,
@@ -47,7 +48,18 @@ g.country_code as geo_country_code,
 g.latitude as geo_latitude,
 g.longitude as geo_longitude,
 g.submarket as geo_submarket,
-g.tim_zone_desc as geo_tim_zone_desc
+g.tim_zone_desc as geo_tim_zone_desc,
+pg2.dma_code as polk_dealer_dma_code,
+pg2.dma_durable_key as polk_reg_dealer_durable_key,
+pg1.dma_code as polk_reg_dma_code,
+pg1.dma_durable_key as polk_reg_dma_durable_key,
+p.report_year_month as polk_report_year_month,
+substr(p.report_year_month, 0, 4) as polk_report_year,
+substr(p.report_year_month, 5 ,2) as polk_report_month,
+p.purchase_lease as polk_purchase_lease
 from vauto.vauto_recent_market_data rm  
 left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
-left join at.geo g on rm.postal_code = cast(g.zip_code as int);
+left join at.geo g on rm.postal_code = cast(g.zip_code as int)
+left join 3rd_party.polk_filtered p on p.vin = rm.vin
+left join at.geo pg1 on cast(p.reg_zip as int) = cast(pg1.zip_code as int)
+left join at.geo pg2 on cast(p.dealer_zip as int) = cast(pg2.zip_code as int);

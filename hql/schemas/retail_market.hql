@@ -50,6 +50,14 @@ geo_country_code                STRING,
 geo_latitude                    DOUBLE,
 geo_longitude                   DOUBLE,
 geo_submarket                   STRING,
-geo_tim_zone_desc               STRING
+geo_tim_zone_desc               STRING,
+polk_dealer_dma                 STRING,
+polk_dealer_dma_durable_key                 STRING,
+polk_reg_dma                    STRING,
+polk_reg_dma_durable_key                 STRING,
+polk_report_year_month          STRING,
+polk_report_year                STRING,
+polk_report_month               STRING,
+polk_purchase_lease             STRING 
 )
 STORED AS PARQUET;
