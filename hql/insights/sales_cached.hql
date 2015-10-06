@@ -2,7 +2,7 @@ use insights;
 add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION to_map as "com.adaltas.UDAFToMap";
-SET spark.sql.shuffle.partitions=6;
+SET spark.sql.shuffle.partitions=24;
 INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
@@ -256,15 +256,49 @@ coalesce(GEO1.latitude, GEO2.latitude) as latitude,
 coalesce(GEO1.longitude, GEO2.longitude) as geo_longitude,
 coalesce(GEO1.submarket, GEO2.submarket) as geo_submarket,
 coalesce(GEO1.tim_zone_desc, GEO2.tim_zone_desc) as geo_tim_zone_desc,
-coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id
+coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id,
+ NULL as ovt_reg_pur_amt,
+ NULL as ovt_reg_at_sale_nat_mmr,
+ NULL as ovt_reg_gross_txn_flg,
+ NULL as ovt_reg_offrng_flg,
+ NULL as ovt_reg_offered_cnt,
+ NULL as ovt_reg_check_in_ts,
+ NULL as ovt_reg_preview_ts,
+ NULL as ovt_reg_act_offrng_start,
+ NULL as ovt_reg_act_offrng_end,
+ NULL as ovt_reg_auction_key,
+ NULL as ovt_reg_pur_type_key,
+ NULL as ovt_reg_at_reg_nat_mmr,
+ NULL as ovt_reg_at_reg_rgn_mmr,
+ NULL as ovt_reg_gross_pur_amt,
+ NULL as ovt_reg_buyer_fees_amt,
+ NULL as ovt_reg_net_seller_amt,
+ NULL as ovt_reg_arbitrated_amt,
+ NULL as ovt_reg_reg_cr_grade,
+ NULL as ovt_reg_reg_cr_grade,
+ NULL as ovt_reg_offrng_cr_grade,
+ NULL as ovt_reg_mmr_mileage_adj_amt,
+ NULL as ovt_reg_ireg_to_sale_days,
+ NULL as ovt_reg_ireg_to_ioffrng_days,
+ NULL as ovt_reg_ireg_to_ipreview_days,
+ NULL as ovt_reg_icheck_in_to_sale_days,
+ NULL as ovt_reg_icheck_in_to_ioffrng_days,
+ NULL as ovt_reg_icheck_in_to_ipreview_days,
+ NULL as ovt_reg_auction_format,
+ NULL as ovt_reg_seller_fees_amt,
+ NULL as ovt_reg_seller_tax_amt,
+ NULL as ovt_reg_seller_adjust_amt,
+ NULL as ovt_reg_buyer_tax_amt,
+ NULL as ovt_reg_buyer_adjust_amt,
+ NULL as ovt_reg_reg_cr_grade
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join mmr.sales mmr on V.vin = mmr.m_vin
 left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
 left join rpm.aim_vehicle_locations_stg AVL on V.id=AVL.aim_vehicle_id
-left join at.geo GEO1 on GEO1.zip_code=Substring(AVL.zipcode, 1, 5) 
 left join rpm.leases_stg L on V.id=L.vehicle_id
+left join at.geo GEO1 on GEO1.zip_code=Substring(AVL.zipcode, 1, 5) 
 left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
