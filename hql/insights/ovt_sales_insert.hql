@@ -9,7 +9,7 @@ coalesce(vdmv.vb_make, mmr.mmr_make) as make,
 abs(hash(vdmv.ev_trim)) as derivativeid,
 'n/a' as registrationdate,
  vdmv.vb_ext_color_generic_descr as exteriorcolour,
-ovt_reg.reg_ts  as creationdate, //todo
+unix_timestamp(ovt_reg.reg_ts)  as creationdate,
 0 as salechannelid,
 'n/a' as salechannel,
 seller_cust.cur_cust_nm as vendortradingname,
@@ -30,7 +30,7 @@ buyer_cust.cust_name as buyercode,
 case when ovt_reg.sold_ts is NULL  then 'Y' else 'N' end as activesale,
 coalesce(vdmv.vb_model,  mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(cast(vdmv.vb_.model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
 vdmv.ev_model_id as model_code,
 ovt_reg.vehicle_mileage_cnt,
 ovt_reg.ireg_to_sale_days  as daysonsale,
@@ -195,32 +195,32 @@ NULL as polk_dealer_town,
 NULL as polk_dealer_state,
 NULL as polk_dealer_zip,
 NULL as polk_dealer_dma,
-NULL as polk_fran_ind
+NULL as polk_fran_ind,
 NULL as rpm_vehicle_address,
 NULL as rpm_vehicle_city,
 NULL as rpm_vehicle_state,
 NULL as rpm_vehicle_zip,
-coalesce(GEO1.dma_durable_key, GEO2.dma_durable_key) as geo_dma_durable_key,
-coalesce(GEO1.dma_code, GEO2.dma_code) as geo_dma_code,
-coalesce(GEO1.dma_desc, GEO2.dma_desc) as geo_dma_desc,
-coalesce(GEO1.city, GEO2.city) as geo_city,
-coalesce(GEO1.state_code, GEO2.state_code) as geo_state_code,
-coalesce(GEO1.county, GEO2.county) as geo_county,
-coalesce(GEO1.country_code, GEO2.country_code) as geo_country_code,
-coalesce(GEO1.latitude, GEO2.latitude) as latitude,
-coalesce(GEO1.longitude, GEO2.longitude) as geo_longitude,
-coalesce(GEO1.submarket, GEO2.submarket) as geo_submarket,
-coalesce(GEO1.tim_zone_desc, GEO2.tim_zone_desc) as geo_tim_zone_desc,
-coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id,
+GEO1.dma_durable_key as geo_dma_durable_key,
+GEO1.dma_code as geo_dma_code,
+GEO1.dma_desc as geo_dma_desc,
+GEO1.city as geo_city,
+GEO1.state_code as geo_state_code,
+GEO1.county as geo_county,
+GEO1.country_code as geo_country_code,
+GEO1.latitude as latitude,
+GEO1.longitude as geo_longitude,
+GEO1.submarket as geo_submarket,
+GEO1.tim_zone_desc as geo_tim_zone_desc,
+GEO1.dma_id as geo_dma_id,
 cast(ovt_reg.pur_amt as int) as pur_amt,
 cast(ovt_reg.at_sale_nat_mmr as int) as at_sale_nat_mmr,
 ovt_reg.gross_txn_flg as gross_txn_flg,
 ovt_reg.offrng_flg as offrng_flg,
 ovt_reg.offered_cnt as offered_cnt,
-ovt_reg.check_in_ts as unix_timestamp(check_in_ts)
-ovt_reg.preview_ts as unix_timestamp(preview_ts),
-ovt_reg.act_offrng_start1_ts as unix_timestamp(act_offrng_start1_ts),
-ovt_reg.act_offrng_end1_ts as unix_timestamp(act_offrng_end1_ts),
+ unix_timestamp(check_in_ts),
+ unix_timestamp(preview_ts),
+ unix_timestamp(act_offrng_start1_ts),
+ unix_timestamp(act_offrng_end1_ts),
 ovt_reg.auction_key as auction_key,
 ovt_reg.pur_type_key as pur_type_key,
 ovt_reg.at_reg_nat_mmr as at_reg_nat_mmr,
@@ -245,14 +245,14 @@ ovt_reg.seller_tax_amt as seller_tax_amt,
 ovt_reg.seller_adjust_amt as seller_adjust_amt,
 ovt_reg.buyer_tax_amt as buyer_tax_amt,
 ovt_reg.buyer_adjust_amt as buyer_adjust_amt,
-ovt_reg.reg_cr_grade as reg_cr_grade,
+ovt_reg.reg_cr_grade as reg_cr_grade
 from 
 ovt.man_ovt_fact_registration ovt_reg 
-left join at.geo GEO1 on GEO1.zip_code=Substring(AVL.zipcode, 1, 5) 
-left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
-join ovt.man_ovt_dim_customer buyer_cust on  on ovt_reg.buyer_cust_key = buyer_cust.cust_key
-join ovt.man_ovt_dim_customer seller_cust on on ovt_reg.seller_cust_key = seller_cust.cust_key
+join ovt.man_ovt_dim_customer buyer_cust on ovt_reg.buyer_cust_key = buyer_cust.cust_key
+join ovt.man_ovt_dim_customer seller_cust on  ovt_reg.seller_cust_key = seller_cust.cust_key
+join ovt.man_ovt_dim_auction auction on auction.auction_key = ovt_reg.auction_key
+left join at.geo GEO1 on GEO1.zip_code=Substring(auction.zip_cd, 1, 5) 
+left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
 left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
-left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
-ovt_reg.
+left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin;
 SET spark.sql.shuffle.partitions=1;
