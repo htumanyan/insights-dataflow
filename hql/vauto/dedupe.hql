@@ -1,3 +1,4 @@
+drop table if exists vauto.vauto_sold_market_vehicle_dedup;
 CREATE TABLE vauto.vauto_sold_market_vehicle_dedup  AS SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
@@ -76,6 +77,7 @@ last_seen,
 row_number() over ( partition by vin,created order by unix_timestamp(created, 'dd/mm/yyyy hh:mm:ss aaa')  desc ) group_rank 
 from vauto.vauto_sold_market_vehicle  ) rm  where rm.group_rank=1;
 
+drop table if exists  vauto.vauto_recent_market_data_dedup;
 CREATE TABLE vauto.vauto_recent_market_data_dedup  AS SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
