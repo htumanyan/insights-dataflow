@@ -1,13 +1,15 @@
 use insights;
+set mapreduce.input.fileinputformat.split.maxsize=34396550;
+set  hive.auto.convert.join=false;
 INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 p.vin                             ,
 p.reg_zip                    ,
 NULL                    ,
-rm.model_year                      ,
+vdmv.vb_model_year                      ,
 p.make                            ,
 p.model                           ,
 p.series                          ,
-p.series_detail                   ,
+p.sub_series                   ,
 p.odometer                        ,
 NULL                         ,
 NULL                    ,
@@ -19,21 +21,21 @@ NULL                  ,
 NULL                 ,
 vdmv.ev_engine_type             ,
 p.cylinders           ,
-vmdv.ev_engine_displacement             ,
+vdmv.ev_engine_displacement             ,
 p.fuel_type                ,
 vdmv.ev_transmission        ,
 NULL               ,
-rm.transmission_gear_count         ,
+NULL,
 vdmv.ev_drivetrain                ,
-vdmv.vb_ext_color_generic_descr                  ,
-vdmv.vb_ext_color_generic_descr           ,
-NULL            ,
-vdmv.vb_int_color_mfr_description                  ,
-NULL              ,
-NULL       ,
-NULL
-p.segment                     ,
-p.vehicle_type                        ,
+vdmv.vb_ext_color_generic_descr,
+vdmv.vb_ext_color_generic_descr,
+NULL,
+vdmv.vb_int_color_mfr_description,
+NULL,
+NULL,
+NULL,
+p.segment,
+p.vehicle_type,
 NULL,
 NULL,
 NULL,
@@ -77,6 +79,6 @@ p.fran_ind as polk_fran_ind,
 1 as source_id 
 from 3rd_party.polk_dedup p 
 left join vdm.vehicles vdmv on p.vin = vdmv.vb_vin
-left join at.geo g on rm.postal_code = cast(g.zip_code as int)
+left join at.geo g on p.reg_zip = cast(g.zip_code as int)
 left join at.geo pg1 on cast(p.reg_zip as int) = cast(pg1.zip_code as int)
 left join at.geo pg2 on cast(p.dealer_zip as int) = cast(pg2.zip_code as int);
