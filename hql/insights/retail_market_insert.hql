@@ -1,4 +1,4 @@
-
+use insights;
 INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
@@ -41,7 +41,7 @@ case when  s.vin is not null then 1 else 0 end as issold,
 g.dma_durable_key as geo_dma_durable_key,
 g.dma_code as geo_dma_code,
 g.dma_desc as geo_dma_desc,
-g.dma_id as geo_dma_id
+g.dma_id as geo_dma_id,
 g.city as geo_city,
 g.state_code as geo_state_code,
 g.county as geo_county,
@@ -50,7 +50,6 @@ g.latitude as geo_latitude,
 g.longitude as geo_longitude,
 g.submarket as geo_submarket,
 g.tim_zone_desc as geo_tim_zone_desc,
-<<<<<<< HEAD
 pg2.dma_code as polk_dealer_dma_code,
 pg2.dma_durable_key as polk_deale_dmar_durable_key,
 pg2.dma_id as polk_dealer_dma_id,
@@ -60,10 +59,25 @@ pg1.dma_id as polk_reg_dma_id,
 p.report_year_month as polk_report_year_month,
 substr(p.report_year_month, 0, 4) as polk_report_year,
 substr(p.report_year_month, 5 ,2) as polk_report_month,
-p.purchase_lease as polk_purchase_lease
-from vauto.vauto_recent_market_data rm  
-left join vauto.vauto_sold_market_vehicle s  on  rm.vin = s.vin
+p.purchase_lease as polk_purchase_lease,
+p.corporation as polk_corporation,
+p.transaction_date as polk_transaction_date,
+unix_timestamp(p.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
+p.trans_price as polk_trans_price,
+p.data_type as polk_data_type,
+p.origin as polk_origin,
+p.vehicle_count as polk_vehicle_count,
+p.dealer_name as polk_dealer_name,
+p.dealer_address as polk_dealer_address,
+p.dealer_town as polk_dealer_town,
+p.dealer_state as polk_dealer_state,
+p.dealer_zip as polk_dealer_zip,
+p.fran_ind as polk_fran_ind,
+'vauto' as source_name,
+0 as source_id 
+from vauto.vauto_recent_market_data_dedup rm  
+left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created
 left join at.geo g on rm.postal_code = cast(g.zip_code as int)
-left join 3rd_party.polk_filtered p on p.vin = rm.vin
+left join 3rd_party.polk_dedup p on p.vin = rm.vin and p.transaction_date =  from_unixtime(unix_timestamp(s.created, 'MM/dd/yyyy hh:mm:ss a'), 'yyyyMMdd')  
 left join at.geo pg1 on cast(p.reg_zip as int) = cast(pg1.zip_code as int)
 left join at.geo pg2 on cast(p.dealer_zip as int) = cast(pg2.zip_code as int);

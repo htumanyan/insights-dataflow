@@ -2,8 +2,8 @@ use insights;
 add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
 DROP FUNCTION IF EXISTS to_map;
 CREATE FUNCTION to_map as "com.adaltas.UDAFToMap";
-SET spark.sql.shuffle.partitions=24;
-INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
+SET spark.sql.shuffle.partitions=6;
+INSERT OVERWRITE TABLE insights.sales_report_cached_stg SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
  'n/a' as registration,
@@ -240,67 +240,50 @@ pv.dealer_town as polk_dealer_town,
 pv.dealer_state as polk_dealer_state,
 pv.dealer_zip as polk_dealer_zip,
 pv.dealer_dma as polk_dealer_dma,
-pv.fran_ind as polk_fran_ind,
-coalesce(AVL.address1, L.address1) as rpm_vehicle_address,
-coalesce(AVL.city, L.city) as rpm_vehicle_city,
-coalesce(AVL.state, L.state) as rpm_vehicle_state,
-coalesce(AVL.zipcode, L.zip) as rpm_vehicle_zip,
-coalesce(GEO1.dma_durable_key, GEO2.dma_durable_key) as geo_dma_durable_key,
-coalesce(GEO1.dma_code, GEO2.dma_code) as geo_dma_code,
-coalesce(GEO1.dma_desc, GEO2.dma_desc) as geo_dma_desc,
-coalesce(GEO1.city, GEO2.city) as geo_city,
-coalesce(GEO1.state_code, GEO2.state_code) as geo_state_code,
-coalesce(GEO1.county, GEO2.county) as geo_county,
-coalesce(GEO1.country_code, GEO2.country_code) as geo_country_code,
-coalesce(GEO1.latitude, GEO2.latitude) as latitude,
-coalesce(GEO1.longitude, GEO2.longitude) as geo_longitude,
-coalesce(GEO1.submarket, GEO2.submarket) as geo_submarket,
-coalesce(GEO1.tim_zone_desc, GEO2.tim_zone_desc) as geo_tim_zone_desc,
-coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id,
- NULL as ovt_reg_pur_amt,
- NULL as ovt_reg_at_sale_nat_mmr,
- NULL as ovt_reg_gross_txn_flg,
- NULL as ovt_reg_offrng_flg,
- NULL as ovt_reg_offered_cnt,
- NULL as ovt_reg_check_in_ts,
- NULL as ovt_reg_preview_ts,
- NULL as ovt_reg_act_offrng_start,
- NULL as ovt_reg_act_offrng_end,
- NULL as ovt_reg_auction_key,
- NULL as ovt_reg_pur_type_key,
- NULL as ovt_reg_at_reg_nat_mmr,
- NULL as ovt_reg_at_reg_rgn_mmr,
- NULL as ovt_reg_gross_pur_amt,
- NULL as ovt_reg_buyer_fees_amt,
- NULL as ovt_reg_net_seller_amt,
- NULL as ovt_reg_arbitrated_amt,
- NULL as ovt_reg_cr_grade_ts,
- NULL as ovt_reg_mmr_mileage_adj_amt,
- NULL as ovt_reg_ireg_to_sale_days,
- NULL as ovt_reg_ireg_to_ioffrng_days,
- NULL as ovt_reg_ireg_to_ipreview_days,
- NULL as ovt_reg_icheck_in_to_sale_days,
- NUL as ovt_reg_icheck_in_to_ioffrng_days,
- NULL as ovt_reg_icheck_in_to_ipreview_days,
- NULL as ovt_reg_auction_format,
- NULL as ovt_reg_seller_fees_amt,
- NULL as ovt_reg_seller_tax_amt,
- NULL as ovt_reg_seller_adjust_amt,
- NULL as ovt_reg_buyer_tax_amt,
- NULL as ovt_reg_buyer_adjust_amt,
- NULL as ovt_reg_reg_cr_grade
+pv.fran_ind as polk_fran_ind
+cast(ovt_reg.pur_amt as int) as pur_amt,
+cast(ovt_reg.at_sale_nat_mmr as int) as at_sale_nat_mmr,
+ovt_reg.gross_txn_flg as gross_txn_flg,
+ovt_reg.offrng_flg as offrng_flg,
+ovt_reg.offered_cnt as offered_cnt,
+ovt_reg.check_in_ts as check_in_ts,
+ovt_reg.preview_ts as preview_ts,
+ovt_reg.act_offrng_start1_ts as act_offrng_start1_ts,
+ovt_reg.act_offrng_end1_ts as act_offrng_end1_ts,
+ovt_reg.auction_key as auction_key,
+ovt_reg.pur_type_key as pur_type_key,
+ovt_reg.at_reg_nat_mmr as at_reg_nat_mmr,
+ovt_reg.at_reg_rgn_mmr as at_reg_rgn_mmr,
+ovt_reg.gross_pur_amt as gross_pur_amt,
+ovt_reg.buyer_fees_amt as buyer_fees_amt,
+ovt_reg.net_seller_amt as net_seller_amt,
+ovt_reg.arbitrated_amt as arbitrated_amt,
+ovt_reg.reg_cr_grade as reg_cr_grade,
+ovt_reg.reg_cr_grade1_ts as reg_cr_grade1_ts,
+ovt_reg.offrng_cr_grade as offrng_cr_grade,
+ovt_reg.mmr_mileage_adj_amt as mmr_mileage_adj_amt,
+ovt_reg.ireg_to_sale_days as ireg_to_sale_days,
+ovt_reg.ireg_to_ioffrng_days as ireg_to_ioffrng_days,
+ovt_reg.ireg_to_ipreview_days as ireg_to_ipreview_days,
+ovt_reg.icheck_in_to_sale_days as icheck_in_to_sale_days,
+ovt_reg.icheck_in_to_ioffrng_days as icheck_in_to_ioffrng_days,
+ovt_reg.icheck_in_to_ipreview_days as icheck_in_to_ipreview_days,
+ovt_reg.auction_format as auction_format,
+ovt_reg.seller_fees_amt as seller_fees_amt,
+ovt_reg.seller_tax_amt as seller_tax_amt,
+ovt_reg.seller_adjust_amt as seller_adjust_amt,
+ovt_reg.buyer_tax_amt as buyer_tax_amt,
+ovt_reg.buyer_adjust_amt as buyer_adjust_amt,
+ovt_reg.reg_cr_grade as reg_cr_grade,
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join mmr.sales mmr on V.vin = mmr.m_vin
 left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id
-left join rpm.aim_vehicle_locations_stg AVL on V.id=AVL.aim_vehicle_id
-left join rpm.leases_stg L on V.id=L.vehicle_id
-left join at.geo GEO1 on GEO1.zip_code=Substring(AVL.zipcode, 1, 5) 
-left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
+left join mmr.sales mmr on V.vin = mmr.m_vin
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
+left join 3rd_party.polk_filtered pv on pv.vin = v.vin
+left join ovt.man_ovt_fact_registration ovt on ovt.vin = v.vin;
 SET spark.sql.shuffle.partitions=1;

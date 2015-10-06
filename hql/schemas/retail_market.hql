@@ -1,6 +1,6 @@
 use insights;
 drop table IF EXISTS retail_market_cached;
-CREATE  TABLE IF NOT EXISTS `retail_market_cached`
+CREATE  TABLE IF NOT EXISTS retail_market_cached
 (      
 vin                             STRING,
 postal_code                     INT,
@@ -61,8 +61,21 @@ polk_reg_dma_id                      SMALLINT,
 polk_report_year_month          STRING,
 polk_report_year                STRING,
 polk_report_month               STRING,
-polk_purchase_lease             STRING 
-=======
->>>>>>> cf0d3acc579dc9d5d2443351d6b22c5a2c028a0d
+polk_purchase_lease             STRING, 
+`polk_corporation` string,
+`polk_transaction_date` string,
+`polk_transaction_ts` bigint,
+`polk_trans_price`  int,
+`polk_data_type` string,
+`polk_origin` string ,
+`polk_vehicle_count` int,
+`polk_dealer_name` string,
+`polk_dealer_address` string,
+`polk_dealer_town` string,
+`polk_dealer_state` string,
+`polk_dealer_zip` string,
+`polk_fran_ind` string,
+`source_name` string,
+`source_id` int
 )
 STORED AS PARQUET;
