@@ -57,7 +57,8 @@ CREATE TABLE `originations`(
 `reporting_period_month` int,
 `lease_maturity_date_ts` int,
 `lease_maturity_date_year` int,
-`lease_maturity_date_month` int
+`lease_maturity_date_month` int,
+`dma_id` string
 );
 
 INSERT INTO TABLE originations SELECT
@@ -77,7 +78,9 @@ INSERT INTO TABLE originations SELECT
   month(cast(unix_timestamp(reporting_period, "yyyyMM") * 1000 as timestamp)),
   unix_timestamp(lease_maturity_date, "MMMyyyy"),
   year(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
-  month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp))
-FROM originations_stg;
+  month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
+  GEO.dma_table as dma_id 
+FROM originations_stg
+left join experian.dma_mapping as GEO on originations_stg.experian_dma=GEO.dma_experian;
 
 drop table originations_stg;
