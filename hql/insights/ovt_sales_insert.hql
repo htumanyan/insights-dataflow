@@ -1,23 +1,28 @@
 use insights;
 set mapreduce.input.fileinputformat.split.maxsize=34396550;
-set  hive.auto.convert.join=false;
-SET spark.sql.shuffle.partitions=24;
-INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
-coalesce(vdmv.vb_make, mmr.mmr_make) as make,
- vdmv.vb_make as makeref,
+set hive.auto.convert.join=false;
+ set hive.enforce.bucketing = true; 
+SET spark.sql.shuffle.partitions=128;
+set spark.sql.autoBroadcastJoinThreshold=100000000;
+set hive.exec.counters.pull.interval = 500;
+
+
+INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
+coalesce(ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
+coalesce(ext.ad_model_desc, vdmv.vb_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
- vdmv.ev_trim as derivative,
-abs(hash(vdmv.ev_trim)) as derivativeid,
+coalesce(ext.ad_trim_desc, vdmv.ev_trim) as derivative,
+abs(hash(coalesce(ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
 'n/a' as registrationdate,
- vdmv.vb_ext_color_generic_descr as exteriorcolour,
+coalesce(ext.ad_exterior_color_desc, vdmv.vb_ext_color_generic_descr) as exteriorcolour,
 unix_timestamp(ovt_reg.reg_ts)  as creationdate,
 0 as salechannelid,
 'n/a' as salechannel,
-seller_cust.cur_cust_nm as vendortradingname,
-seller_cust.country_cd as vendorcountryid,
-seller_cust.country_cd as vendorcountryname,
-seller_cust.cust_id as vendorid,
+osc.vendortradingname as vendortradingname,
+osc.vendorcountryid as vendorcountryid,
+osc.vendorcountryname as vendorcountryname,
+osc.vendorid as vendorid,
 0 as vehicleageindays,
 date(ovt_reg.sold_ts) as solddate,
 unix_timestamp(ovt_reg.sold_ts) as solddatets ,
@@ -25,22 +30,22 @@ unix_timestamp(ovt_reg.sold_ts) as solddatets ,
 ovt_reg.pur_amt as sold_price,
 ovt_reg.buyer_fees_amt as buyerpremium,
 0 as delivery,
-buyer_cust.cur_cust_nm as buyer,
-buyer_cust.cust_id as buyerid, 
-buyer_cust.cur_cust_nm as buyercode,
+osc.buyer as buyer,
+osc.buyerid as buyerid, 
+osc.buyercode as buyercode,
 0 as deliverylocation,
 case when ovt_reg.sold_ts is NULL  then 'Y' else 'N' end as activesale,
-coalesce(vdmv.vb_model,  mmr.mmr_model) as model,
+coalesce(ext.ad_model_desc,vdmv.vb_model,  mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
-vdmv.ev_model_id as model_code,
+coalesce(ext.ad_year, cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(ext.ad_model_desc, vdmv.ev_model_id) as model_code,
 ovt_reg.vehicle_mileage_cnt,
 ovt_reg.ireg_to_sale_days  as daysonsale,
 ovt_reg.cur_floor_price  as auctionprice,
- vdmv.ev_transmission as transmission,
-abs(hash(vdmv.ev_transmission)) as transmissionid,
+coalesce(ext.ad_transmission_desc, vdmv.ev_transmission) as transmission,
+abs(hash(coalesce(ext.ad_transmission_desc, vdmv.ev_transmission))) as transmissionid,
 NULL as stockage,
-vdmv.vb_vehicle_type as vehicle_type,
+coalesce(ext.ad_veh_subtype, vdmv.vb_vehicle_type) as vehicle_type,
 'none' as salessession,
 0 as salesessionid, 
 'none' as tacticname, 
@@ -49,7 +54,7 @@ vdmv.vb_vehicle_type as vehicle_type,
 1 as countryid,
 auction.country_nm as countryname,  
 0 as totaldamagesnetprice,
-vdmv.ev_engine_fuel_type_descr as fueltype,
+coalesce(ext.ad_engine_fuel_type, vdmv.ev_engine_fuel_type_descr) as fueltype,
 ovt_reg.uniq_reg_id as vehicleid, 
 ovt_reg.vin,
 0 as sourceid,
@@ -63,6 +68,10 @@ NULL as sellername,
 NULL as sellerid,
 year(ovt_reg.sold_ts) as soldyear,
 month(ovt_reg.sold_ts) as soldmonth,
+day(ovt_reg.sold_ts) as soldday,
+year(ovt_reg.reg_ts) as createdyear,
+month(ovt_reg.reg_ts) as createdmonth,
+day(ovt_reg.reg_ts) as createdday,
  '' as ageinweeksbandname,
  0 as ageinweeksbandid,
  NULL as stockageWeeksBandName,
@@ -90,10 +99,10 @@ NULL as damagesBandId,
             WHEN ovt_reg.vehicle_mileage_cnt >=100000 AND ovt_reg.vehicle_mileage_cnt <150000 THEN 7
             WHEN ovt_reg.vehicle_mileage_cnt >=150000 AND ovt_reg.vehicle_mileage_cnt <999999 THEN 8
 end mileageBandId,
-NULL stockageweeks,
-NULL vehicleageweeks,
-buyer_cust.country_cd as buyercountry,
-buyer_cust.country_cd as buyercountryid,
+NULL,
+NULL,
+osc.buyercountry as buyercountry,
+osc.buyercountryid as buyercountryid,
 'n/a' as vendortown,
 0 as locationid,
 1 as commercialconcepttypeid,
@@ -248,13 +257,13 @@ ovt_reg.buyer_tax_amt as buyer_tax_amt,
 ovt_reg.buyer_adjust_amt as buyer_adjust_amt,
 ovt_reg.reg_cr_grade as reg_cr_grade
 from 
-
- ovt.man_ovt_fact_registration ovt_reg 
-join  ovt.man_ovt_dim_customer buyer_cust on ovt_reg.buyer_cust_key = buyer_cust.cust_key
-join ovt.man_ovt_dim_customer seller_cust on  ovt_reg.seller_cust_key = seller_cust.cust_key
-join ovt.man_ovt_dim_auction auction on auction.auction_key = ovt_reg.auction_key
-left join at.geo GEO1 on GEO1.zip_code=Substring(auction.zip_cd, 1, 5) 
+ ovt.man_ovt_fact_registration_tmp ovt_reg  
+ join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  
+join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
+ left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
+ left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
-left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
-left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin;
+ join ovt.man_ovt_dim_auction auction on auction.auction_key = ovt_reg.auction_key and ovt_reg.auction_key >=0
+left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5);
 SET spark.sql.shuffle.partitions=1;
+

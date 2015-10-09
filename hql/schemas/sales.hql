@@ -1,6 +1,6 @@
 use insights;
-drop table sales_report_cached;
-CREATE  TABLE `sales_report_cached`(                                                           
+drop table sales_report_cached_tmp;
+CREATE  TABLE `sales_report_cached_tmp`(                                                           
    `make` string COMMENT '',
    `makeref` string COMMENT '',
    `registration` string COMMENT '',
@@ -61,6 +61,10 @@ CREATE  TABLE `sales_report_cached`(
    `sellerid` int COMMENT '',
    `soldyear` int COMMENT '',
    `soldmonth` int COMMENT '',
+   `soldday` int COMMENT '',
+   `createdyear` int COMMENT '',
+   `createdmonth` int COMMENT '',
+   `createdday` int COMMENT '',
    `ageinweeksbandname` string COMMENT '',
    `ageinweeksbandid` int COMMENT '',
    `stockageweeksbandname` string COMMENT '',

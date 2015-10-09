@@ -1,9 +1,8 @@
 use insights;
-add jar ${hivevar:NameNode}/user/oozie/share/lib/adaltas-hive-udf-0.0.1-SNAPSHOT.jar;
-DROP FUNCTION IF EXISTS to_map;
-CREATE FUNCTION to_map as "com.adaltas.UDAFToMap";
+set mapreduce.input.fileinputformat.split.maxsize=34396550;
+set  hive.auto.convert.join=false;
 SET spark.sql.shuffle.partitions=24;
-INSERT OVERWRITE TABLE insights.sales_report_cached SELECT
+INSERT INTO  TABLE insights.sales_report_cached_tmp SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
  'n/a' as registration,
@@ -64,6 +63,10 @@ P.id as directsaleid,
 0 as sellerid,
 year(P.date_of_purchase) as soldyear,
 month(P.date_of_purchase) as soldmonth,
+day(P.date_of_purchase) as soldday,
+year(G.created_at) as createdyear,
+month(G.created_at) as createdmonth,
+day(G.created_at) as createdday,
  '' as ageinweeksbandname,
  0 as ageinweeksbandid,
      CASE WHEN G.stockage/7 >=0 AND G.stockage/7 <=7 THEN 'under 1 '
@@ -225,22 +228,22 @@ month(V.lease_end_date) as rpm_lease_end_month,
 day(V.lease_end_date) as rpm_lease_end_day,
 unix_timestamp(V.lease_start_date, 'yyy-mm-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyy-mm-dd') as rpm_lease_end_ts,
-pv.corporation as polk_corporation,
-pv.report_year_month as polk_report_year_month,
-pv.transaction_date as polk_transaction_date,
-unix_timestamp(pv.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
-pv.trans_price as polk_trans_price,
-pv.data_type as polk_data_type,
-pv.origin as polk_origin,
-pv.purchase_lease as polk_purchase_lease,
-pv.vehicle_count as polk_vehicle_count,
-pv.dealer_name as polk_dealer_name,
-pv.dealer_address as polk_dealer_address,
-pv.dealer_town as polk_dealer_town,
-pv.dealer_state as polk_dealer_state,
-pv.dealer_zip as polk_dealer_zip,
-pv.dealer_dma as polk_dealer_dma,
-pv.fran_ind as polk_fran_ind,
+NULL as polk_corporation,
+NULL as polk_report_year_month,
+NULL as polk_transaction_date,
+NULL as polk_transaction_ts,
+NULL as polk_trans_price,
+NULL as polk_data_type,
+NULL as polk_origin,
+NULL as polk_purchase_lease,
+NULL as polk_vehicle_count,
+NULL as polk_dealer_name,
+NULL as polk_dealer_address,
+NULL as polk_dealer_town,
+NULL as polk_dealer_state,
+NULL as polk_dealer_zip,
+NULL as polk_dealer_dma,
+NULL as polk_fran_ind,
 coalesce(AVL.address1, L.address1) as rpm_vehicle_address,
 coalesce(AVL.city, L.city) as rpm_vehicle_city,
 coalesce(AVL.state, L.state) as rpm_vehicle_state,
@@ -275,12 +278,13 @@ coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id,
  NULL as ovt_reg_net_seller_amt,
  NULL as ovt_reg_arbitrated_amt,
  NULL as ovt_reg_cr_grade_ts,
+ NULL as ovt_reg_offrng_cr_grade, 
  NULL as ovt_reg_mmr_mileage_adj_amt,
  NULL as ovt_reg_ireg_to_sale_days,
  NULL as ovt_reg_ireg_to_ioffrng_days,
  NULL as ovt_reg_ireg_to_ipreview_days,
  NULL as ovt_reg_icheck_in_to_sale_days,
- NUL as ovt_reg_icheck_in_to_ioffrng_days,
+ NULL as ovt_reg_icheck_in_to_ioffrng_days,
  NULL as ovt_reg_icheck_in_to_ipreview_days,
  NULL as ovt_reg_auction_format,
  NULL as ovt_reg_seller_fees_amt,
@@ -301,6 +305,5 @@ left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id
 join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
 SET spark.sql.shuffle.partitions=1;
