@@ -9,9 +9,11 @@
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"BMW"|"3-SERIES"|"UPSCALE - NEAR LUXURY"|"36"|"Jan2015"|"2"|"3"
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"HONDA"|"PILOT"|"CUV - MID RANGE"|"36"|"Jan2015"|"1"|"1"
 
+SET spark.default.parallelism=8;
+
 use experian;
-add jar ${hivevar:NameNode}/user/oozie/share/lib/hive-serde.jar ;
-drop  table if exists originations_stg;
+add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+drop  table if exists `originations_stg`;
 CREATE EXTERNAL TABLE `originations_stg`(
 `state_abbr` string,
 `reporting_period` string,
@@ -35,11 +37,13 @@ STORED AS TEXTFILE
 LOCATION '/data/database/experian/originations/*.dsv'
 TBLPROPERTIES("skip.header.line.count"="1");
 
+cache table `originations_stg`;
+
 --
 -- OpenCSV serde produces text columns irrespective of the table specification.
 -- Here we convert columns to their ultimate types and also add new columns as necessary
 --
-drop  table if exists originations;
+drop  table if exists `originations`;
 CREATE TABLE `originations`(
 `state_abbr` string,
 `reporting_period` string,
@@ -58,10 +62,12 @@ CREATE TABLE `originations`(
 `lease_maturity_date_ts` int,
 `lease_maturity_date_year` int,
 `lease_maturity_date_month` int,
-`dma_id` string
+`dma_id` int
 );
 
-INSERT INTO TABLE originations SELECT
+
+INSERT INTO TABLE originations 
+SELECT
   state_abbr,
   reporting_period,
   experian_dma,
@@ -79,8 +85,11 @@ INSERT INTO TABLE originations SELECT
   unix_timestamp(lease_maturity_date, "MMMyyyy"),
   year(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
   month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
-  GEO.dma_table as dma_id 
+  GEO.dma_id as dma_id 
 FROM originations_stg
-left join experian.dma_mapping as GEO on originations_stg.experian_dma=GEO.dma_experian;
+left outer join experian.dma_mapping as gmap on experian_dma=gmap.dma_experian
+left outer join at.geo as GEO on gmap.dma_table=GEO.dma_code;
+
+cache table originations;
 
 drop table originations_stg;
