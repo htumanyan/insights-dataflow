@@ -40,6 +40,7 @@ SELECT
     NULL             as    veh_type,
     NULL             as    dma_durable_key,
     va.dma           as    dma_code,
+    g.dma_id         as    dma_id,
     NULL             as    dma_desc,
     NULL             as    city,
     NULL             as    state_code,
@@ -58,8 +59,10 @@ SELECT
     1                        as source_type
 FROM
     vauto.vauto_market_pricing va
-LEFT JOIN 
+LEFT OUTER JOIN 
     insights.segment_map sm ON va.make = sm.make and va.model = sm.model
+LEFT OUTER JOIN 
+    at.dma_code_id_map g ON va.dma = g.dma_code
 WHERE
     va.avg_list_price is not NULL
 ;
