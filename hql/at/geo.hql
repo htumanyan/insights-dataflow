@@ -5,7 +5,7 @@
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
 use at;
-add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+add jar hdfs://stg-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop table if exists `geo_stg`;
 CREATE TEMPORARY TABLE `geo_stg` USING org.apache.spark.sql.parquet OPTIONS (path "/data/database/at/geo_dma/");
 drop table if exists `adwords_geo_stg`;
@@ -48,7 +48,6 @@ STORED AS TEXTFILE
 LOCATION '/data/database/3rd_party/dma_bnd'
 TBLPROPERTIES("skip.header.line.count"="1");
 
---
 -- Here we drop and re-create the table geo. It is a product of the original AT Geo data, joined with 
 -- a mapping of AutoTrader DMA Codes to DMA Codes in the shape file. THe shape file DMA resembles Nielsen 
 -- DMA codes, however it is not clear whether it is an exact replica
@@ -70,6 +69,7 @@ CREATE TABLE `geo` (
   `geometry`         string          COMMENT 'DMA Area geometry expressed as an XML entry for inclusion in KML files',
   `geometry_vergex_cnt` smallint     COMMENT 'Vertex count in the geometry field'
 );
+
 
 
 -- Because of the inconsistent DMA id generation scheme, we have to resort
@@ -103,6 +103,31 @@ LEFT OUTER JOIN
     at.dma_bnd_stg d1 ON gs.dma_code = d1.dma_code
 LEFT OUTER JOIN
     at.dma_bnd_stg d2 ON gs.dma_code = d2.dma_code_candidate;
+
+
+drop table if exists `dma_code_id_map`;
+CREATE TABLE `dma_code_id_map` (
+  `dma_code`         string   COMMENT 'AutoTrader DMA Code',
+  `dma_id`           string   COMMENT 'DMA ID that corresponds to the map/shape file'
+) COMMENT 'Mapping between AutoTrader DMA Codes and DMA ID values that correspond to shapes';
+
+
+--
+-- Here we fill in the dma code to dma id mapping by fetching unique
+-- combinations from the staging mapping table. The primary reason for having
+-- this table is to avoid expensive group by statements during DMA lookup for insertions into other tables
+--
+INSERT INTO TABLE
+    dma_code_id_map
+SELECT
+    dma_code,
+    dma_id
+FROM
+    at.geo
+WHERE
+    dma_id is not null and dma_code is not null
+GROUP BY dma_code, dma_id;
+
 
 drop table `geo_stg`;
 drop table `dma_bnd_stg`;
