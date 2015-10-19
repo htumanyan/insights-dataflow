@@ -1,7 +1,7 @@
 use insights;
 set mapreduce.input.fileinputformat.split.maxsize=34396550;
 set  hive.auto.convert.join=false;
-SET spark.sql.shuffle.partitions=24;
+SET spark.sql.shuffle.partitions=32;
 INSERT INTO  TABLE insights.sales_report_cached_tmp SELECT
 coalesce(v.make, mmr.mmr_make) as make,
  v.make as makeref,
@@ -292,7 +292,15 @@ coalesce(GEO1.dma_id, GEO2.dma_id) as geo_dma_id,
  NULL as ovt_reg_seller_adjust_amt,
  NULL as ovt_reg_buyer_tax_amt,
  NULL as ovt_reg_buyer_adjust_amt,
- NULL as ovt_reg_reg_cr_grade
+ NULL as ovt_reg_reg_cr_grade,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 

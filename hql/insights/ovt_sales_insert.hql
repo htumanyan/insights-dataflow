@@ -2,7 +2,7 @@ use insights;
 set mapreduce.input.fileinputformat.split.maxsize=34396550;
 set hive.auto.convert.join=false;
  set hive.enforce.bucketing = true; 
-SET spark.sql.shuffle.partitions=128;
+SET spark.sql.shuffle.partitions=32;
 set spark.sql.autoBroadcastJoinThreshold=100000000;
 set hive.exec.counters.pull.interval = 500;
 
@@ -37,7 +37,7 @@ osc.buyercode as buyercode,
 case when ovt_reg.sold_ts is NULL  then 'Y' else 'N' end as activesale,
 coalesce(ext.ad_model_desc,vdmv.vb_model,  mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(ext.ad_year, cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(ovt_reg.model_yr, ext.ad_year, cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
 coalesce(ext.ad_model_desc, vdmv.ev_model_id) as model_code,
 ovt_reg.vehicle_mileage_cnt,
 ovt_reg.ireg_to_sale_days  as daysonsale,
@@ -255,11 +255,20 @@ ovt_reg.seller_tax_amt as seller_tax_amt,
 ovt_reg.seller_adjust_amt as seller_adjust_amt,
 ovt_reg.buyer_tax_amt as buyer_tax_amt,
 ovt_reg.buyer_adjust_amt as buyer_adjust_amt,
-ovt_reg.reg_cr_grade as reg_cr_grade
+ovt_reg.reg_cr_grade as reg_cr_grade,
+om.sum_gross_txn as ovt_sum_gross_txn,
+om.sum_offered_cnt as ovt_sum_offered_cnt,
+om.sum_offerng_flg as ovt_sum_offerng_flg,
+om.sum_sale_nat_mmr as ovt_sum_sale_nat_mmr,
+om.sum_pur_amt as ovt_sum_pur_amt,
+om.effectiveness as ovt_effectiveness,
+om.efficiency as ovt_efficiency,
+om.mmr_retention as ovt_mmr_retention
 from 
  ovt.man_ovt_fact_registration_tmp ovt_reg  
- join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  
+ join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
+join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
  left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin

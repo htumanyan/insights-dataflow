@@ -1,4 +1,4 @@
-SET spark.sql.shuffle.partitions=6;
+SET spark.sql.shuffle.partitions=36;
 INSERT OVERWRITE TABLE insights.inventory_report_cached  SELECT 
 V.id,
  V.vin,
@@ -228,5 +228,5 @@ left join at.geo GEO2 on GEO2.zip_code=Substring(L.zip, 1, 5)
  inner join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
  left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin 
-left join 3rd_party.polk_filtered pv on pv.vin = v.vin;
+left join 3rd_party.polk_filtered pv on pv.vin = v.vin and  cast(pv.vin_year_model as int ) >= 2013 ;
 SET spark.sql.shuffle.partitions=1;
