@@ -12,7 +12,7 @@
 SET spark.default.parallelism=8;
 
 use experian;
-add jar hdfs://dev-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+add jar hdfs://stg-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop  table if exists `originations_stg`;
 CREATE EXTERNAL TABLE `originations_stg`(
 `state_abbr` string,
@@ -62,7 +62,8 @@ CREATE TABLE `originations`(
 `lease_maturity_date_ts` int,
 `lease_maturity_date_year` int,
 `lease_maturity_date_month` int,
-`dma_id` int
+`dma_id` int        COMMENT 'AutoTrader DMA ID that corresponds to shapes',
+`dma_desc` string   COMMENT'DMA Description from At Geo - human readable'
 );
 
 
@@ -85,10 +86,11 @@ SELECT
   unix_timestamp(lease_maturity_date, "MMMyyyy"),
   year(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
   month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
-  GEO.dma_id as dma_id 
+  GEO.dma_at_geo_id as dma_id,
+  GEO.dma_at_geo_desc as dma_desc
 FROM originations_stg
-left outer join experian.dma_mapping as gmap on experian_dma=gmap.dma_experian
-left outer join at.geo as GEO on gmap.dma_table=GEO.dma_code;
+left outer join experian.dma_mapping as GEO on experian_dma=GEO.dma_experian
+;
 
 cache table originations;
 
