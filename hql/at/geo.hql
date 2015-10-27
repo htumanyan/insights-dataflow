@@ -108,7 +108,8 @@ LEFT OUTER JOIN
 drop table if exists `dma_code_id_map`;
 CREATE TABLE `dma_code_id_map` (
   `dma_code`         string   COMMENT 'AutoTrader DMA Code',
-  `dma_id`           string   COMMENT 'DMA ID that corresponds to the map/shape file'
+  `dma_id`           string   COMMENT 'DMA ID that corresponds to the map/shape file',
+  `dma_desc`         string   COMMENT 'DMA description from AutoTrader'
 ) COMMENT 'Mapping between AutoTrader DMA Codes and DMA ID values that correspond to shapes';
 
 
@@ -121,12 +122,13 @@ INSERT INTO TABLE
     dma_code_id_map
 SELECT
     dma_code,
-    dma_id
+    dma_id,
+    dma_desc
 FROM
     at.geo
 WHERE
     dma_id is not null and dma_code is not null
-GROUP BY dma_code, dma_id;
+GROUP BY dma_code, dma_id, dma_desc;
 
 
 drop table `geo_stg`;
