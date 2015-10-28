@@ -229,6 +229,16 @@ CREATE  TABLE `sales_report_cached_tmp`(
 `ovt_reg_seller_adjust_amt` int,  
 `ovt_reg_buyer_tax_amt` int, 
 `ovt_reg_buyer_adjust_amt` int, 
-`ovt_reg_reg_cr_grade` int 
-);
+`ovt_reg_reg_cr_grade` int, 
+`ovt_sum_gross_txn` int,
+`ovt_sum_offered_cnt` int,
+`ovt_sum_offerng_flg` int,
+`ovt_sum_sale_nat_mmr` int,
+`ovt_sum_pur_amt` int,
+`ovt_effectiveness` double,
+`ovt_efficiency` double,
+`ovt_mmr_retention` double
+
+)
+stored as parquet;
  

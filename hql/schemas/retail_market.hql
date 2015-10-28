@@ -64,7 +64,7 @@ polk_report_month               STRING,
 polk_purchase_lease             STRING, 
 `polk_corporation` string,
 `polk_transaction_date` string,
-`polk_transaction_ts` bigint,
+`polk_transaction_ts` int,
 `polk_trans_price`  int,
 `polk_data_type` string,
 `polk_origin` string ,
@@ -76,6 +76,8 @@ polk_purchase_lease             STRING,
 `polk_dealer_zip` string,
 `polk_fran_ind` string,
 `source_name` string,
-`source_id` int
+`source_id` int,
+`avg_daily_demand` int,
+`daily_sales_outstanding` int 
 )
 STORED AS PARQUET;

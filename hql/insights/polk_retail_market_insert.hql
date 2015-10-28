@@ -1,7 +1,9 @@
 use insights;
 set mapreduce.input.fileinputformat.split.maxsize=34396550;
 set  hive.auto.convert.join=false;
-INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
+
+SET spark.sql.shuffle.partitions=64;
+INSERT INTO TABLE insights.retail_market_cached SELECT 
 p.vin                             ,
 p.reg_zip                    ,
 NULL                    ,
@@ -40,24 +42,24 @@ NULL,
 NULL,
 NULL,
 1,
-pg1.dma_durable_key as geo_dma_durable_key,
-pg1.dma_code as geo_dma_code,
-pg1.dma_desc as geo_dma_desc,
-pg1.dma_id as geo_dma_id,
-pg1.city as geo_city,
-pg1.state_code as geo_state_code,
-pg1.county as geo_county,
-pg1.country_code as geo_country_code,
-pg1.latitude as geo_latitude,
-pg1.longitude as geo_longitude,
-pg1.submarket as geo_submarket,
-pg1.tim_zone_desc as geo_tim_zone_desc,
-pg2.dma_code as polk_dealer_dma_code,
-pg2.dma_durable_key as polk_deale_dmar_durable_key,
-pg2.dma_id as polk_dealer_dma_id,
-pg1.dma_code as polk_reg_dma_code,
-pg1.dma_durable_key as polk_reg_dma_durable_key,
-pg1.dma_id as polk_reg_dma_id,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
 p.report_year_month as polk_report_year_month,
 substr(p.report_year_month, 0, 4) as polk_report_year,
 substr(p.report_year_month, 5 ,2) as polk_report_month,
@@ -65,10 +67,10 @@ p.purchase_lease as polk_purchase_lease,
 p.corporation as polk_corporation,
 p.transaction_date as polk_transaction_date,
 unix_timestamp(p.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
-p.trans_price as polk_trans_price,
+NULL,
 p.data_type as polk_data_type,
 p.origin as polk_origin,
-p.vehicle_count as polk_vehicle_count,
+0 as polk_vehicle_count,
 p.dealer_name as polk_dealer_name,
 p.dealer_address as polk_dealer_address,
 p.dealer_town as polk_dealer_town,
@@ -78,7 +80,4 @@ p.fran_ind as polk_fran_ind,
 'polk' as source_name,
 1 as source_id 
 from 3rd_party.polk_dedup p 
-left join vdm.vehicles vdmv on p.vin = vdmv.vb_vin
-left join at.geo g on p.reg_zip = cast(g.zip_code as int)
-left join at.geo pg1 on cast(p.reg_zip as int) = cast(pg1.zip_code as int)
-left join at.geo pg2 on cast(p.dealer_zip as int) = cast(pg2.zip_code as int);
+left join vdm.vehicles vdmv on p.vin = vdmv.vb_vin and cast(p.vin_year_model as int ) >=2012 and substr(p.report_year_month, 0, 4)  ='2015';
