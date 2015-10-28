@@ -1,6 +1,5 @@
 use insights;
-set hive.auto.convert.join=false;
-INSERT INTO  TABLE insights.retail_market_cached SELECT 
+INSERT OVERWRITE TABLE insights.retail_market_cached SELECT 
 rm.vin                             ,
 rm.postal_code                     ,
 rm.stock_number                    ,
@@ -57,26 +56,29 @@ NULL,
 NULL,
 NULL,
 NULL,
-p.report_year_month as polk_report_year_month,
-substr(p.report_year_month, 0, 4) as polk_report_year,
-substr(p.report_year_month, 5 ,2) as polk_report_month,
-p.purchase_lease as polk_purchase_lease,
-p.corporation as polk_corporation,
-p.transaction_date as polk_transaction_date,
-unix_timestamp(p.transaction_date, 'yyyyMMdd') as polk_transaction_ts,
-p.trans_price as polk_trans_price,
-p.data_type as polk_data_type,
-p.origin as polk_origin,
-p.vehicle_count as polk_vehicle_count,
-p.dealer_name as polk_dealer_name,
-p.dealer_address as polk_dealer_address,
-p.dealer_town as polk_dealer_town,
-p.dealer_state as polk_dealer_state,
-p.dealer_zip as polk_dealer_zip,
-p.fran_ind as polk_fran_ind,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
 'vauto' as source_name,
-0 as source_id 
-from vauto.vauto_recent_market_data rm  
-left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created and cast(rm.model_year as int) >= 2014 and cast(s.model_year as int) >=2014  
+0 as source_id,
+dso.inventory,
+dso.daily_sold
+
+from vauto.vauto_recent_market_data_dedup rm  
+left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created
 left join at.geo g on rm.postal_code = cast(g.zip_code as int)
-left join 3rd_party.polk_filtered p on p.vin = rm.vin and p.transaction_date =  from_unixtime(unix_timestamp(s.created, 'MM/dd/yyyy hh:mm:ss a'), 'yyyyMMdd')  and cast(p.vin_year_model as int) >=2014;
+left join dso_metrics dso on rm.make = dso.make and rm.model = dso.model and rm.model_year=dso.modelyear and g.dma_id = dso.geo_dma_id and to_date(from_unixtime(unix_timestamp(rm.last_seen, 'MM/dd/yyyy HH:mm:ss aa'))) = dso.date;

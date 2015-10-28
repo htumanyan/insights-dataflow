@@ -56,7 +56,10 @@ sample_size                     INT     COMMENT 'The size of the sample used for
 value                           INT     COMMENT 'Appraised value',
 algorithm                       STRING  COMMENT 'Textual identifier or description of the algorithm - some sources provide it',
 source                          TINYINT COMMENT 'Numeric identifier of the source where the data is obtained from. 1-vAuto, 2-MMR, 3-Manheimi Wholesale',
-source_type                     TINYINT COMMENT '1 - retail, 2 - wholesale'
+source_type                     TINYINT COMMENT '1 - retail, 2 - wholesale',
+ymmd_sum_list_price                  double,
+ymmd_total_count                    int
+
 )
 COMMENT 'Captures vehicle appraisal information from various sources. Some of the sources are wholesale, while others are retail. This is a consolidated table that tracks them all and allows arbitrary selection of specific appraisal source or specific kind of source (wholesale vs. retail vs. anything else)'
 STORED AS PARQUET;
