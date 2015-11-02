@@ -77,7 +77,6 @@ NULL,
 0 as source_id,
 dso.inventory,
 dso.daily_sold
-
 from vauto.vauto_recent_market_data_dedup rm  
 left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created
 left join at.geo g on rm.postal_code = cast(g.zip_code as int)

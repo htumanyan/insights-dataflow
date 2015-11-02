@@ -157,4 +157,3 @@ created,
 last_seen,
 row_number() over ( partition by vin,created order by unix_timestamp(created, 'dd/mm/yyyy hh:mm:ss aaa')  desc ) group_rank 
 from vauto.vauto_sold_market_vehicle where cast(model_year as int) >=2012 ) rm  where rm.group_rank=1;
-
