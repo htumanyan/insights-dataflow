@@ -76,7 +76,7 @@ veh_segment                     ,
 veh_type                        ,
 created,
 last_seen,
-row_number() over ( partition by vin,created order by unix_timestamp(created, 'dd/mm/yyyy hh:mm:ss aaa')  desc ) group_rank 
+row_number() over ( partition by vin,created order by unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa')  desc ) group_rank 
 from vauto_recent_market_data where cast(model_year as int) >=2012 ) rm  where rm.group_rank=1;
 
 drop table if exists  vauto.vauto_sold_market_vehicle_dedup;
@@ -155,5 +155,5 @@ veh_segment                     ,
 veh_type                        ,
 created,
 last_seen,
-row_number() over ( partition by vin,created order by unix_timestamp(created, 'dd/mm/yyyy hh:mm:ss aaa')  desc ) group_rank 
+row_number() over ( partition by vin,created order by unix_timestamp(created, 'MM/dd/yyyy HH:mm:ss aa')  desc ) group_rank 
 from vauto.vauto_sold_market_vehicle where cast(model_year as int) >=2012 ) rm  where rm.group_rank=1;
