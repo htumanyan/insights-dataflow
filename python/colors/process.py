@@ -1,14 +1,21 @@
 import tfidf
 import sys
 import purestemmer as Stemmer
+import re
 
 
 
 documents_file =  sys.argv[1]
 queries_file =  sys.argv[2]
 
+
+shitty_descriptors=['metallic', 'and']
+
+
+pattern = re.compile('\W')
+
 def tokenize(document):
-	return [ stemmer.stemWord(word) for word in document[0:-1].lower().split(' ')]
+	return [ stemmer.stemWord(re.sub(pattern, '',  word)) for word in document[0:-1].lower().split(' ') if word not in shitty_descriptors]
 
 table = tfidf.tfidf()
 
@@ -26,16 +33,16 @@ for query in open(queries_file):
 	total = total+1
 	if(top_match_score > 0):
 		has_match = has_match +1;
-		print 'original:%s chrome:%s'%(query[:-1], top_match[0])
+		print ':%s,%s'%(query[:-1], top_match[0])
 	else:
 		no_match.append(query[:-1])
 
-print '%%%%%STATS%%%%'
-print 'total:%d, has_matched:%d, %d '%(total, has_match, has_match/total)
+#print '%%%%%STATS%%%%'
+#print 'total:%d, has_matched:%d, %f '%(total, has_match, has_match/total*100)
 
-print "%%%%NO MATCHES FOR%%%%"
-for el in no_match:
-	print  el
+#print "%%%%NO MATCHES FOR%%%%"
+#for el in no_match:
+#	print  el
 
 
 

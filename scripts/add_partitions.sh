@@ -90,7 +90,8 @@ echo "Adding partitions for $QUALIFIED_TABLE_NAME from $TABLE_LOCATION"
 # The first awk part extracts files and excludes directories. Directories have a '-' (dash) where normally the replication factor is
 # Sed snippet extracts the part of the path that corresponds to partition structure
 # The last AWK piece parses the partition sructure and generates ALTER TABLE statements
-PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','` 
+PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','| sort | uniq` 
+
 
 PART_CNT=`echo "$PART_FILES" | wc -l`
 
