@@ -7,10 +7,9 @@ create table dso_vehicles_sold_daily_tmp as select
    geo_dma_id,
    modelyear,  
    to_date(from_unixtime(sales_last_seen)) as sales_date,
-   sales_last_seen,
    count(distinct  case when issold =1 then vin else null end)  as count_sold
    from  retail_market_cached 
- group by  sales_last_seen ,make, model, geo_dma_id, modelyear, to_date(from_unixtime(sales_last_seen)) order by sales_last_seen desc;
+ group by  make, model, geo_dma_id, modelyear, to_date(from_unixtime(sales_last_seen)) order by sales_last_seen desc;
 
 drop  table if exists dso_average_daily_sold_tmp;
 create table  dso_average_daily_sold_tmp as select 
@@ -19,7 +18,7 @@ create table  dso_average_daily_sold_tmp as select
    modelyear,  
    geo_dma_id,
    sales_date,
-   sum(coalesce(count_sold, 0 ) ) over (partition by s.make, s.model, s.modelyear, s.geo_dma_id  order by unix_timestamp(s.sales_date, 'yyyy-MM-dd') range between 3888000 preceding and current row) as count
+   sum(coalesce(count_sold, 0 ) ) over (partition by s.make, s.model, s.modelyear, s.geo_dma_id  order by unix_timestamp(s.sales_date, 'yyyy-MM-dd') desc range between 3888000 preceding and current row) as count
  from dso_vehicles_sold_daily_tmp  s;
  
 
