@@ -77,7 +77,7 @@ polk_purchase_lease             STRING,
 `polk_fran_ind` string,
 `source_name` string,
 `source_id` int,
-`avg_daily_demand` int,
+`sum_45days_sales` int,
 `daily_sales_outstanding` int 
 )
 STORED AS PARQUET;

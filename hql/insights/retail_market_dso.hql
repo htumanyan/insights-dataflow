@@ -1,26 +1,5 @@
 use insights;
 set  spark.sql.shuffle.partitions=24;
-drop  table if exists dso_vehicles_sold_daily_tmp;
-create table dso_vehicles_sold_daily_tmp as select 
-   make,
-   model,
-   geo_dma_id,
-   modelyear,  
-   to_date(from_unixtime(sales_last_seen)) as sales_date,
-   count(distinct  case when issold =1 then vin else null end)  as count_sold
-   from  retail_market_cached 
- group by  make, model, geo_dma_id, modelyear, to_date(from_unixtime(sales_last_seen)) order by sales_last_seen desc;
-
-drop  table if exists dso_average_daily_sold_tmp;
-create table  dso_average_daily_sold_tmp as select 
-   make,
-   model,
-   modelyear,  
-   geo_dma_id,
-   sales_date,
-   sum(coalesce(count_sold, 0 ) ) over (partition by s.make, s.model, s.modelyear, s.geo_dma_id  order by unix_timestamp(s.sales_date, 'yyyy-MM-dd') desc range between 3888000 preceding and current row) as count
- from dso_vehicles_sold_daily_tmp  s;
- 
 
 drop  table if exists dso_dates_tmp;
 create  table if not exists  dso_dates_tmp  as select 
@@ -33,6 +12,33 @@ select make, model, modelyear, geo_dma_id, to_date(from_unixtime(sales_last_seen
 
 ) as t
 group by t.make, t.model, t.modelyear, t.geo_dma_id, t.dt;
+
+drop  table if exists dso_vehicles_sold_daily_tmp;
+create table dso_vehicles_sold_daily_tmp as select 
+   make,
+   model,
+   geo_dma_id,
+   modelyear,  
+   to_date(from_unixtime(sales_last_seen)) as sales_date,
+   count(distinct  case when issold =1 then vin else null end)  as count_sold
+   from  retail_market_cached 
+ group by  make, model, geo_dma_id, modelyear,   to_date(from_unixtime(sales_last_seen))  order by sales_date  desc;
+
+drop  table if exists dso_average_daily_sold_tmp;
+create table  dso_average_daily_sold_tmp as select 
+   make,
+   model,
+   modelyear,  
+   geo_dma_id,
+   sales_date,
+   sum(coalesce(count_sold, 0 ) ) over (partition by t.make, t.model, t.modelyear, t.geo_dma_id  order by unix_timestamp(t.sales_date, 'yyyy-MM-dd') range between 3888000 preceding and current row) as count
+ from (select d.dt as sales_date, d.make, d.model, d.modelyear, d.geo_dma_id, s.count_sold from  dso_dates_tmp d left  join  dso_vehicles_sold_daily_tmp  s on 
+s.model = d.model and 
+s.make = d.make and 
+s.modelyear=d.modelyear and 
+d.geo_dma_id = s.geo_dma_id and 
+s.sales_date = d.dt ) t ;
+
 
 drop table dso;
 create table  dso as select DD.make, DD.model, DD.modelyear, DD.geo_dma_id, DD.dt, count(distinct RM.vin) as count from 
@@ -55,15 +61,22 @@ dso.geo_dma_id,
 dso.dt as date,
 coalesce(dso.count, 0) as inventory,
 coalesce(ads.count, 0) as daily_sold
-from dso left join dso_average_daily_sold_tmp ads  on
-ads.make = dso.make and
-ads.model = dso.model and
-ads.modelyear = dso.modelyear and 
-dso.geo_dma_id = ads.geo_dma_id and 
-ads.sales_date = dso.dt;
+from dso_dates_tmp dates left  join  dso 
+on 
+dates.make = dso.make and
+dates.model = dso.model and
+dates.modelyear = dso.modelyear and 
+dates.geo_dma_id = dso.geo_dma_id and 
+dates.dt = dso.dt
+left join dso_average_daily_sold_tmp ads  on
+dates.make = ads.make and
+dates.model = ads.model and
+dates.modelyear = ads.modelyear and 
+dates.geo_dma_id = ads.geo_dma_id and 
+dates.dt = ads.sales_date;
 
-drop  table dso;
-drop table dso_dates_tmp;
-drop table dso_vehicles_sold_daily_tmp ;
-drop table dso_average_daily_sold_tmp; 
+--drop  table dso;
+--drop table dso_dates_tmp;
+--drop table dso_vehicles_sold_daily_tmp ;
+--drop table dso_average_daily_sold_tmp; 
  
