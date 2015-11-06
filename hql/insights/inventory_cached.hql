@@ -6,7 +6,7 @@ V.id,
  V.color as exteriorcolour,
  unix_timestamp(V.created_at) as creation_ts,
  v.region_code as countryname,
- v.make,
+ coalesce(vdmv.vb_make, v.make), 
  v.make as makeref,
  0 as salechannelid,
   'none' as salechannel,
@@ -218,13 +218,13 @@ GEO.submarket as geo_submarket,
 GEO.tim_zone_desc as geo_tim_zone_desc,
 GEO.dma_id as geo_dma_id
 FROM rpm.vehicles_stg V 
- inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
-left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
+left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join rpm.dealers_cleaned DC on CAST(V.dealer_number as INT)=DC.nna_dealer_number
+left join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
-left join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
+left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
 SET spark.sql.shuffle.partitions=1;
 
