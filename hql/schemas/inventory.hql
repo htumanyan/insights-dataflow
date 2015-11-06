@@ -1,6 +1,6 @@
 use insights;
-drop table if exists inventory_report_cached;
- CREATE  TABLE `inventory_report_cached`(                                                           
+drop table if exists inventory_report_cached_tmp;
+ CREATE  TABLE `inventory_report_cached_tmp`(                                                           
    `vehicleid` int COMMENT '',                                                                      
    `vin` string COMMENT '',                                                                         
    `countryid` int COMMENT '',                                                                      

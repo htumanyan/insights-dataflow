@@ -312,6 +312,6 @@ left join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join mmr.sales mmr on V.vin = mmr.m_vin
-where (v.make='nissan' and v.status='on lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
-      (v.make='infiniti' and v.status='on lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90); 
+where (v.make='Nissan' and v.status='On Lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
+      (v.make='Infiniti' and v.status='On Lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90);
 SET spark.sql.shuffle.partitions=1;
