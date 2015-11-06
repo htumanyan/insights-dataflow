@@ -218,7 +218,7 @@ GEO.submarket as geo_submarket,
 GEO.tim_zone_desc as geo_tim_zone_desc,
 GEO.dma_id as geo_dma_id
 FROM rpm.vehicles_stg V 
- inner join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
+ left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join rpm.dealers_cleaned DC on CAST(V.dealer_number as INT)=DC.nna_dealer_number
 left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
