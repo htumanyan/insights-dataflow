@@ -1,5 +1,5 @@
 SET spark.sql.shuffle.partitions=200;
-
+use vauto;
 drop table if exists  vauto_recent_market_data_dedup;
 CREATE TABLE vauto_recent_market_data_dedup  AS SELECT 
 rm.vin                             ,

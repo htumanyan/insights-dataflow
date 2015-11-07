@@ -265,7 +265,7 @@ om.effectiveness as ovt_effectiveness,
 om.efficiency as ovt_efficiency,
 om.mmr_retention as ovt_mmr_retention
 from 
- ovt.man_ovt_fact_registration_tmp ovt_reg  
+ ovt.man_ovt_fact_registration_dedup ovt_reg  
  join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
