@@ -1,5 +1,5 @@
 SET spark.sql.shuffle.partitions=36;
-INSERT OVERWRITE TABLE insights.inventory_report_cached  SELECT 
+INSERT OVERWRITE TABLE insights.inventory_report_cached_tmp  SELECT 
 V.id,
  V.vin,
  V.region_code as countryid,
@@ -7,7 +7,7 @@ V.id,
  unix_timestamp(V.created_at) as creation_ts,
  v.region_code as countryname,
  coalesce(vdmv.vb_make, v.make), 
- v.make as makeref,
+coalesce(vdmv.vb_make,  v.make) as makeref,
  0 as salechannelid,
   'none' as salechannel,
  'none' as commercialconceptname,
@@ -225,6 +225,8 @@ left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
+where (v.make='Nissan' and v.status='On Lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
+      (v.make='Infiniti' and v.status='On Lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90);
 SET spark.sql.shuffle.partitions=1;
 

@@ -12,7 +12,7 @@ unix_timestamp(r.reg_ts) as reg_ts_ts,
 r.offrng_flg,
 r.pur_amt,
 r.at_sale_nat_mmr
- from ovt.man_ovt_fact_registration r  join ( 
+ from ovt.man_ovt_fact_registration_dedup r  join ( 
 select make_model_trim_key, make_desc , model_desc from ovt.man_ovt_dim_make_model_trim group by make_model_trim_key, make_desc, model_desc) mmt
  on mmt.make_model_trim_key = r.make_model_trim_key and unix_timestamp(r.reg_ts)>1420070400;
 
