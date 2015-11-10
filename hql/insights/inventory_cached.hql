@@ -235,7 +235,7 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
-insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg where 
+insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
 where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
       ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
 SET spark.sql.shuffle.partitions=1;
