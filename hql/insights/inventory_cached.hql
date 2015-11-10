@@ -1,5 +1,11 @@
 SET spark.sql.shuffle.partitions=36;
-INSERT OVERWRITE TABLE insights.inventory_report_cached_tmp  SELECT 
+
+
+
+drop table if exists  insights.inventory_report_cached_stg;
+create table  insights.inventory_report_cached_stg like insights.inventory_report_cached_tmp;
+
+INSERT OVERWRITE TABLE insights.inventory_report_cached_stg  SELECT 
 V.id,
  V.vin,
  V.region_code as countryid,
@@ -185,6 +191,9 @@ month(V.lease_end_date) as rpm_lease_end_month,
 day(V.lease_end_date) as rpm_lease_end_day,
 unix_timestamp(V.lease_start_date, 'yyyy-MM-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts,
+v.status as rpm_status,
+v.region_code as rpm_region_code,
+v.branch as rpm_branch,
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -225,8 +234,9 @@ left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-where (v.make='Nissan' and v.status='On Lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
-      (v.make='Infiniti' and v.status='On Lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90);
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
+insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg where 
+where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
+      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
 SET spark.sql.shuffle.partitions=1;
 

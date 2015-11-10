@@ -1,6 +1,8 @@
 use insights;
 SET spark.sql.shuffle.partitions=124;
 
+
+drop table if exists insights.sales_report_cached_stg ;
 create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
 
 INSERT INTO  TABLE insights.sales_report_cached_stg select 
@@ -319,8 +321,8 @@ left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join mmr.sales mmr on V.vin = mmr.m_vin;
 INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
-where ( t.make='Nissan' and t.rpm_status='On Lease' and t.rpm_region_code=25 and t.rpm_branch <= '73' and t.rpm_branch >='50') or 
-      ( t.make='Infiniti' and t.rpm_status='On Lease' and t.rpm_region_code=29 and  t.rpm_branch <= '98' and t.rpm_branch >= '90');
+where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
+      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
 drop table insights.sales_report_cached_stg;
 
 SET spark.sql.shuffle.partitions=1;
