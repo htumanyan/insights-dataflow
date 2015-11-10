@@ -8,12 +8,12 @@ set hive.exec.counters.pull.interval = 500;
 
 
 INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
-coalesce(ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
-coalesce(ext.ad_model_desc, vdmv.vb_make) as makeref,
+coalesce(ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
+coalesce(ovt_make_model.make_desc, ext.ad_model_desc, vdmv.vb_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
-coalesce(ext.ad_trim_desc, vdmv.ev_trim) as derivative,
-abs(hash(coalesce(ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
+coalesce(ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim) as derivative,
+abs(hash(coalesce(ovt_make_model.trime_desc, ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
 'n/a' as registrationdate,
 coalesce(ext.ad_exterior_color_desc, vdmv.vb_ext_color_generic_descr) as exteriorcolour,
 unix_timestamp(ovt_reg.reg_ts)  as creationdate,
@@ -267,6 +267,7 @@ om.mmr_retention as ovt_mmr_retention
 from 
  ovt.man_ovt_fact_registration_dedup ovt_reg  
  join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
+ join ovt.man_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
