@@ -191,6 +191,9 @@ NULL  as rpm_lease_end_month,
 NULL  as rpm_lease_end_day,
 NULL  as  rpm_lease_start_ts,
 NULL  as rpm_lease_end_ts,
+NULL as rpm_status,
+NULL as rpm_region_code,
+NULL as rpm_branch, 
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -267,7 +270,7 @@ om.mmr_retention as ovt_mmr_retention
 from 
  ovt.man_ovt_fact_registration_dedup ovt_reg  
  join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
- join ovt.man_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
+ join ovt.man_ovt_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 

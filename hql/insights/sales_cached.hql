@@ -1,8 +1,11 @@
 use insights;
 SET spark.sql.shuffle.partitions=124;
-INSERT INTO  TABLE insights.sales_report_cached_tmp SELECT
-coalesce(v.make, mmr.mmr_make) as make,
- v.make as makeref,
+
+create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
+
+INSERT INTO  TABLE insights.sales_report_cached_stg select 
+coalesce(vdmv.vb_make, v.make, mmr.mmr_make) as make,
+coalesce(vdmv.vb_make, v.make, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
  v.trim_level as derivative,
@@ -226,6 +229,9 @@ month(V.lease_end_date) as rpm_lease_end_month,
 day(V.lease_end_date) as rpm_lease_end_day,
 unix_timestamp(V.lease_start_date, 'yyy-mm-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyy-mm-dd') as rpm_lease_end_ts,
+v.status as rpm_status,
+v.region_code as rpm_region_code,
+v.branch as rpm_branch,
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -311,7 +317,10 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join mmr.sales mmr on V.vin = mmr.m_vin
-where (v.make='Nissan' and v.status='On Lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
-      (v.make='Infiniti' and v.status='On Lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90);
+left join mmr.sales mmr on V.vin = mmr.m_vin;
+INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
+where ( t.make='Nissan' and t.rpm_status='On Lease' and t.rpm_region_code=25 and t.rpm_branch <= '73' and t.rpm_branch >='50') or 
+      ( t.make='Infiniti' and t.rpm_status='On Lease' and t.rpm_region_code=29 and  t.rpm_branch <= '98' and t.rpm_branch >= '90');
+drop table insights.sales_report_cached_stg;
+
 SET spark.sql.shuffle.partitions=1;

@@ -165,6 +165,9 @@ CREATE  TABLE `sales_report_cached_tmp`(
 `rpm_lease_end_day` int,
 `rpm_lease_start_ts` bigint,
 `rpm_lease_end_ts` bigint,
+`rpm_status` string,
+`rpm_region_code` int,
+`rpm_branch` int,
 `polk_corporation` string,
 `polk_report_year_month` string,
 `polk_transaction_date` string,
@@ -238,7 +241,6 @@ CREATE  TABLE `sales_report_cached_tmp`(
 `ovt_effectiveness` double,
 `ovt_efficiency` double,
 `ovt_mmr_retention` double
-
 )
 stored as parquet;
  
