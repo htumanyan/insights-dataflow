@@ -27,8 +27,8 @@ coalesce(vdmv.vb_make,  v.make) as makeref,
 G.mileage,
 G.stockage, 
  AV.fuel_type as fueltype,
- V.model,
- V.model as modelref,
+ coalesce(vdmv.vb_model, v.model) as model,
+ coalesce(vdmv.vb_model, v.model) as modelref,
  'n/a' as code,
  V.model_year as modelyear,
  V.model_serial_number as model_code,
@@ -193,7 +193,7 @@ unix_timestamp(V.lease_start_date, 'yyyy-MM-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyyy-MM-dd') as rpm_lease_end_ts,
 v.status as rpm_status,
 v.region_code as rpm_region_code,
-v.branch as rpm_branch,
+cast(regexp_replace(v.branch, "0*(\d+)", "") as int) as rpm_branch,
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -235,8 +235,9 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
+
 insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
-where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
-      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
+where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
+      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90);
 SET spark.sql.shuffle.partitions=1;
 

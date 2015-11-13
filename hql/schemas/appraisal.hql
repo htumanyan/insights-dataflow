@@ -4,8 +4,8 @@
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
 use insights;
-drop table IF EXISTS appraisal;
-CREATE  TABLE IF NOT EXISTS `appraisal`
+drop table IF EXISTS appraisal_tmp;
+CREATE  TABLE IF NOT EXISTS `appraisal_tmp`
 (      
 mid                             INT COMMENT 'Manheim ID',
 chrome_style_id                 INT COMMENT 'Chrome Style ID',
