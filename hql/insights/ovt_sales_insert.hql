@@ -274,12 +274,12 @@ ext.ad_exterior_color_desc as ovt_ext_color,
 ext.ad_interior_color_desc as ovt_int_color,
 ovt_reg.arb_flg as ovt_arbitrated,
 ext.ad_body_desc as ovt_body_style,
-concat_ws(string ' ', 
-     string (CASE WHEN ext.green_light='Y' THEN 'green_light' ELSE '' END), 
-     string (CASE WHEN ext.yellow_light='Y' THEN 'yellow_light' ELSE '' END), 
-     string (CASE WHEN ext.blue_light='Y' THEN 'blue_light' ELSE '' END), 
-     string (CASE WHEN ext.red_light='Y' THEN 'red_light' ELSE '' END)) as ovt_auction_lights,
-cust.man_ovt_dim_customer as ovt_customer_type
+concat_ws(', ', 
+     (CASE WHEN ext.green_light='Y' THEN 'green_light' END),
+     (CASE WHEN ext.yellow_light='Y' THEN 'yellow_light' END),
+     (CASE WHEN ext.blue_light='Y' THEN 'blue_light' END),
+     (CASE WHEN ext.red_light='Y' THEN 'red_light' END)) as ovt_auction_lights,
+cust.bus_subtype_desc as ovt_customer_type
 from 
  ovt.man_ovt_fact_registration_dedup ovt_reg  
  join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
@@ -293,6 +293,6 @@ left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
 left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5)
 left join ovt.man_ovt_dim_flndr ovt_flndr on ovt_reg.reg_key=ovt_flndr.flndr_key
 left join ovt.man_ovt_dim_auction auct on ovt_reg.reg_key=auct.auction_key
-left join (select cust_key, man_ovt_dim_customer, max(row_end_dt) from ovt.man_ovt_dim_customer group by cust_key, man_ovt_dim_customer) as cust on ovt_reg.seller_cust_key=cust.cust_key;
+left join (select cust_key, bus_subtype_desc, max(row_end_dt) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key;
 SET spark.sql.shuffle.partitions=1;
 
