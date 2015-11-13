@@ -19,5 +19,5 @@ CREATE EXTERNAL TABLE `sales`(
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','  lines terminated by '\n'
 STORED AS TEXTFILE
-LOCATION '/data/database/mmr'
+LOCATION '/data/database/mmr/sales'
 tblproperties ("skip.header.line.count"="1");
