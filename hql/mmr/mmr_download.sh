@@ -22,8 +22,8 @@ End-Of-Session
 
 cd $LDirectory
 if sed -e '1d' -e 's/\"//g' $TodayFile > $Filename$Today'.noquote'$Filetype ; then
-    if hdfs dfs -put -f $Filename$Today'.noquote'$Filetype /data/database/mmr/ ; then
-        hdfs dfs -rm /data/database/mmr/$YesterdayFile
+    if hdfs dfs -put -f $Filename$Today'.noquote'$Filetype /data/database/mmr/sales ; then
+        hdfs dfs -rm /data/database/mmr/sales/$YesterdayFile
     else
         echo "hdfs put failed"
     fi
