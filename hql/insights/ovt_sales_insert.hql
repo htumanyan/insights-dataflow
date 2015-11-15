@@ -1,4 +1,4 @@
-use insights;
+ use insights;
 set mapreduce.input.fileinputformat.split.maxsize=34396550;
 set hive.auto.convert.join=false;
  set hive.enforce.bucketing = true; 
@@ -266,7 +266,20 @@ om.sum_sale_nat_mmr as ovt_sum_sale_nat_mmr,
 om.sum_pur_amt as ovt_sum_pur_amt,
 om.effectiveness as ovt_effectiveness,
 om.efficiency as ovt_efficiency,
-om.mmr_retention as ovt_mmr_retention
+om.mmr_retention as ovt_mmr_retention,
+ovt_flndr.flndr_desc as ovt_seller_type,
+auct.auction_nm as ovt_auction,
+(ovt_reg.salvage_title_flag | ovt_reg.vehicle_salvage_flg | ovt_reg.tra_file_salvage_flg) as ovt_salvage,
+ext.ad_exterior_color_desc as ovt_ext_color,
+ext.ad_interior_color_desc as ovt_int_color,
+ovt_reg.arb_flg as ovt_arbitrated,
+ext.ad_body_desc as ovt_body_style,
+concat_ws(', ', 
+     (CASE WHEN ext.green_light='Y' THEN 'green_light' END),
+     (CASE WHEN ext.yellow_light='Y' THEN 'yellow_light' END),
+     (CASE WHEN ext.blue_light='Y' THEN 'blue_light' END),
+     (CASE WHEN ext.red_light='Y' THEN 'red_light' END)) as ovt_auction_lights,
+cust.bus_subtype_desc as ovt_customer_type
 from 
  ovt.man_ovt_fact_registration_dedup ovt_reg  
  join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013  
@@ -277,6 +290,9 @@ join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
  left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
  join ovt.man_ovt_dim_auction auction on auction.auction_key = ovt_reg.auction_key and ovt_reg.auction_key >=0
-left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5);
+left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5)
+left join ovt.man_ovt_dim_flndr ovt_flndr on ovt_reg.reg_key=ovt_flndr.flndr_key
+left join ovt.man_ovt_dim_auction auct on ovt_reg.reg_key=auct.auction_key
+left join (select cust_key, bus_subtype_desc, max(unix_timestamp(row_end_dt, 'yyyy-mm-dd hh:mm:ss')) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key;
 SET spark.sql.shuffle.partitions=1;
 

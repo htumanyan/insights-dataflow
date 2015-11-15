@@ -306,7 +306,16 @@ NULL,
 NULL,
 NULL,
 NULL,
-NULL
+NULL,
+ NULL as ovt_seller_type,
+ NULL as ovt_auction,
+ NULL as ovt_salvage,
+ NULL as ovt_ext_color,
+ NULL as ovt_int_color,
+ NULL as ovt_arbitrated,
+ NULL as ovt_body_style,
+ NULL as ovt_auction_lights,
+ NULL as ovt_customer_type
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join rpm.leases_stg L on V.id=L.vehicle_id
