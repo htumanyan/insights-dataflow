@@ -2,7 +2,7 @@ use ovt;
 DROP TABLE IF EXISTS man_ovt_dim_customer;
 CREATE EXTERNAL TABLE IF NOT EXISTS man_ovt_dim_customer
 (
-  cust_key 					INT,
+    cust_key 					INT,
     cust_id 					INT,
     hist_cust_nm 					STRING,
     cust_type_cd 					STRING,
@@ -12,7 +12,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS man_ovt_dim_customer
     bus_subtype_cd 					STRING,
     bus_subtype_desc 					STRING,
     cust_legal_nm 					STRING,
-    cust_univ_credit_limit_amt 					INT,
+    cust_univ_credit_limit_amt 					STRING,
     cust_activity_cd 					STRING,
     hist_par_cust_id 					INT,
     hist_par_cust_nm 					STRING,
@@ -136,8 +136,6 @@ CREATE EXTERNAL TABLE IF NOT EXISTS man_ovt_dim_customer
     opted_in_with_1dispatch_flg 					INT,
     myaccount_status_flg 				INT,
     ingestion_timestamp  				STRING
-
-
 )
 COMMENT 'This table is imported from Manheim Oracle table dim_customer'
 PARTITIONED BY (

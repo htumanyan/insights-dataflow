@@ -6,8 +6,8 @@ drop table if exists insights.sales_report_cached_stg ;
 create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
 
 INSERT INTO  TABLE insights.sales_report_cached_stg select 
-coalesce(vdmv.vb_make, v.make, mmr.mmr_make) as make,
-coalesce(vdmv.vb_make, v.make, mmr.mmr_make) as makeref,
+coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
+coalesce(vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
  v.trim_level as derivative,
@@ -33,7 +33,7 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when V.status='Sold' or V.status='Sold Upstream' then 'Y' else 'N' end as activesale,
-coalesce(vdmv.vb_model, V.model, mmr.mmr_model) as model,
+coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
 'n/a' as code,
 coalesce(cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
  V.model_serial_number as model_code,

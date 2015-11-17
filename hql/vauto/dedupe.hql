@@ -2,42 +2,7 @@ SET spark.sql.shuffle.partitions=200;
 use vauto;
 drop table if exists  vauto_recent_market_data_dedup;
 CREATE TABLE vauto_recent_market_data_dedup  AS SELECT 
-rm.vin                             ,
-rm.postal_code                     ,
-rm.stock_number                    ,
-rm.model_year                      ,
-rm.make                            ,
-rm.model                           ,
-rm.series                          ,
-rm.series_detail                   ,
-rm.odometer                        ,
-rm.new_used                        ,
-rm.is_certified                    ,
-rm.body_description                ,
-rm.body_type                       ,
-rm.body_door_count                 ,
-rm.body_cab_style                  ,
-rm.body_bed_style                  ,
-rm.body_roof_style                 ,
-rm.engine_description              ,
-rm.engine_cylinder_count           ,
-rm.engine_displacement             ,
-rm.engine_fuel_type                ,
-rm.transmission_description        ,
-rm.transmission_type               ,
-rm.transmission_gear_count         ,
-rm.drive_train_type                ,
-rm.exterior_color                  ,
-rm.exterior_base_color             ,
-rm.interior_description            ,
-rm.interior_color                  ,
-rm.interior_material               ,
-rm.categorized_equipment_ids       ,
-rm.days_ininventory,
-rm.veh_segment                     ,
-rm.veh_type,                        
-rm.created,
-rm.last_seen
+*
 from  
 ( SELECT 
 vin                             ,
@@ -76,47 +41,17 @@ veh_segment                     ,
 veh_type                        ,
 created,
 last_seen,
-row_number() over ( partition by vin,created order by unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa')  desc ) group_rank 
+ case 
+   when unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') is null then unix_timestamp(last_seen, 'dd-MMM-yy hh.mm.ss.SSSSSS aa' ) 
+   else unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') end as last_seen_ts, 
+row_number() over ( partition by vin, created order by
+        case when unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') is null then unix_timestamp(last_seen, 'dd-MMM-yy hh.mm.ss.SSSSSS aa' ) 
+        else unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') end desc ) group_rank 
 from vauto_recent_market_data where cast(model_year as int) >=2012 ) rm  where rm.group_rank=1;
 
 drop table if exists  vauto.vauto_sold_market_vehicle_dedup;
 CREATE TABLE vauto.vauto_sold_market_vehicle_dedup  AS SELECT 
-rm.vin                             ,
-rm.postal_code                     ,
-rm.stock_number                    ,
-rm.model_year                      ,
-rm.make                            ,
-rm.model                           ,
-rm.series                          ,
-rm.series_detail                   ,
-rm.odometer                        ,
-rm.new_used                        ,
-rm.is_certified                    ,
-rm.body_description                ,
-rm.body_type                       ,
-rm.body_door_count                 ,
-rm.body_cab_style                  ,
-rm.body_bed_style                  ,
-rm.body_roof_style                 ,
-rm.engine_description              ,
-rm.engine_cylinder_count           ,
-rm.engine_displacement             ,
-rm.engine_fuel_type                ,
-rm.transmission_description        ,
-rm.transmission_type               ,
-rm.transmission_gear_count         ,
-rm.drive_train_type                ,
-rm.exterior_color                  ,
-rm.exterior_base_color             ,
-rm.interior_description            ,
-rm.interior_color                  ,
-rm.interior_material               ,
-rm.categorized_equipment_ids       ,
-rm.days_ininventory,
-rm.veh_segment                     ,
-rm.veh_type,                        
-rm.created,
-rm.last_seen
+*
 from  
 ( SELECT 
 vin                             ,
@@ -155,5 +90,10 @@ veh_segment                     ,
 veh_type                        ,
 created,
 last_seen,
-row_number() over ( partition by vin,created order by unix_timestamp(created, 'MM/dd/yyyy HH:mm:ss aa')  desc ) group_rank 
+ case 
+   when unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') is null then unix_timestamp(last_seen, 'dd-MMM-yy hh.mm.ss.SSSSSS aa' ) 
+   else unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') end as last_seen_ts, 
+row_number() over ( partition by vin, created order by
+        case when unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') is null then unix_timestamp(last_seen, 'dd-MMM-yy hh.mm.ss.SSSSSS aa' ) 
+        else unix_timestamp(last_seen, 'MM/dd/yyyy HH:mm:ss aa') end desc ) group_rank 
 from vauto.vauto_sold_market_vehicle where cast(model_year as int) >=2012 ) rm  where rm.group_rank=1;

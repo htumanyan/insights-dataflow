@@ -16,5 +16,5 @@ CREATE EXTERNAL TABLE `popular_makes`(
 )
 ROW FORMAT DELIMITED FIELDS TERMINATED BY ','  lines terminated by '\n'
 STORED AS TEXTFILE
-LOCATION '/data/database/mmr/popular'
+LOCATION '/data/database/mmr/popular/*.csv'
 tblproperties ("skip.header.line.count"="1");

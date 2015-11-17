@@ -97,8 +97,9 @@ PART_CNT=`echo "$PART_FILES" | wc -l`
 
 # Replace forward slashes with commmas and include the result in ALTER TABLE statement - yields a working ALTER script
 # that works with arbitrary number of partitions
-ALTER_SCRIPT=`echo "$PART_FILES" | tr '/' ',' | awk "{ printf \"ALTER TABLE $QUALIFIED_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s);\\n\", \\$1 }"`
+ALTER_SCRIPT=`echo "$PART_FILES" | tr '/' ',' | awk "{ loc=\\$1;gsub(/,/, \"/\", loc);  printf \"ALTER TABLE $QUALIFIED_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s) LOCATION '$TABLE_LOCATION/%s/';\\n\", \\$1, loc }"`
 
+echo $ALTER_SCRIPT
 $CLIENT_CMD_WITH_OPTS -e "$ALTER_SCRIPT" 2>/dev/null
 
 echo "Added $PART_CNT partitions."
