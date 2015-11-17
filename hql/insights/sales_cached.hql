@@ -1,8 +1,13 @@
 use insights;
 SET spark.sql.shuffle.partitions=124;
-INSERT INTO  TABLE insights.sales_report_cached_tmp SELECT
-coalesce(v.make, mmr.mmr_make) as make,
- v.make as makeref,
+
+
+drop table if exists insights.sales_report_cached_stg ;
+create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
+
+INSERT INTO  TABLE insights.sales_report_cached_stg select 
+coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
+coalesce(vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
  v.trim_level as derivative,
@@ -28,7 +33,7 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when V.status='Sold' or V.status='Sold Upstream' then 'Y' else 'N' end as activesale,
-coalesce(vdmv.vb_model, V.model, mmr.mmr_model) as model,
+coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
 'n/a' as code,
 coalesce(cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
  V.model_serial_number as model_code,
@@ -226,6 +231,9 @@ month(V.lease_end_date) as rpm_lease_end_month,
 day(V.lease_end_date) as rpm_lease_end_day,
 unix_timestamp(V.lease_start_date, 'yyy-mm-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyy-mm-dd') as rpm_lease_end_ts,
+v.status as rpm_status,
+v.region_code as rpm_region_code,
+v.branch as rpm_branch,
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -298,7 +306,16 @@ NULL,
 NULL,
 NULL,
 NULL,
-NULL
+NULL,
+ NULL as ovt_seller_type,
+ NULL as ovt_auction,
+ NULL as ovt_salvage,
+ NULL as ovt_ext_color,
+ NULL as ovt_int_color,
+ NULL as ovt_arbitrated,
+ NULL as ovt_body_style,
+ NULL as ovt_auction_lights,
+ NULL as ovt_customer_type
 from  rpm.purchases_stg P 
 join rpm.vehicles_stg V on P.vehicle_id = V.id
 left join rpm.leases_stg L on V.id=L.vehicle_id
@@ -311,7 +328,10 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join mmr.sales mmr on V.vin = mmr.m_vin
-where (v.make='Nissan' and v.status='On Lease' and v.region_code=25 and  v.branch <= 73 and branch >=50) or 
-      (v.make='Infiniti' and v.status='On Lease' and v.region_code=29 and  v.branch <= 98 and branch >= 90);
+left join mmr.sales mmr on V.vin = mmr.m_vin;
+INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
+where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
+      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
+drop table insights.sales_report_cached_stg;
+
 SET spark.sql.shuffle.partitions=1;

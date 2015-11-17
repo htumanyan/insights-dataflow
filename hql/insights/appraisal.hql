@@ -4,8 +4,9 @@
 --
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
+SET spark.sql.shuffle.partitions=64;
 INSERT INTO TABLE
-    insights.appraisal
+    insights.appraisal_tmp
 SELECT
     NULL             as mid,
     NULL as chrome_style_id,
@@ -77,13 +78,10 @@ FROM
     va.count                 as sample_size,
     va.avg_list_price        as value
 from
-    vauto.vauto_market_pricing va
+    vauto.vauto_market_pricing va on  va.avg_list_price is not NULL
 LEFT OUTER JOIN 
     insights.segment_map sm ON va.make = sm.make and va.model = sm.model
 LEFT OUTER JOIN 
     at.dma_code_id_map g ON va.dma = g.dma_code
-WHERE
-    va.avg_list_price is not NULL
-ORDER BY sample_date_ts DESC
 ) as t
 ;

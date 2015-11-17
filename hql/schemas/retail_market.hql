@@ -1,6 +1,6 @@
 use insights;
-drop table IF EXISTS retail_market_cached;
-CREATE  TABLE IF NOT EXISTS retail_market_cached
+drop table IF EXISTS retail_market_cached_tmp;
+CREATE  TABLE IF NOT EXISTS retail_market_cached_tmp
 (      
 vin                             STRING,
 postal_code                     INT,
