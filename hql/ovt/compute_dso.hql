@@ -1,5 +1,6 @@
 use ovt;
-drop table ovt_make_model;
+--drop table ovt_make_model;
+SET spark.sql.shuffle.partitions=128;
 create table if not exists  ovt_make_model as select 
 mmt.make_desc as make,
  mmt.model_desc as model,                       
@@ -8,7 +9,7 @@ mmt.make_desc as make,
  r.reg_ts,
  r.auction_key, 
 unix_timestamp(r.reg_ts) as reg_ts_ts,
- concat(year(to_date(from_unixtime(reg_ts_ts))), month(to_date(from_unixtime(reg_ts_ts)))) as reg_year_month
+ concat(year(r.reg_ts), month(r.reg_ts)) as reg_year_month,
  r.vin,
  r.reg_key,
  r.gross_txn_flg,
@@ -25,14 +26,14 @@ create table  if not exists make_model_metrics_tmp as select
    model,
    model_year, 
    auction_key,
-   reg_year_month
+   reg_year_month,
   count(distinct case when gross_txn_flg=1 then  vin else null end) as gross_txn,
-  sum(s.offered_cnt) as sum_offered_cnt,
-  count(s.offered_cnt) as count_offered_cnt,
-  sum( case offrng_flg when 1 then 1 else 0 end as offrng_flg ) as sum_offerng_flg, 
-  sum( case pur_amt when 'null' then 0 else pur_amt end as pur_amt ) as mmr_retention_sum_pur_amt,
+  sum(offered_cnt) as sum_offered_cnt,
+  count(offered_cnt) as count_offered_cnt,
+  sum( case offrng_flg when 1 then 1 else 0 end  ) as sum_offerng_flg, 
+  sum( case pur_amt when 'null' then 0 else pur_amt end ) as mmr_retention_sum_pur_amt,
   sum(  case at_sale_nat_mmr when 'null' then 0 else at_sale_nat_mmr end ) as mmr_retention_sum_nat_mmr
-  from  ovt_make_model group  by make, model, model_year,auction_key, reg_year_month; 
+  from  ovt_make_model group  by make, model, model_year,auction_key, reg_year_month;
    
 drop table if exists make_model_metrics;
 create  table make_model_metrics as select 
@@ -40,9 +41,9 @@ create  table make_model_metrics as select
  ovt_make_model.make,
  ovt_make_model.model,
  ovt_make_model.model_year,
- ovt_make_model.ts,
+ ovt_make_model.reg_ts_ts,
  metrics.gross_txn/metrics.sum_offerng_flg  as effectiveness,
- metrics.gross_txn/sum_offered_cntt as efficiency,
+ metrics.gross_txn/sum_offered_cnt as efficiency,
  metrics.gross_txn as sum_gross_txn,
  metrics.sum_offered_cnt  as sum_offered_cnt,
  metrics.sum_offerng_flg  as sum_offerng_flg,
@@ -54,5 +55,5 @@ metrics.model = ovt_make_model.model and
 metrics.make = ovt_make_model.make and 
 metrics.model_year = ovt_make_model.model_year and 
 metrics.auction_key = ovt_make_model.auction_key and 
-metrics.reg_year_month = ovt_make_model.reg_year_month; 
+metrics.reg_year_month = ovt_make_model.reg_year_month;
  
