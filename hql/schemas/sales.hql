@@ -248,6 +248,7 @@ CREATE  TABLE `sales_report_cached_tmp`(
 `ovt_int_color` string,
 `ovt_arbitrated` string,
 `ovt_body_style` string,
+`ovt_engine` string,
 `ovt_auction_lights` string,
 `ovt_customer_type` string
 )
