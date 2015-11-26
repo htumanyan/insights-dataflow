@@ -314,6 +314,7 @@ NULL,
  NULL as ovt_int_color,
  NULL as ovt_arbitrated,
  NULL as ovt_body_style,
+ NULL as ovt_engine,
  NULL as ovt_auction_lights,
  NULL as ovt_customer_type
 from  rpm.purchases_stg P 
