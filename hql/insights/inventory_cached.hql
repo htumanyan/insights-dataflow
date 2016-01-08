@@ -225,16 +225,20 @@ GEO.latitude as latitude,
 GEO.longitude as geo_longitude,
 GEO.submarket as geo_submarket,
 GEO.tim_zone_desc as geo_tim_zone_desc,
-GEO.dma_id as geo_dma_id
+GEO.dma_id as geo_dma_id,
+ammr.mmr as adjusted_mmr,
+l.residual_amount as  residual_amount
 FROM rpm.vehicles_stg V 
 left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join rpm.dealers_cleaned DC on CAST(V.dealer_number as INT)=DC.nna_dealer_number
 left join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
+left join rpm.leases_stg l  on l.vehicle_id = v.id
 left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
+left join  insights.adjusted_mmr ammr on (lower(ammr.make)=lower(vdmv.vb_make) and lower(ammr.model)=lower(vdmv.vb_model) and lower(ammr.model_year)=lower(vdmv.vb_model_year) and lower(v.body_style_description)=lower( ammr.body_style_description) and month(ammr.weekdate) = month(v.lease_end_date) and year(ammr.weekdate) =  year(v.lease_end_date) );
 
 insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
 where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
