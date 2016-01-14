@@ -9,7 +9,7 @@ INSERT OVERWRITE TABLE insights.inventory_report_cached_stg  SELECT
 V.id,
  V.vin,
  V.region_code as countryid,
- V.color as exteriorcolour,
+case when  V.color='null' then NULL else V.color end as exteriorcolour,
  unix_timestamp(V.created_at) as creation_ts,
  v.region_code as countryname,
 coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end) as make,
@@ -28,12 +28,12 @@ G.mileage,
 G.stockage, 
  AV.fuel_type as fueltype,
 coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end) as model,
- coalesce(vdmv.vb_model, case when v.model='null' then  NULL else v.model) as modelref,
+ coalesce(vdmv.vb_model, case when v.model='null' then  NULL else v.model end) as modelref,
  'n/a' as code,
  V.model_year as modelyear,
  V.model_serial_number as model_code,
  0 as auctionprice,
- V.transmission_type as transmission,
+ case when V.transmission_type='null' then NULL else V.transmission_type end as transmission,
  abs(hash(V.transmission_type)) as transmissionid,
  'n/a' as registration,
  0 as vendorstatusid,
@@ -225,16 +225,20 @@ GEO.latitude as latitude,
 GEO.longitude as geo_longitude,
 GEO.submarket as geo_submarket,
 GEO.tim_zone_desc as geo_tim_zone_desc,
-GEO.dma_id as geo_dma_id
+GEO.dma_id as geo_dma_id,
+ammr.mmr as adjusted_mmr,
+l.residual_amount as  residual_amount
 FROM rpm.vehicles_stg V 
 left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join rpm.dealers_cleaned DC on CAST(V.dealer_number as INT)=DC.nna_dealer_number
 left join rpm.dealerships_stg D on D.nna_dealer_number=V.dealer_number
+left join rpm.leases_stg l  on l.vehicle_id = v.id
 left join at.geo GEO on CAST(GEO.zip_code as INT)=DC.physicalzip_postalcode
 left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from  rpm.aim_damages_stg GROUP BY aim_vehicle_id) AD on AD.aim_vehicle_id=AV.id 
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
-left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin;
+left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
+left join  insights.adjusted_mmr ammr on (lower(ammr.make)=lower(vdmv.vb_make) and lower(ammr.model)=lower(vdmv.vb_model) and lower(ammr.model_year)=lower(vdmv.vb_model_year) and lower(v.body_style_description)=lower( ammr.body_style_description) and month(ammr.weekdate) = month(v.lease_end_date) and year(ammr.weekdate) =  year(v.lease_end_date) );
 
 insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
 where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 

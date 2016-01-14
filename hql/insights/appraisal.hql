@@ -4,7 +4,7 @@
 --
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
-SET spark.sql.shuffle.partitions=64;
+SET spark.sql.shuffle.partitions=254;
 INSERT INTO TABLE
     insights.appraisal_tmp
 SELECT
@@ -78,10 +78,11 @@ FROM
     va.count                 as sample_size,
     va.avg_list_price        as value
 from
-    vauto.vauto_market_pricing va on  va.avg_list_price is not NULL
+    vauto.vauto_market_pricing va 
 LEFT OUTER JOIN 
-    insights.segment_map sm ON va.make = sm.make and va.model = sm.model
+    insights.segment_map_dedup sm ON va.make = sm.make and va.model = sm.model
 LEFT OUTER JOIN 
     at.dma_code_id_map g ON va.dma = g.dma_code
+WHERE  va.avg_list_price is not NULL and va.model_year>=2012
 ) as t
 ;

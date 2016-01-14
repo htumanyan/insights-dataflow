@@ -1,5 +1,5 @@
 use ovt;
---drop table ovt_make_model;
+drop table ovt_make_model;
 SET spark.sql.shuffle.partitions=128;
 create table if not exists  ovt_make_model as select 
 mmt.make_desc as make,
@@ -18,7 +18,7 @@ r.pur_amt,
 r.at_sale_nat_mmr
  from ovt.man_ovt_fact_registration_dedup r  join ( 
 select make_model_trim_key, make_desc , model_desc from ovt.man_ovt_dim_make_model_trim group by make_model_trim_key, make_desc, model_desc) mmt
- on mmt.make_model_trim_key = r.make_model_trim_key and unix_timestamp(r.reg_ts)>1420070400;
+ on mmt.make_model_trim_key = r.make_model_trim_key;
 
 drop table make_model_metrics_tmp;
 create table  if not exists make_model_metrics_tmp as select 
