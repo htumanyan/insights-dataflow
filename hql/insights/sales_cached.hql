@@ -6,8 +6,8 @@ drop table if exists insights.sales_report_cached_stg ;
 create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
 
 INSERT INTO  TABLE insights.sales_report_cached_stg select 
-coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
-coalesce(vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
+coalesce(c.best_make_name, vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
+coalesce(c.best_make_name, vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
  v.trim_level as derivative,
@@ -33,9 +33,9 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when V.status='Sold' or V.status='Sold Upstream' then 'Y' else 'N' end as activesale,
-coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
+coalesce(c.model_name, vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(c.model_year, cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
  V.model_serial_number as model_code,
 G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
@@ -330,6 +330,7 @@ left join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join mmr.sales mmr on V.vin = mmr.m_vin;
+left join chrome.chrome_consolidated c on V.vin = c.vin 
 INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
 where ( make='Nissan'  and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
       ( make='Infiniti'  and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90);

@@ -1,5 +1,5 @@
 use chrome;
-drop table if exists chrome.body_types;
+drop table if exists chrome.vehicle_description;
 
 CREATE EXTERNAL TABLE vehicle_description
 (
