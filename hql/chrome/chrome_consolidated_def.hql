@@ -55,7 +55,6 @@ CREATE TABLE chrome_consolidated
  base_inv_high DOUBLE, 
  dest_chrg_low DOUBLE, 
  dest_chrg_high DOUBLE, 
- is_primary VARCHAR(6),
  engine_type_id INT, 
  engine_type VARCHAR(20), 
  fuel_type_id INT, 
