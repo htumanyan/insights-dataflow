@@ -49,7 +49,8 @@ CREATE TABLE inventory_report_cached_tmp
                            VS.Description as StatusDescription,
                            VC.id as vendorcountryid,
                            VC.name as vendorcountryname,
-                           VI.isupstream as isupstram
+                           VI.isupstream as isupstram,
+                           VI.sold as issold
 FROM
    psa.VehicleInformation_stg VI
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
@@ -62,7 +63,7 @@ FROM
    LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.salechanneltypeid 
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
    LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
-   where VI.sold = 0 and  VI.StatusID NOT IN  (32,4);
+   where  VI.StatusID NOT IN  (32,4);
 uncache table inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
 alter table inventory_report_cached_tmp rename to inventory_report_cached;
