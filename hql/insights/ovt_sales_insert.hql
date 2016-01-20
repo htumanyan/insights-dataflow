@@ -281,6 +281,7 @@ from
  join ovt.man_ovt_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
+left join chrome.chrome_consolidated cc on ovt_reg.vin = cc.vin
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
  left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
