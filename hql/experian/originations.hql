@@ -65,15 +65,14 @@ CREATE TABLE `originations`(
 `dma_desc` string   COMMENT'DMA Description from At Geo - human readable'
 );
 
-
 INSERT INTO TABLE originations 
 SELECT
   state_abbr,
   reporting_period,
   experian_dma,
   modelyear,
-  make,
-  model,
+  case when make='UNKNOWN VIN' then NULL else make end as make,
+  case when model='UNKNOWN VIN' then 'UNKNOWN MODEL' else model end as model,
   segment,
   lease_maturity_date,
   estimated_market_cnt,
@@ -88,6 +87,7 @@ SELECT
 FROM originations_stg
 left outer join experian.dma_mapping as GEO on experian_dma=GEO.dma_experian
 ;
+
 cache table originations;
 
 drop table originations_stg;
