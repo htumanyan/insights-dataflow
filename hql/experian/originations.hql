@@ -8,6 +8,8 @@
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"ACURA"|"TL"|"UPSCALE - NEAR LUXURY"|"36"|"Jan2015"|"1"|"1"
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"BMW"|"3-SERIES"|"UPSCALE - NEAR LUXURY"|"36"|"Jan2015"|"2"|"3"
 -- "AK"|"201201"|"ANCHORAGE, AK"|"2012"|"HONDA"|"PILOT"|"CUV - MID RANGE"|"36"|"Jan2015"|"1"|"1"
+-- "TitleState"|"ReportingPeriod"|"GeoLevel"|"VehicleYear"|"VehicleMake"|"VehicleModel"|"VehicleSegment"|"LeaseMaturityDate"|"TotalEstimatedMarketCount"
+-- "AK"|"201201 - 201510"|"ANCHORAGE, AK"|"2011"|"BMW"|"3-SERIES"|"UPSCALE - NEAR LUXURY"|"Nov 2014"|"7"
 
 SET spark.default.parallelism=8;
 
@@ -22,9 +24,7 @@ CREATE EXTERNAL TABLE `originations_stg`(
 `make` string,
 `model` string,
 `segment` string,
-`lease_term_mo` int,
 `lease_maturity_date` string ,
-`matched_cnt` int ,
 `estimated_market_cnt` int
 )
 ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
@@ -43,6 +43,7 @@ cache table `originations_stg`;
 -- OpenCSV serde produces text columns irrespective of the table specification.
 -- Here we convert columns to their ultimate types and also add new columns as necessary
 --
+
 drop  table if exists `originations`;
 CREATE TABLE `originations`(
 `state_abbr` string,
@@ -52,9 +53,7 @@ CREATE TABLE `originations`(
 `make` string,
 `model` string,
 `segment` string,
-`lease_term_mo` int,
 `lease_maturity_date` string ,
-`matched_cnt` int ,
 `estimated_market_cnt` int,
 `reporting_period_ts` int,
 `reporting_period_year` int,
@@ -76,22 +75,19 @@ SELECT
   make,
   model,
   segment,
-  lease_term_mo,
   lease_maturity_date,
-  matched_cnt,
   estimated_market_cnt,
-  unix_timestamp(reporting_period, "yyyyMM"),
-  year(cast(unix_timestamp(reporting_period, "yyyyMM") * 1000 as timestamp)),
-  month(cast(unix_timestamp(reporting_period, "yyyyMM") * 1000 as timestamp)),
-  unix_timestamp(lease_maturity_date, "MMMyyyy"),
-  year(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
-  month(cast(unix_timestamp(lease_maturity_date, "MMMyyyy") * 1000 as timestamp)),
+  unix_timestamp(SUBSTRING(reporting_period, 10, 6), "yyyyMM"),
+  year(cast(unix_timestamp(SUBSTRING(reporting_period, 10, 6), "yyyyMM") * 1000 as timestamp)),
+  month(cast(unix_timestamp(SUBSTRING(reporting_period, 10, 6), "yyyyMM") * 1000 as timestamp)),
+  unix_timestamp(lease_maturity_date, "MMM yyyy"),
+  year(cast(unix_timestamp(lease_maturity_date, "MMM yyyy") * 1000 as timestamp)),
+  month(cast(unix_timestamp(lease_maturity_date, "MMM yyyy") * 1000 as timestamp)),
   GEO.dma_at_geo_id as dma_id,
   GEO.dma_at_geo_desc as dma_desc
 FROM originations_stg
 left outer join experian.dma_mapping as GEO on experian_dma=GEO.dma_experian
 ;
-
 cache table originations;
 
 drop table originations_stg;
