@@ -288,7 +288,6 @@ left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
  join ovt.man_ovt_dim_auction_dedup auction on auction.auction_key = ovt_reg.auction_key and ovt_reg.auction_key >=0
 left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5)
 left join ovt.man_ovt_dim_flndr_dedup ovt_flndr on ovt_reg.flndr_key=ovt_flndr.flndr_key
-left join (select cust_key, bus_subtype_desc, max(unix_timestamp(row_end_dt, 'yyyy-mm-dd hh:mm:ss')) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key
-left join chrome.chrome_consolidated cc on ovt_reg.vin = cc.vin;
+left join (select cust_key, bus_subtype_desc, max(unix_timestamp(row_end_dt, 'yyyy-mm-dd hh:mm:ss')) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key;
 SET spark.sql.shuffle.partitions=1;
 
