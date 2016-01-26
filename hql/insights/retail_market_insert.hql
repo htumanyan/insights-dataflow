@@ -3,16 +3,16 @@ INSERT OVERWRITE TABLE insights.retail_market_cached_tmp SELECT
 rm.vin                             ,
 rm.postal_code                     ,
 rm.stock_number                    ,
-rm.model_year                      ,
-rm.make                            ,
-rm.model                           ,
+coalesce(cc.model_year, rm.model_year),
+coalesce(cc.best_make_name, rm.make),
+coalesce(cc.model_name, cc.best_model_name, rm.model),
 rm.series                          ,
 rm.series_detail                   ,
 rm.odometer                        ,
 rm.new_used                        ,
 rm.is_certified                    ,
-rm.body_description                ,
-rm.body_type                       ,
+coalesce(cc.body_type_name, rm.body_description),
+coalesce(cc.body_type, rm.body_type),
 rm.body_door_count                 ,
 rm.body_cab_style                  ,
 rm.body_bed_style                  ,
@@ -24,7 +24,7 @@ rm.engine_fuel_type                ,
 rm.transmission_description        ,
 rm.transmission_type               ,
 rm.transmission_gear_count         ,
-rm.drive_train_type                ,
+coalesce(cc.drivetrain, rm.drive_train_type),
 rm.exterior_color                  ,
 rm.exterior_base_color             ,
 rm.interior_description            ,
@@ -33,7 +33,7 @@ rm.interior_material               ,
 rm.categorized_equipment_ids       ,
 coalesce(s.days_ininventory, rm.days_ininventory)                ,
 rm.veh_segment                     ,
-rm.veh_type                        ,
+coalesce(cc.body_type, rm.veh_type),
  case 
    when unix_timestamp(rm.created, 'MM/dd/yyyy HH:mm:ss aa') is null then unix_timestamp(rm.created, 'dd-MMM-yy hh.mm.ss.SSSSSS aa' ) 
    else unix_timestamp(rm.created, 'MM/dd/yyyy HH:mm:ss aa') end as market_created, 
@@ -82,4 +82,6 @@ dso.inventory
 from vauto.vauto_recent_market_data_dedup rm  
 left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created and rm.is_certified=s.is_certified
 left join at.geo g on rm.postal_code = cast(g.zip_code as int)
-left join dso_metrics dso on rm.make = dso.make and rm.model = dso.model and rm.model_year=dso.modelyear and g.dma_id = dso.geo_dma_id and to_date(from_unixtime(unix_timestamp(rm.last_seen, 'MM/dd/yyyy HH:mm:ss aa'))) = dso.date;
+left join dso_metrics dso on rm.make = dso.make and rm.model = dso.model and rm.model_year=dso.modelyear and g.dma_id = dso.geo_dma_id and to_date(from_unixtime(unix_timestamp(rm.last_seen, 'MM/dd/yyyy HH:mm:ss aa'))) = dso.date
+left join chrome.chrome_consolidated cc on rm.vin = cc.vin;
+

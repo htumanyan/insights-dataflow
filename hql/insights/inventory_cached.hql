@@ -12,26 +12,26 @@ V.id,
 case when  V.color='null' then NULL else V.color end as exteriorcolour,
  unix_timestamp(V.created_at) as creation_ts,
  v.region_code as countryname,
-coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end) as make,
-coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end) as makeref,
+coalesce(cc.best_make_name, vdmv.vb_make, case when v.make='null' then NULL else v.make end) as make,
+coalesce(cc.best_make_name, vdmv.vb_make, case when v.make='null' then NULL else v.make end) as makeref,
  0 as salechannelid,
   'none' as salechannel,
  'none' as commercialconceptname,
  D.name as vendortradingname,
  D.id as vendorid,
- V.trim_level as derivative,
- abs(hash(v.trim_level)) as derivativeid,
+coalesce(cc.trim_name, V.trim_level) as derivative,
+abs(hash(coalesce(cc.trim_name,v.trim_level))) as derivativeid,
  0 as sourceid,
  'n/a' as sourcename,
  AD.repair_cost as totaldamagesnetprice,
 G.mileage,
 G.stockage, 
- AV.fuel_type as fueltype,
-coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end) as model,
- coalesce(vdmv.vb_model, case when v.model='null' then  NULL else v.model end) as modelref,
+coalesce(cc.fuel_type, AV.fuel_type) as fueltype,
+coalesce(cc.model_name, vdmv.vb_model,  case when v.model='null' then NULL else v.model end) as model,
+coalesce(cc.model_name, vdmv.vb_model, case when v.model='null' then  NULL else v.model end) as modelref,
  'n/a' as code,
- V.model_year as modelyear,
- V.model_serial_number as model_code,
+coalesce(cc.model_year, V.model_year) as modelyear,
+coalesce(cc.mfr_model_code, V.model_serial_number) as model_code,
  0 as auctionprice,
  case when V.transmission_type='null' then NULL else V.transmission_type end as transmission,
  abs(hash(V.transmission_type)) as transmissionid,
@@ -238,10 +238,13 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id=V.id 
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
+left join chrome.chrome_consolidated cc on v.vin = cc.vin
 left join  insights.adjusted_mmr ammr on (lower(ammr.make)=lower(vdmv.vb_make) and lower(ammr.model)=lower(vdmv.vb_model) and lower(ammr.model_year)=lower(vdmv.vb_model_year) and lower(v.body_style_description)=lower( ammr.body_style_description) and month(ammr.weekdate) = month(v.lease_end_date) and year(ammr.weekdate) =  year(v.lease_end_date) );
 
 insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
 where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
-      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90);
+      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90)
+;
+
 SET spark.sql.shuffle.partitions=1;
 

@@ -2,12 +2,12 @@
 SET spark.sql.shuffle.partitions=200;
 
 INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
-coalesce(ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
-coalesce(ovt_make_model.make_desc, ext.ad_model_desc, vdmv.vb_make) as makeref,
+coalesce(cc.best_make_name, ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
+coalesce(cc.best_make_name, ovt_make_model.make_desc, ext.ad_model_desc, vdmv.vb_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
-coalesce(ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim) as derivative,
-abs(hash(coalesce(ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
+coalesce(cc.model_name, ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim) as derivative,
+abs(hash(coalesce(cc.trim_name, cc.best_trim_name, ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
 'n/a' as registrationdate,
 coalesce(ext.ad_exterior_color_desc, vdmv.vb_ext_color_generic_descr) as exteriorcolour,
 unix_timestamp(ovt_reg.reg_ts)  as creationdate,
@@ -29,10 +29,10 @@ osc.buyerid as buyerid,
 osc.buyercode as buyercode,
 0 as deliverylocation,
 case when ovt_reg.sold_ts is NULL  then 'Y' else 'N' end as activesale,
-coalesce(ovt_make_model.model_desc, ext.ad_model_desc,vdmv.vb_model,  mmr.mmr_model) as model,
+coalesce(cc.best_model_name, cc.model_name, ovt_make_model.model_desc, ext.ad_model_desc,vdmv.vb_model,  mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(ovt_reg.model_yr, ext.ad_year, cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
-coalesce(ovt_make_model.model_desc, ext.ad_model_desc, vdmv.ev_model_id) as model_code,
+coalesce(cc.model_year, ovt_reg.model_yr, ext.ad_year, cast(vdmv.vb_model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(cc.model_id, ovt_make_model.model_desc, ext.ad_model_desc, vdmv.ev_model_id) as model_code,
 ovt_reg.vehicle_mileage_cnt,
 ovt_reg.ireg_to_sale_days  as daysonsale,
 ovt_reg.cur_floor_price  as auctionprice,
@@ -48,7 +48,7 @@ coalesce(ext.ad_veh_subtype, vdmv.vb_vehicle_type) as vehicle_type,
 1 as countryid,
 auction.country_nm as countryname,  
 0 as totaldamagesnetprice,
-coalesce(ext.ad_engine_fuel_type, vdmv.ev_engine_fuel_type_descr) as fueltype,
+coalesce(cc.fuel_type, ext.ad_engine_fuel_type, vdmv.ev_engine_fuel_type_descr) as fueltype,
 ovt_reg.uniq_reg_id as vehicleid, 
 ovt_reg.vin,
 0 as sourceid,
@@ -281,6 +281,7 @@ from
  join ovt.man_ovt_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
+left join chrome.chrome_consolidated cc on ovt_reg.vin = cc.vin
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
  left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin

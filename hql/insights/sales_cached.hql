@@ -6,12 +6,12 @@ drop table if exists insights.sales_report_cached_stg ;
 create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
 
 INSERT INTO  TABLE insights.sales_report_cached_stg select 
-coalesce(vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
-coalesce(vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
+coalesce(CC.best_make_name, vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
+coalesce(CC.best_make_name, vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
- v.trim_level as derivative,
-abs(hash(v.trim_level)) as derivativeid,
+coalesce(CC.best_trim_name, CC.trim_name, v.trim_level) as derivative,
+abs(hash(coalesce(CC.best_trim_name, CC.trim_name, v.trim_level))) as derivativeid,
 'n/a' as registrationdate,
  V.color as exteriorcolour,
 P.created_at as creationdate,
@@ -33,9 +33,9 @@ P.purchase_price as sold_price,
 'n/a' as buyercode,
 0 as deliverylocation,
 case when V.status='Sold' or V.status='Sold Upstream' then 'Y' else 'N' end as activesale,
-coalesce(vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
+coalesce(CC.model_name, vdmv.vb_model,  case when v.model='null' then NULL else v.model end, mmr.mmr_model) as model,
 'n/a' as code,
-coalesce(cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
+coalesce(CC.model_year, cast(V.model_year as int), mmr.mmr_model_year) as modelyear,
  V.model_serial_number as model_code,
 G.mileage,
 datediff(P.created_at, G.created_at) as daysonsale,
@@ -52,7 +52,7 @@ abs(hash(V.transmission_type)) as transmissionid,
 1 as countryid,
 'United States' as countryname,  
  AD.repair_cost as totaldamagesnetprice,
- AV.fuel_type as fueltype,
+coalesce(CC.fuel_type, AV.fuel_type) as fueltype,
 V.id as vehicleid, 
  V.vin,
 0 as sourceid,
@@ -329,7 +329,9 @@ left join (select aim_vehicle_id, SUM(estimated_repair_cost) as repair_cost from
 left join (select *,  datediff( from_unixtime(unix_timestamp()), to_date(created_at)) as stockage from rpm.groundings_stg) G on G.vehicle_id = V.id
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
-left join mmr.sales mmr on V.vin = mmr.m_vin;
+left join mmr.sales mmr on V.vin = mmr.m_vin
+left join chrome.chrome_consolidated CC on V.vin = CC.vin;
+ 
 INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
 where ( make='Nissan'  and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
       ( make='Infiniti'  and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90);
