@@ -1,5 +1,5 @@
 use insights;
-SET spark.sql.shuffle.partitions=124;
+SET spark.sql.shuffle.partitions=32;
 
 
 drop table if exists insights.sales_report_cached_stg ;
@@ -233,7 +233,7 @@ unix_timestamp(V.lease_start_date, 'yyy-mm-dd') as rpm_lease_start_ts,
 unix_timestamp(V.lease_end_date, 'yyy-mm-dd') as rpm_lease_end_ts,
 v.status as rpm_status,
 v.region_code as rpm_region_code,
-v.branch as rpm_branch,
+regexp_replace(v.branch, '^[0]*', '') as rpm_branch,
 NULL as polk_corporation,
 NULL as polk_report_year_month,
 NULL as polk_transaction_date,
@@ -331,8 +331,8 @@ left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join mmr.sales mmr on V.vin = mmr.m_vin;
 INSERT into insights.sales_report_cached_tmp SELECT * from  insights.sales_report_cached_stg
-where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= '73' and rpm_branch >='50') or 
-      ( make='Infiniti' and rpm_status='On Lease' and rpm_region_code=29 and  rpm_branch <= '98' and rpm_branch >= '90');
+where ( make='Nissan'  and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 
+      ( make='Infiniti'  and rpm_region_code=29 and  rpm_branch <= 98 and rpm_branch >= 90);
 drop table insights.sales_report_cached_stg;
 
 SET spark.sql.shuffle.partitions=1;
