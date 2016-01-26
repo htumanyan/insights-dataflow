@@ -46,16 +46,24 @@ CREATE TABLE inventory_report_cached_tmp
                            VDB.mileagebandname,
                            VDB.mileagebandid,
                            VS.BaseStatusId as StatusID,
-                           VS.Description as StatusDescription
+                           VS.Description as StatusDescription,
+                           VC.id as vendorcountryid,
+                           VC.name as vendorcountryname,
+                           VI.isupstream as isupstram,
+                           VI.sold as issold
 FROM
    psa.VehicleInformation_stg VI
    INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
    JOIN psa.Vendor_stg V on VI.Vendorid = V.id
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
+   LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
+   LEFT OUTER  JOIN psa.Country_stg VC ON VC.id = VD.countryid
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
    LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
    LEFT OUTER  JOIN psa.SaleChannelTypeMaster_stg  CommercialConcept ON CommercialConcept.SaleChannelTypeID = SCD.salechanneltypeid 
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
-   LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid;
+   LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
+   where  VI.StatusID NOT IN  (32,4);
 uncache table inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
 alter table inventory_report_cached_tmp rename to inventory_report_cached;
