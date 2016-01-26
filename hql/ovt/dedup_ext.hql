@@ -1,3 +1,4 @@
+drop table if exists ovt.man_ovt_fact_registration_ext_dedup;
 create table if not exists ovt.man_ovt_fact_registration_ext_dedup as 
 select * from (
 select *,

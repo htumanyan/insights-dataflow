@@ -17,6 +17,14 @@
 					<name>oozie.hive.defaults</name>
 					<value>/tmp/oozie-hive-site.xml</value>
 				</property>
+				<property>
+					<name>oozie.launcher.mapreduce.map.memory.mb</name>
+            				<value>3072</value>
+          			</property>
+            			<property>
+                			<name>oozie.launcher.mapreduce.map.java.opts</name>
+                			<value>-Xmx2057m</value>
+            			</property>			
 			</configuration>
 				<arg>import</arg>
 				<arg>--connect</arg>
@@ -42,6 +50,7 @@
 					<arg>--map-column-hive</arg>
 					<arg>@action.map_column</arg>
 				#end
+                                <arg>--verbose</arg>
 				<file>/tmp/hive-site.xml#hive-site.xml</file>
 		</sqoop>
 		<ok to="@action.next_action" />

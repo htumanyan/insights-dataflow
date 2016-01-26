@@ -1,11 +1,5 @@
  use insights;
-set mapreduce.input.fileinputformat.split.maxsize=34396550;
-set hive.auto.convert.join=false;
- set hive.enforce.bucketing = true; 
-SET spark.sql.shuffle.partitions=64;
-set spark.sql.autoBroadcastJoinThreshold=100000000;
-set hive.exec.counters.pull.interval = 500;
-
+SET spark.sql.shuffle.partitions=200;
 
 INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
 coalesce(ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
@@ -283,16 +277,16 @@ concat_ws(', ',
 cust.bus_subtype_desc as ovt_customer_type
 from 
  ovt.man_ovt_fact_registration_dedup ovt_reg  
- join ovt.man_ovt_fact_registration_ext ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013 and ovt_reg.reg_dt_key=ext.reg_dt_key  
+ join ovt.man_ovt_fact_registration_ext_dedup ext on ovt_reg.reg_key=ext.reg_key  and ovt_reg.sold_ts is not null and year(ovt_reg.sold_ts) > 2013 and ovt_reg.reg_dt_key=ext.reg_dt_key  
  join ovt.man_ovt_dim_make_model_trim ovt_make_model on ovt_reg.make_model_trim_key = ovt_make_model.make_model_trim_key 
 join ovt.ovt_seller_customer_reg osc on osc.reg_key = ovt_reg.reg_key
 join ovt.make_model_metrics om on om.reg_key = ovt_reg.reg_key
  left join vdm.vehicles vdmv on vdmv.vb_vin=ovt_reg.vin 
  left join vdm.vdm_options_packages vdmo on ovt_reg.vin = vdmo.vin
 left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
- join ovt.man_ovt_dim_auction auction on auction.auction_key = ovt_reg.auction_key and ovt_reg.auction_key >=0
+ join ovt.man_ovt_dim_auction_dedup auction on auction.auction_key = ovt_reg.auction_key and ovt_reg.auction_key >=0
 left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5)
-left join ovt.man_ovt_dim_flndr ovt_flndr on ovt_reg.flndr_key=ovt_flndr.flndr_key
+left join ovt.man_ovt_dim_flndr_dedup ovt_flndr on ovt_reg.flndr_key=ovt_flndr.flndr_key
 left join (select cust_key, bus_subtype_desc, max(unix_timestamp(row_end_dt, 'yyyy-mm-dd hh:mm:ss')) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key;
 SET spark.sql.shuffle.partitions=1;
 
