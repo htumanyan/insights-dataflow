@@ -1,5 +1,5 @@
 use psa_shark;
-SET spark.sql.shuffle.partitions=6;
+SET spark.sql.shuffle.partitions=32;
 DROP TABLE IF EXISTS sales_report_cached_tmp;
 CREATE TABLE sales_report_cached_tmp
  AS SELECT VI.Make,
@@ -93,7 +93,7 @@ from
    psa.VehicleInformation_stg VI
    JOIN psa.locations_stg L on L.id=VI.locationid
    INNER JOIN psa.BuyerVehiclePurchase_stg BVP ON VI.VehicleInstanceID = BVP.VehicleID and year(BVP.VehiclePurchaseDt) not in(1900)
-   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
+   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleID = VDB.VehicleId
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, buyerpremiumcharge as BuyerPremium  from psa.buyerpremiumcharge_stg t limit 1) BPC ON BPC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER JOIN (select t.vehicleinstanceid as VehicleInstanceID, deliverycharges as Delivery  from psa.getdeliverycharges t limit 1) GDC ON GDC.VehicleInstanceID = BVP.VehicleID
    LEFT OUTER  JOIN psa.Buyer_stg B ON B.ID = BVP.buyerid

@@ -53,7 +53,7 @@ CREATE TABLE inventory_report_cached_tmp
                            VI.sold as issold
 FROM
    psa.VehicleInformation_stg VI
-   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleInstanceID = VDB.VehicleInstanceId
+   INNER JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.VehicleID = VDB.VehicleId
    JOIN psa.Vendor_stg V on VI.Vendorid = V.id
    LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
    LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
