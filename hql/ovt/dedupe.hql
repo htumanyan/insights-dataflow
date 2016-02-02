@@ -223,7 +223,7 @@ days_to_collect_buyer_funds,
 condition_product,
 image_product,
 ingestion_timestamp,
-row_number() over ( partition by uniq_reg_id order by theyear, themonth, theday, cast(reg_key as int) desc ) as group_rank 
+row_number() over ( partition by uniq_reg_id order by ACT_OFFRNG_START_TS , DW_UPDATED_ON  desc ) as group_rank 
 from man_ovt_fact_registration
 ) t where group_rank=1;
 
