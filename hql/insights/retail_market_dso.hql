@@ -95,6 +95,9 @@ create table if not exists dso_metrics_tmp as select
 drop  table dso;
 drop table dso_dates_tmp;
 drop table dso_metrics_pre ;
-drop table dso_metrics_tmp ;
+drop table dso_metrics_bkp;
+
+alter table dso_metrics rename to dso_metrics_bkp ;
+alter table dso_metrics_tmp rename to dso_metrics ;
 drop table dso_sold_daily_tmp; 
  
