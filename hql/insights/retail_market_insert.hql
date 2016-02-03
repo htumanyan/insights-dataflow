@@ -77,11 +77,10 @@ NULL,
 NULL,
 'vauto' as source_name,
 0 as source_id,
-dso.daily_sold,
-dso.inventory
+NULL,
+NULL
 from vauto.vauto_recent_market_data_dedup rm  
 left join vauto.vauto_sold_market_vehicle_dedup s  on  rm.vin = s.vin and rm.created = s.created and rm.is_certified=s.is_certified
 left join at.geo g on rm.postal_code = cast(g.zip_code as int)
-left join dso_metrics dso on rm.make = dso.make and rm.model = dso.model and rm.model_year=dso.modelyear and g.dma_id = dso.geo_dma_id and to_date(from_unixtime(unix_timestamp(rm.last_seen, 'MM/dd/yyyy HH:mm:ss aa'))) = dso.date
 left join chrome.chrome_consolidated cc on rm.vin = cc.vin;
 
