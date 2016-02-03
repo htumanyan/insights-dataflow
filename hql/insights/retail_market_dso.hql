@@ -1,13 +1,13 @@
 use insights;
 set  spark.sql.shuffle.partitions=200;
 
---drop table if exists dso_dates_tmp;
+drop table if exists dso_dates_tmp;
 create table if not exists  dso_dates_tmp as select * from(
 select distinct to_date(from_unixtime(market_created)) as dt from retail_market_cached union
 select distinct to_date(from_unixtime(market_last_seen)) as dt from retail_market_cached union
 select distinct to_date(from_unixtime(sales_last_seen)) as dt from retail_market_cached) t;
 
---drop  table if exists dso_sold_daily_tmp;
+drop  table if exists dso_sold_daily_tmp;
 create table if not exists dso_sold_daily_tmp as select 
    make,
    model,
@@ -23,7 +23,7 @@ create table if not exists dso_sold_daily_tmp as select
    on to_date(from_unixtime(RM.sales_last_seen)) = DD.dt 
  group by body_type, body_description, is_certified, veh_segment, make, model, geo_dma_id, modelyear,   DD.dt  order by DD.dt  desc;
 
---drop table dso;
+drop table dso;
 create table if not exists dso as 
 select 
 make,
@@ -92,8 +92,9 @@ create table if not exists dso_metrics_tmp as select
    sum(coalesce(daily_sold, 0 ) ) over (partition by make, model, modelyear, geo_dma_id,segment, is_certified, body_type, body_description  order by unix_timestamp(date, 'yyyy-MM-dd') range between 3888000 preceding and current row) as count
  from dso_metrics_pre ;
 
---drop  table dso;
---drop table dso_dates_tmp;
---drop table dso_metrics_tmp ;
---drop table dso_sold_daily_tmp; 
+drop  table dso;
+drop table dso_dates_tmp;
+drop table dso_metrics_pre ;
+drop table dso_metrics_tmp ;
+drop table dso_sold_daily_tmp; 
  
