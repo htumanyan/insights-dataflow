@@ -6,12 +6,12 @@ drop table if exists insights.sales_report_cached_stg ;
 create table insights.sales_report_cached_stg like insights.sales_report_cached_tmp; 
 
 INSERT INTO  TABLE insights.sales_report_cached_stg select 
-coalesce(CC.best_make_name, vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
-coalesce(CC.best_make_name, vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
+coalesce(CC.division, vdmv.vb_make, case when v.make='null' then NULL else v.make end, mmr.mmr_make) as make,
+coalesce(CC.CC.division, vdmv.vb_make,  case when v.make='null' then NULL else v.make end, mmr.mmr_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
-coalesce(CC.best_trim_name, CC.trim_name, v.trim_level) as derivative,
-abs(hash(coalesce(CC.best_trim_name, CC.trim_name, v.trim_level))) as derivativeid,
+v.trim_level as derivative,
+abs(hash(cc.style_name,  v.trim_level)) as derivativeid,
 'n/a' as registrationdate,
  V.color as exteriorcolour,
 P.created_at as creationdate,
