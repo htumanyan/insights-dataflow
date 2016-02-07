@@ -12,9 +12,6 @@ use default;
 
 drop table if exists chrome.chrome_consolidated_tmp;
 
-
-
-
 CREATE TABLE chrome.chrome_consolidated_tmp
 AS
 SELECT
@@ -55,7 +52,7 @@ FROM
  LEFT JOIN chrome.division_definition as dd ON (s.division_id = dd.division_id)
  LEFT JOIN chrome.model_definition as md ON ( s.model_id = md.model_id)
  LEFT JOIN chrome.body_type bt 
- ON (bt.input_row_num = s.input_row_num and bt.source_folder = s.source_folder and bt.style_id = s.style_id)
+ ON (bt.input_row_num = s.input_row_num and bt.source_folder = s.source_folder and bt.style_id = s.style_id and is_primary = true)
  JOIN chrome.vehicle_description vd 
  ON (s.input_row_num = vd.input_row_num and s.source_folder = vd.source_folder)
  JOIN chrome.engine as e 
