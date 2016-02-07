@@ -1,8 +1,6 @@
-use chrome;
-
 drop table if exists chrome.category_definition;
 
-CREATE EXTERNAL TABLE category_definition 
+CREATE EXTERNAL TABLE chrome.category_definition 
 (
  group_id INT , 
  group_name VARCHAR(30) , 
@@ -15,7 +13,7 @@ CREATE EXTERNAL TABLE category_definition
  country VARCHAR(3) , 
  language VARCHAR(3)
 ) 
-ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' 
 STORED AS TEXTFILE 
 LOCATION '/data/database/chrome/category_definition';
 

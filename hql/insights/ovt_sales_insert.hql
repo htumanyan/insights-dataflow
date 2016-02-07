@@ -2,12 +2,12 @@
 SET spark.sql.shuffle.partitions=200;
 
 INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
-coalesce(cc.best_make_name, ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
-coalesce(cc.best_make_name, ovt_make_model.make_desc, ext.ad_model_desc, vdmv.vb_make) as makeref,
+coalesce(cc.division_name, ovt_make_model.make_desc, ext.ad_make_desc, vdmv.vb_make, mmr.mmr_make) as make,
+coalesce(cc.best_m, ovt_make_model.make_desc, ext.ad_model_desc, vdmv.vb_make) as makeref,
  'n/a' as registration,
  'n/a' as chassis,
 coalesce(cc.model_name, ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim) as derivative,
-abs(hash(coalesce(cc.trim_name, cc.best_trim_name, ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
+abs(hash(coalesce(ovt_make_model.trim_desc, ext.ad_trim_desc, vdmv.ev_trim))) as derivativeid,
 'n/a' as registrationdate,
 coalesce(ext.ad_exterior_color_desc, vdmv.vb_ext_color_generic_descr) as exteriorcolour,
 unix_timestamp(ovt_reg.reg_ts)  as creationdate,
