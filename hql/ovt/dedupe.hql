@@ -6,6 +6,6 @@ create table if not exists man_ovt_fact_registration_dedup_stg as select
 from ( select 
 *,
 row_number() over ( partition by uniq_reg_id order by ACT_OFFRNG_START_TS desc , DW_UPDATED_ON  desc ) as group_rank 
-from man_ovt_fact_registration where model_yr>=2010
+from man_ovt_fact_registration where model_yr>=2010 and uniq_reg_id is not null and uniq_reg_id != 'null'
 ) t where group_rank=1;
 
