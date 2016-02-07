@@ -24,7 +24,7 @@ create table if not exists dso_sold_daily_tmp as select
    on to_date(from_unixtime(RM.sales_last_seen)) = DD.dt 
  group by body_type, body_description, is_certified, veh_segment, make, model, geo_dma_desc, geo_dma_id, modelyear,   DD.dt  order by DD.dt  desc;
 
---drop table dso;
+drop table dso;
 create table if not exists dso as 
 select 
 make,
