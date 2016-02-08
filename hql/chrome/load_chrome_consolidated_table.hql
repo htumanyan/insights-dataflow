@@ -10,8 +10,13 @@ cache table category_definition;
 
 use default;
 
-drop table if exists chrome.chrome_consolidated_tmp;
+drop  table if exists chrome.style_dedup;
+create table if not exists chrome.style_dedup as select *
+from (
+select *,
+row_number() over (partition by input_row_num, source_folder order by style_name) as group_rank from  chrome.style ) t  where group_rank=1;
 
+drop table if exists chrome.chrome_consolidated_tmp;
 CREATE TABLE chrome.chrome_consolidated_tmp
 AS
 SELECT
