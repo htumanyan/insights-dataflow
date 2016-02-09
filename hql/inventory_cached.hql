@@ -1,6 +1,6 @@
 use psa_shark;
 SET spark.sql.shuffle.partitions=6;
---drop table if exists SessionInfoUpstream_tmp;
+drop table if exists SessionInfoUpstream_tmp;
 create table if not exists SessionInfoUpstream_tmp as
 select  vehicleid, collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
 select VI.vehicleid, S.saleschanneltypeid, SM.SaleChannelTypeName, SS.SalesSessionID
@@ -19,7 +19,7 @@ join  psa.SalesSessionVehicles_stg S on  VI.vehicleid = S.vehicleInstanceId
 DIstribute by VI.vehicleid sort by SS.SalesSessionID desc
 ) t group by   vehicleid;
 
---drop table if exists SessionInfo_tmp;
+drop table if exists SessionInfo_tmp;
 create table if not exists SessionInfo_tmp as
 select  vehicleid,  collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
 select VI.vehicleid, S.saleschanneltypeid , SM.SaleChannelTypeName, SS.SalesSessionID
