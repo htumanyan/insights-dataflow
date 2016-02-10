@@ -2,43 +2,40 @@ use psa_shark;
 SET spark.sql.shuffle.partitions=6;
 drop table if exists SessionInfoUpstream_tmp;
 create table if not exists SessionInfoUpstream_tmp as
-select  vehicleid, collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
-select VI.vehicleid, S.saleschanneltypeid, SM.SaleChannelTypeName, SS.SalesSessionID
+select vehicleinstanceid, collect_list(case when SaleChannelTypeName is null then 'null' else SaleChannelTypeName end)[0] as SaleChannelTypeName, collect_list(case when SalesChannelTypeId is null then -1 else SalesChannelTypeId end)[0] as SaleChannelTypeId from (
+select VI.id as vehicleinstanceid,  S.saleschanneltypeid, SM.SaleChannelTypeName, SS.SalesSessionID,S.id as ssv_id
 FROM
-psa.vehicleInformation_Stg  VI
-join  psa.SalesSessionVehicles_stg S on  VI.vehicleid = S.vehicleInstanceId
+psa.VehicleInstance_Stg  VI
+join  psa.SalesSessionVehicles_stg S on  VI.id = S.vehicleInstanceId
                                                         INNER JOIN psa.SalesSessionSteps_stg SS ON S.SalesSessionStepID = SS.ID
                                                         INNER JOIN psa.SalesSessions_stg SalesSessions  ON SS.SalesSessionID = SalesSessions.ID
                                                         left  join psa.SaleChannelTypeMaster_stg SM on SM.SaleChannelTypeID = S.saleschanneltypeid
-                                        WHERE   S.VehicleInstanceID = VI.vehicleid AND
+                                        WHERE   S.VehicleInstanceID = VI.id AND
                                                         VI.StatusID = 47 AND
                                                         SS.isActive = 1 AND
                                                         S.IsActive = 1 AND
                                                         SS.Status NOT IN (5) AND
                                                         SalesSessions.Status NOT IN(5)
-DIstribute by VI.vehicleid sort by SS.SalesSessionID desc
-) t group by   vehicleid;
+DIstribute by vehicleinstanceid sort by ssv_id desc
+) t group by  vehicleinstanceid;
 
 drop table if exists SessionInfo_tmp;
 create table if not exists SessionInfo_tmp as
-select  vehicleid,  collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
-select VI.vehicleid, S.saleschanneltypeid , SM.SaleChannelTypeName, SS.SalesSessionID
+select vehicleinstanceid, collect_list(case when SaleChannelTypeName is null then 'null' else SaleChannelTypeName end)[0] as SaleChannelTypeName, collect_list(case when SalesChannelTypeId is null then -1 else SalesChannelTypeId end)[0] as SaleChannelTypeId from (
+select S.vehicleinstanceid as vehicleinstanceid, S.saleschanneltypeid , SM.SaleChannelTypeName, SS.SalesSessionID, S.id as ssv_id
 FROM
-psa.vehicleInformation_Stg  VI
-join  psa.SalesSessionVehicles_stg S on  VI.vehicleid = S.vehicleInstanceId
+   psa.SalesSessionVehicles_stg S
                                                         INNER JOIN psa.SalesSessionSteps_stg SS ON S.SalesSessionStepID = SS.ID
                                                         INNER JOIN psa.SalesSessions_stg SalesSessions  ON SS.SalesSessionID = SalesSessions.ID
                                                         left  join psa.SaleChannelTypeMaster_stg SM on SM.SaleChannelTypeID = S.saleschanneltypeid
-                                        WHERE   S.VehicleInstanceID = VI.vehicleid AND
+                                        WHERE
                                                 SS.isActive = 1 AND
                                                 S.IsActive = 1 AND
                                                 SS.Status NOT IN (4,5) AND
                                                 SalesSessions.Status NOT IN (4,5)
 
-DIstribute by VI.vehicleid sort by SS.SalesSessionID desc
-) t group by   vehicleid;
-
-
+DIstribute by vehicleinstanceid  sort by ssv_id desc
+) t group by  vehicleinstanceid;
 
 DROP TABLE IF EXISTS inventory_report_cached_tmp;
 CREATE TABLE inventory_report_cached_tmp
