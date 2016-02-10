@@ -92,23 +92,24 @@ CREATE TABLE inventory_report_cached_tmp
                            VI.isupstream as isupstram,
                            VI.sold as issold
 FROM
-   psa.VehicleInformation_stg VI
+psa.VehicleInstance_stg VIS
+   join psa.VehicleInformation_stg VI on VIS.vehicleId= VI.vehicleid
    JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.vehicleid = VDB.vehicleid
-   JOIN psa.Vendor_stg V on VI.Vendorid = V.id
-   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
+   JOIN psa.Vendor_stg V on VIS.Vendorid = V.id
+   JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VIS.vendorid
    LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
    LEFT OUTER  JOIN psa.Country_stg VC ON VC.id = VD.countryid
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
-   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT JOIN SessionInfo_tmp SessionInfo on SessionInfo.vehicleid = VI.vehicleId
+   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD  ON  SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
+   LEFT JOIN   SessionInfo_tmp SessionInfo on SessionInfo.vehicleinstanceid = VIS.Id
    LEFT JOIN  psa.SaleChannelTypeMaster_stg SM  ON SessionInfo.SaleChannelTypeId = SM.SaleChannelTypeID
-   LEFT JOIN  psa.SaleChannelTypeTranslation_stg ST ON ST.SaleChannelTypeID = SessionInfo.SaleChannelTypeID AND ST.VendorID = VI.vendorId AND ST.LanguageID = 1
-   LEFT JOIN  SessionInfoUpstream_tmp SessionInfoUpstream on SessionInfoUpstream.vehicleID = VI.vehicleId
+   LEFT JOIN  psa.SaleChannelTypeTranslation_stg ST ON ST.SaleChannelTypeID = SessionInfo.SaleChannelTypeID AND ST.VendorID = VIS.vendorId AND ST.LanguageID = 1
+   LEFT JOIN  SessionInfoUpstream_tmp SessionInfoUpstream on SessionInfoUpstream.vehicleinstanceID = VIS.Id
    LEFT JOIN  psa.SaleChannelTypeMaster_stg SMU ON SessionInfoUpstream.SaleChannelTypeId = SMU.SaleChannelTypeID
-   LEFT JOIN  psa.SaleChannelTypeTranslation_stg STU  ON STU.SaleChannelTypeID = SessionInfoUpstream.SaleChannelTypeID AND STU.VendorID = VI.vendorId  AND STU.LanguageID = 1
+   LEFT JOIN  psa.SaleChannelTypeTranslation_stg STU  ON STU.SaleChannelTypeID = SessionInfoUpstream.SaleChannelTypeID AND STU.VendorID = VIS.vendorId  AND STU.LanguageID = 1
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
-   LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
-   where  VI.StatusID NOT IN  (32,4);
+   where  VI.StatusID NOT IN  (32);
 uncache table inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
 alter table inventory_report_cached_tmp rename to inventory_report_cached;
