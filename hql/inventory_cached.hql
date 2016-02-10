@@ -2,43 +2,40 @@ use psa_shark;
 SET spark.sql.shuffle.partitions=6;
 drop table if exists SessionInfoUpstream_tmp;
 create table if not exists SessionInfoUpstream_tmp as
-select  vehicleid, collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
-select VI.vehicleid, S.saleschanneltypeid, SM.SaleChannelTypeName, SS.SalesSessionID
+select vehicleinstanceid, collect_list(case when SaleChannelTypeName is null then 'null' else SaleChannelTypeName end)[0] as SaleChannelTypeName, collect_list(case when SalesChannelTypeId is null then -1 else SalesChannelTypeId end)[0] as SaleChannelTypeId from (
+select VI.id as vehicleinstanceid,  S.saleschanneltypeid, SM.SaleChannelTypeName, SS.SalesSessionID,S.id as ssv_id
 FROM
-psa.vehicleInformation_Stg  VI
-join  psa.SalesSessionVehicles_stg S on  VI.vehicleid = S.vehicleInstanceId
+psa.VehicleInstance_Stg  VI
+join  psa.SalesSessionVehicles_stg S on  VI.id = S.vehicleInstanceId
                                                         INNER JOIN psa.SalesSessionSteps_stg SS ON S.SalesSessionStepID = SS.ID
                                                         INNER JOIN psa.SalesSessions_stg SalesSessions  ON SS.SalesSessionID = SalesSessions.ID
                                                         left  join psa.SaleChannelTypeMaster_stg SM on SM.SaleChannelTypeID = S.saleschanneltypeid
-                                        WHERE   S.VehicleInstanceID = VI.vehicleid AND
+                                        WHERE   S.VehicleInstanceID = VI.id AND
                                                         VI.StatusID = 47 AND
                                                         SS.isActive = 1 AND
                                                         S.IsActive = 1 AND
                                                         SS.Status NOT IN (5) AND
                                                         SalesSessions.Status NOT IN(5)
-DIstribute by VI.vehicleid sort by SS.SalesSessionID desc
-) t group by   vehicleid;
+DIstribute by vehicleinstanceid sort by ssv_id desc
+) t group by  vehicleinstanceid;
 
 drop table if exists SessionInfo_tmp;
 create table if not exists SessionInfo_tmp as
-select  vehicleid,  collect_set(SaleChannelTypeName)[0] as SaleChannelTypeName, collect_set(saleschanneltypeid)[0] as SaleChannelTypeId from (
-select VI.vehicleid, S.saleschanneltypeid , SM.SaleChannelTypeName, SS.SalesSessionID
+select vehicleinstanceid, collect_list(case when SaleChannelTypeName is null then 'null' else SaleChannelTypeName end)[0] as SaleChannelTypeName, collect_list(case when SalesChannelTypeId is null then -1 else SalesChannelTypeId end)[0] as SaleChannelTypeId from (
+select S.vehicleinstanceid as vehicleinstanceid, S.saleschanneltypeid , SM.SaleChannelTypeName, SS.SalesSessionID, S.id as ssv_id
 FROM
-psa.vehicleInformation_Stg  VI
-join  psa.SalesSessionVehicles_stg S on  VI.vehicleid = S.vehicleInstanceId
+   psa.SalesSessionVehicles_stg S
                                                         INNER JOIN psa.SalesSessionSteps_stg SS ON S.SalesSessionStepID = SS.ID
                                                         INNER JOIN psa.SalesSessions_stg SalesSessions  ON SS.SalesSessionID = SalesSessions.ID
                                                         left  join psa.SaleChannelTypeMaster_stg SM on SM.SaleChannelTypeID = S.saleschanneltypeid
-                                        WHERE   S.VehicleInstanceID = VI.vehicleid AND
+                                        WHERE
                                                 SS.isActive = 1 AND
                                                 S.IsActive = 1 AND
                                                 SS.Status NOT IN (4,5) AND
                                                 SalesSessions.Status NOT IN (4,5)
 
-DIstribute by VI.vehicleid sort by SS.SalesSessionID desc
-) t group by   vehicleid;
-
-
+DIstribute by vehicleinstanceid  sort by ssv_id desc
+) t group by  vehicleinstanceid;
 
 DROP TABLE IF EXISTS inventory_report_cached_tmp;
 CREATE TABLE inventory_report_cached_tmp
@@ -92,23 +89,24 @@ CREATE TABLE inventory_report_cached_tmp
                            VI.isupstream as isupstram,
                            VI.sold as issold
 FROM
-   psa.VehicleInformation_stg VI
+psa.VehicleInstance_stg VIS
+   join psa.VehicleInformation_stg VI on VIS.vehicleId= VI.vehicleid
    JOIN psa_shark.vehicle_dimension_bands VDB  ON VI.vehicleid = VDB.vehicleid
-   JOIN psa.Vendor_stg V on VI.Vendorid = V.id
-   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VI.vendorid
+   JOIN psa.Vendor_stg V on VIS.Vendorid = V.id
+   JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
+   LEFT OUTER  JOIN psa.VendorAddress_stg VAD ON VAD.vendorid = VIS.vendorid
    LEFT OUTER  JOIN psa.Address_stg VD ON VD.ID = VAD.addressid
    LEFT OUTER  JOIN psa.Country_stg VC ON VC.id = VD.countryid
    LEFT OUTER  JOIN psa.Country_stg CU ON  VI.countryid = CU.ID
-   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD ON SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
-   LEFT JOIN SessionInfo_tmp SessionInfo on SessionInfo.vehicleid = VI.vehicleId
+   LEFT OUTER  JOIN psa.SaleChannelDetail_stg SCD  ON  SCD.VendorID = VI.VendorId and SCD.SaleChannelName=VI.SaleChannel
+   LEFT JOIN   SessionInfo_tmp SessionInfo on SessionInfo.vehicleinstanceid = VIS.Id
    LEFT JOIN  psa.SaleChannelTypeMaster_stg SM  ON SessionInfo.SaleChannelTypeId = SM.SaleChannelTypeID
-   LEFT JOIN  psa.SaleChannelTypeTranslation_stg ST ON ST.SaleChannelTypeID = SessionInfo.SaleChannelTypeID AND ST.VendorID = VI.vendorId AND ST.LanguageID = 1
-   LEFT JOIN  SessionInfoUpstream_tmp SessionInfoUpstream on SessionInfoUpstream.vehicleID = VI.vehicleId
+   LEFT JOIN  psa.SaleChannelTypeTranslation_stg ST ON ST.SaleChannelTypeID = SessionInfo.SaleChannelTypeID AND ST.VendorID = VIS.vendorId AND ST.LanguageID = 1
+   LEFT JOIN  SessionInfoUpstream_tmp SessionInfoUpstream on SessionInfoUpstream.vehicleinstanceID = VIS.Id
    LEFT JOIN  psa.SaleChannelTypeMaster_stg SMU ON SessionInfoUpstream.SaleChannelTypeId = SMU.SaleChannelTypeID
-   LEFT JOIN  psa.SaleChannelTypeTranslation_stg STU  ON STU.SaleChannelTypeID = SessionInfoUpstream.SaleChannelTypeID AND STU.VendorID = VI.vendorId  AND STU.LanguageID = 1
+   LEFT JOIN  psa.SaleChannelTypeTranslation_stg STU  ON STU.SaleChannelTypeID = SessionInfoUpstream.SaleChannelTypeID AND STU.VendorID = VIS.vendorId  AND STU.LanguageID = 1
    LEFT OUTER JOIN psa.source_stg Source on Source.sourceid = VI.sourceid
-   LEFT OUTER  JOIN psa.VendorStatuses_stg VS ON VI.VendorStatusId = VS.id and VI.vendorid=VS.vendorid
-   where  VI.StatusID NOT IN  (32,4);
+   where  VI.StatusID NOT IN  (32);
 uncache table inventory_report_cached;
 DROP TABLE IF EXISTS inventory_report_cached;
 alter table inventory_report_cached_tmp rename to inventory_report_cached;
