@@ -7,29 +7,7 @@
 use at;
 add jar hdfs://rmsus-hdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop table if exists `geo_stg`;
-CREATE EXTERNAL TABLE `geo_stg` (
-  `dma_durable_key`  string, 
-  `dma_code`         string     COMMENT 'AutoTrader DMA Code',
-  `dma_desc`         string     COMMENT 'Human readable description of the DMA',
-  `city`             string,
-  `state_code`       string,
-  `zip_code`         string,
-  `county`           string,
-  `country_code`     string,
-  `latitude`         double,
-  `longitude`        double,
-  `submarket`        string,
-  `tim_zone_desc`    string
-)
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-   "separatorChar" = ",",
-   "quoteChar"     = "\"",
-   "escapeChar"    = "\\"
-)
-STORED AS TEXTFILE
-LOCATION '/data/database/at/geo_dma/'
-TBLPROPERTIES("skip.header.line.count"="1");
+CREATE TEMPORARY TABLE `geo_stg` USING org.apache.spark.sql.parquet OPTIONS (path "/data/database/at/geo_dma/");
 
 drop table if exists `adwords_geo_stg`;
 CREATE EXTERNAL TABLE `adwords_geo_stg` (
