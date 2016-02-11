@@ -42,13 +42,15 @@ hadoop fs -mkdir -p /data/database/
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/chrome/chrome_subdivision_definition.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/chrome/chrome_vehicle_description.hql
 
-./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_recent_market_data -i /data/database/vauto/vauto_market_pricing
-./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_market_pricing -i /data/database/vauto/vauto_recent_market_data
-./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_sold_market_vehicle -i /data/database/vauto/vauto_sold_market_vehicle
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_aution -i /data/database/manheim/man_ovt_raw/man_ovt_dim_auction
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_customer -i /data/database/manheim/man_ovt_raw/man_ovt_dim_customer
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_flndr -i /data/database/manheim/man_ovt_raw/man_ovt_dim_flndr
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_make_model_trim -i /data/database/manheim/man_ovt_raw/man_ovt_dim_make_model_trim
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list2 -i /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list2
-./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list -i /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list
+./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_recent_market_data -l /data/database/vauto/vauto_market_pricing
+./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_market_pricing -l /data/database/vauto/vauto_recent_market_data
+./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_sold_market_vehicle -l /data/database/vauto/vauto_sold_market_vehicle
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_aution -l /data/database/manheim/man_ovt_raw/man_ovt_dim_auction
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_customer -l /data/database/manheim/man_ovt_raw/man_ovt_dim_customer
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_flndr -l /data/database/manheim/man_ovt_raw/man_ovt_dim_flndr
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_make_model_trim -l /data/database/manheim/man_ovt_raw/man_ovt_dim_make_model_trim
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list2 -l /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list2
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list -l /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_fact_registration -l /data/database/manheim/man_ovt_raw/man_ovt_fact_registration
+./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_fact_registration_ext -l /data/database/manheim/man_ovt_raw/man_ovt_fact_registration_ext
 
