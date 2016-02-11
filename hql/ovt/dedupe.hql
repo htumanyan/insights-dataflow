@@ -25,7 +25,7 @@ from
 
 create table ovt.man_ovt_dim_flndr_dedup as select *
 from
-(select  *, row_number() over (partition by flndr_key) from ovt.man_ovt_dim_flndr where ovt_flndr_key is not null  ) t  where group_rank=1;
+(select  *, row_number() over (partition by flndr_key) as group_rank from ovt.man_ovt_dim_flndr where ovt_flndr_key is not null  ) t  where group_rank=1;
 
 create table ovt.man_ovt_dim_make_model_trim_dedup as select *
 from
