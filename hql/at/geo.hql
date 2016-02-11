@@ -5,7 +5,7 @@
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
 use at;
-add jar hdfs://stg-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+add jar hdfs://rmsus-hdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop table if exists `geo_stg`;
 CREATE TEMPORARY TABLE `geo_stg` USING org.apache.spark.sql.parquet OPTIONS (path "/data/database/at/geo_dma/");
 drop table if exists `adwords_geo_stg`;

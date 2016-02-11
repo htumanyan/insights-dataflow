@@ -14,7 +14,7 @@
 SET spark.default.parallelism=8;
 
 use experian;
-add jar hdfs://stg-na-lxhdn01:8020/user/oozie/share/lib/hive-serde.jar ;
+add jar hdfs://rmsus-hdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop  table if exists `originations_stg`;
 CREATE EXTERNAL TABLE `originations_stg`(
 `state_abbr` string,
