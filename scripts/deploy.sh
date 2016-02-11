@@ -14,12 +14,14 @@ sudo cp -r oozie/configs /home/oozie/insights-dataflow/oozie/
 sudo chown -R oozie /home/oozie/insights-dataflow/oozie
 
 hadoop fs -mkdir /data/database/3rd_party/dma_bnd/
+hadoop fs -mkdir -p  /user/oozie/share/scripts/
 hadoop fs -copyFromLocal data/dma_bnd4.csv /data/database/3rd_party/dma_bnd/dma_bnd.csv
 hadoop fs -copyFromLocal -f hql /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/workflows /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/coordinators /user/oozie/share
 hadoop fs -copyFromLocal -f oozie/standalone_jars/* /user/oozie/share/lib
 hadoop fs -copyFromLocal -f oozie/sharelib/*  /user/oozie/share/lib/$libpath/ 
+hadoop fs -copyFromLocal -f scripts/add_partitions.sh  /user/oozie/share/scripts/
 hadoop fs -copyFromLocal -f /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/hive-site.xml
 hadoop fs -copyFromLocal -f /usr/hdp/current/hive-client/conf/hive-site.xml /tmp/oozie-hive-site.xml
 sudo su -m -l oozie -c 'oozie admin -sharelibupdate' #update the sharlib for real
