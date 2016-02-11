@@ -5,8 +5,8 @@ create table if not exists man_ovt_fact_registration_dedup as select
 * 
 from ( select 
 *,
-row_number() over ( partition by uniq_reg_id order by ACT_OFFRNG_START_TS desc , DW_UPDATED_ON  desc ) as group_rank 
-from man_ovt_fact_registration where model_yr>=2010 and uniq_reg_id is not null and uniq_reg_id != 'null'
+row_number() over ( partition by uniq_reg_id order by ACT_OFFRNG_START_TS desc, DW_UPDATED_ON  desc ) as group_rank 
+from man_ovt_fact_registration where model_yr>=2010
 ) t where group_rank=1;
 
 drop table if exists ovt.man_ovt_fact_registration_ext_dedup;
