@@ -11,9 +11,14 @@
 				</property>
 			</configuration>
 			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
 			<argument>ovt</argument>
+			<argument>-t</argument>
 			<argument>man_ovt_fact_registration</argument>
+			<argument>-h</argument>
 			<argument>${nameNode}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_fact_registration</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
