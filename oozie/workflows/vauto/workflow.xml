@@ -11,9 +11,14 @@
 				</property>
 			</configuration>
 			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
 			<argument>vauto</argument>
+			<argument>-t</argument>
 			<argument>vauto_recent_market_data</argument>
-			<argument>${nameNode}</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/vauto/vauto_recent_market_data/</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
@@ -31,17 +36,22 @@
 				</property>
 			</configuration>
 			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
 			<argument>vauto</argument>
+			<argument>-t</argument>
 			<argument>vauto_sold_market_vehicle</argument>
-			<argument>${nameNode}</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/vauto/vauto_sold_market_vehicle/</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
-		<ok to="vauto-hql-procedure"/>
+		<ok to="vauto-hql-dedupe"/>
 		<error to="failEmail"/>
 	</action>
-	<action name="vauto-hql-procedure">
-		<hive xmlns="uri:oozie:hive-action:0.2">
+	<action name="vauto-hql-dedupe">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
 			<configuration>
@@ -60,7 +70,8 @@
 			</configuration>
 			<jdbc-url>${hive2Url}</jdbc-url>
 			<script>/user/oozie/share/hql/vauto/dedupe.hql</script>
-		</hive>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
 		<ok to="endMain"/>
 		<error to="failEmail"/>
 	</action>

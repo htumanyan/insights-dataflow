@@ -5,6 +5,10 @@
 -- Hovhannes Tumanyan (hovhannes@nus.la)
 -- 
 SET spark.sql.shuffle.partitions=254;
+
+
+
+
 INSERT INTO TABLE
     insights.appraisal_tmp
 SELECT
