@@ -147,7 +147,7 @@
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
-		<ok to="ovt-add-partition-dim-veh-att-list"/>
+		<ok to="ovt-add-partition-dim-veh-att-list2"/>
 		<error to="failEmail"/>
 	</action>
 	<action name="ovt-add-partition-dim-veh-att-list2">
