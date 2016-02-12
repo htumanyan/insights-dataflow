@@ -72,31 +72,6 @@
 			<script>/user/oozie/share/hql/schemas/retail_market.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
-		<ok to="retail-dso-schema"/>
-		<error to="failEmail"/>
-	</action>
-	<action name="retail-dso-schema">
-		<hive2 xmlns="uri:oozie:hive2-action:0.1">
-			<job-tracker>${jobTracker}</job-tracker>
-			<name-node>${nameNode}</name-node>
-			<configuration>
-				<property>
-					<name>mapred.job.queue.name</name>
-					<value>${queueName}</value>
-				</property>
-				<property>
-					<name>oozie.hive.defaults</name>
-					<value>/tmp/oozie-hive-site.xml</value>
-				</property>
-				<property>
-					<name>oozie.action.sharelib.for.hive2</name>
-					<value>hive-0.13</value>
-				</property>
-			</configuration>
-			<jdbc-url>${hive2Url}</jdbc-url>
-			<script>/user/oozie/share/hql/schemas/dso_metrics.hql</script>
-			<param>NameNode=${nameNode}</param>
-		</hive2>
 		<ok to="appraisal-schema"/>
 		<error to="failEmail"/>
 	</action>
