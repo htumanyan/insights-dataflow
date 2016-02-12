@@ -35,6 +35,7 @@
 					<value>${queueName}</value>
 				</property>
 			</configuration>
+			<exec>${partitionScript}</exec>
 			<argument>-d</argument>
 			<argument>ovt</argument>
 			<argument>-t</argument>
