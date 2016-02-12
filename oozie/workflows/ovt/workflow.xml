@@ -16,7 +16,7 @@
 			<argument>-t</argument>
 			<argument>man_ovt_fact_registration</argument>
 			<argument>-h</argument>
-			<argument>${nameNode}</argument>
+			<argument>${namenode_host}</argument>
 			<argument>-l</argument>
 			<argument>/data/database/manheim/man_ovt_raw/man_ovt_fact_registration</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
@@ -86,7 +86,7 @@
 		<error to="failEmail"/>
 	</action>
 	<action name="ovt-hql-procedure">
-		<hive xmlns="uri:oozie:hive-action:0.2">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
 			<configuration>
@@ -99,13 +99,14 @@
 					<value>/tmp/oozie-hive-site.xml</value>
 				</property>
 				<property>
-					<name>oozie.action.sharelib.for.hive</name>
+					<name>oozie.action.sharelib.for.hive2</name>
 					<value>hive-0.13</value>
 				</property>
 			</configuration>
 			<jdbc-url>${hive2Url}</jdbc-url>
 			<script>/user/oozie/share/hql/ovt/dedupe.hql</script>
-		</hive>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
 		<ok to="endMain"/>
 		<error to="failEmail"/>
 	</action>

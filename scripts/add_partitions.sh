@@ -90,7 +90,7 @@ echo "Adding partitions for $QUALIFIED_TABLE_NAME from $TABLE_LOCATION"
 # The first awk part extracts files and excludes directories. Directories have a '-' (dash) where normally the replication factor is
 # Sed snippet extracts the part of the path that corresponds to partition structure
 # The last AWK piece parses the partition sructure and generates ALTER TABLE statements
-PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','| sort | uniq` 
+PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | grep -v copy | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','| sort | uniq` 
 
 
 PART_CNT=`echo "$PART_FILES" | wc -l`
@@ -99,7 +99,6 @@ PART_CNT=`echo "$PART_FILES" | wc -l`
 # that works with arbitrary number of partitions
 ALTER_SCRIPT=`echo "$PART_FILES" | tr '/' ',' | awk "{ loc=\\$1;gsub(/,/, \"/\", loc);  printf \"ALTER TABLE $QUALIFIED_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s) LOCATION '$TABLE_LOCATION/%s/';\\n\", \\$1, loc }"`
 
-echo $ALTER_SCRIPT
 $CLIENT_CMD_WITH_OPTS -e "$ALTER_SCRIPT" 2>/dev/null
 
 echo "Added $PART_CNT partitions."
