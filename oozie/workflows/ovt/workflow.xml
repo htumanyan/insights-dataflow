@@ -1,0 +1,292 @@
+<workflow-app name="shell-wf" xmlns="uri:oozie:workflow:0.5">
+    <start to="ovt-add-partition-fact"/>
+	<action name="ovt-add-partition-fact">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_fact_registration</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_fact_registration</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-fact-ext"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-fact-ext">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_fact_registration_ext</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_fact_registration_ext</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-auction"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-auction">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_auction</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_auction</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-make-model-trim"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-make-model-trim">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_make_model_trim</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_make_model_trim</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-customer"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-customer">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_customer</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_customer</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-veh-att-list"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-veh-att-list">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_veh_att_list</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-veh-att-list2"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-veh-att-list2">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_veh_att_list2</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list2</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-add-partition-dim-flndr"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-add-partition-dim-flndr">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>ovt</argument>
+			<argument>-t</argument>
+			<argument>man_ovt_dim_flndr</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/manheim/man_ovt_raw/man_ovt_dim_flndr</argument>
+			<argument>ovt</argument>
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="ovt-hql-procedure-dedup"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-hql-procedure-dedup">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/ovt/dedupe.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="ovt-hql-procedure-seller-customer"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-hql-procedure-seller-customer">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/ovt/ovt_seller_customer_reg.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="ovt-hql-dso"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-hql-dso">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/ovt/compute_dso.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="endMain"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="failEmail">
+		<email xmlns="uri:oozie:email-action:0.1">
+			<to>${alertEmail}</to>
+			<subject>oozie job failure</subject>
+			<body>The workflow ${wf:id()} name ${wf:name()} path ${wf:appPath()} had issues and was killed.  The error message is: ${wf:errorMessage(wf:lastErrorNode())}</body>
+		</email>
+		<ok to="fail" />
+		<error to="fail"/>
+	</action>
+	<kill name="fail">
+		<message>Sqoop failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<end name="endMain"/>
+</workflow-app>
