@@ -1,5 +1,205 @@
 <workflow-app xmlns="uri:oozie:workflow:0.5" xmlns:sla="uri:oozie:sla:0.2" name="sqoop-wf">
-    <start to="inventory-procedure"/>
+    <start to="inventory-schema"/>
+	<action name="inventory-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/inventory.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="sales-schema"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="sales-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/sales.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="retail-schema"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="retail-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/retail_market.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="retail-dso-schema"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="retail-dso-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/dso_metrics.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="appraisal-schema"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="appraisal-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/appraisal.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="segment-map-schema"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="segment-map-schema">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/schemas/segment_map.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="adjusted-mmr-procedure"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="adjusted-mmr-procedure">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${sparkUrl}</jdbc-url>
+			<script>/user/oozie/share/hql/insights/adjusted_mmr.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="originiations-procedure"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="originiations-procedure">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${sparkUrl}</jdbc-url>
+			<script>/user/oozie/share/hql/experian/originations.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="inventory-procedure"/>
+		<error to="failEmail"/>
+	</action>
 	<action name="inventory-procedure">
 		<hive2 xmlns="uri:oozie:hive2-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
@@ -47,6 +247,31 @@
 			<script>/user/oozie/share/hql/insights/retail_market_insert.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
+		<ok to="retail-dso-procedure"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="retail-dso-procedure">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/insights/retail_market_dso.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
 		<ok to="sales-procedure"/>
 		<error to="failEmail"/>
 	</action>
@@ -70,6 +295,31 @@
 			</configuration>
 			<jdbc-url>${hive2Url}</jdbc-url>
 			<script>/user/oozie/share/hql/insights/sales_cached.hql</script>
+			<param>NameNode=${nameNode}</param>
+		</hive2>
+		<ok to="cache_tables"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="ovt-sales-procedure">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+				<property>
+					<name>oozie.hive.defaults</name>
+					<value>/tmp/oozie-hive-site.xml</value>
+				</property>
+				<property>
+					<name>oozie.action.sharelib.for.hive2</name>
+					<value>hive-0.13</value>
+				</property>
+			</configuration>
+			<jdbc-url>${hive2Url}</jdbc-url>
+			<script>/user/oozie/share/hql/insights/ovt_sales_insert.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
 		<ok to="cache_tables"/>

@@ -8,6 +8,7 @@ use at;
 add jar hdfs://rmsus-hdn01:8020/user/oozie/share/lib/hive-serde.jar ;
 drop table if exists `geo_stg`;
 CREATE TEMPORARY TABLE `geo_stg` USING org.apache.spark.sql.parquet OPTIONS (path "/data/database/at/geo_dma/");
+
 drop table if exists `adwords_geo_stg`;
 CREATE EXTERNAL TABLE `adwords_geo_stg` (
    `City` string,
