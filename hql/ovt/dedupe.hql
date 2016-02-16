@@ -5,7 +5,7 @@ set mapreduce.task.timeout=1800000;
 set mapred.reduce.tasks=600;
 set mapred.task.timeout= 1800000;
 set mapred.max.split.size=80000000;
-
+set mapreduce.input.fileinputformat.split.maxsize=80000000;
 
 drop table man_ovt_fact_registration_dedup;
 create table if not exists man_ovt_fact_registration_dedup as select
