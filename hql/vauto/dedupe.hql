@@ -1,4 +1,10 @@
 SET spark.sql.shuffle.partitions=200;
+set mapred.tasktracker.expiry.interval=1800000;
+set mapreduce.task.timeout=1800000;
+set mapred.reduce.tasks=600;
+set mapred.task.timeout= 1800000;
+set mapred.max.split.size=80000000;
+set mapreduce.input.fileinputformat.split.maxsize=80000000;
 use vauto;
  SET spark.sql.thriftserver.scheduler.pool=background;
 
