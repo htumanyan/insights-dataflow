@@ -1,4 +1,5 @@
-CREATE EXTERNAL TABLE export_inv_listing_daily_metric_v_edw(
+DROP TABLE IF EXISTS at.export_inv_listing_daily_metric_v_edw;
+CREATE EXTERNAL TABLE at.export_inv_listing_daily_metric_v_edw(
  effective_date             STRING,
   listing_skey                 BIGINT,
   car_durable_key            BIGINT, 

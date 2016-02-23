@@ -1,4 +1,5 @@
-CREATE EXTERNAL TABLE export_customer_daily_metric_v_edw(
+DROP TABLE IF EXISTS at.export_customer_daily_metric_v_edw;
+CREATE EXTERNAL TABLE at.export_customer_daily_metric_v_edw(
     effective_date             STRING,
     customer_id             STRING, 
     primary_zip_code             INT, 
