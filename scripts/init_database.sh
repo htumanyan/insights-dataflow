@@ -26,6 +26,8 @@ hadoop fs -mkdir -p /data/database/
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/vauto/vauto_sold_market_vehicle.hiveql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/experian/originations.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/at/geo.hql
+/usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/at/export_customer_daily_metric_v_edw.hiveql
+/usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/at/export_inv_listing_daily_metric_v_edw.hiveql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/ovt/man_ovt_dim_customer.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/ovt/man_ovt_dim_flndr.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/ovt/man_ovt_dim_make_model_trim.hql
@@ -41,6 +43,8 @@ hadoop fs -mkdir -p /data/database/
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/chrome/chrome_style.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/chrome/chrome_subdivision_definition.hql
 /usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/chrome/chrome_vehicle_description.hql
+/usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/at/chrome_vehicle_description.hql
+/usr/hdp/current/spark-client/bin/beeline -u  jdbc:hive2://$NAMENODE:13001/ -f hql/at/chrome_vehicle_description.hql
 
 ./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_recent_market_data -l /data/database/vauto/vauto_market_pricing
 ./scripts/add_partitions.sh -h $NAMENODE -d vauto -t vauto_market_pricing -l /data/database/vauto/vauto_recent_market_data
@@ -52,5 +56,8 @@ hadoop fs -mkdir -p /data/database/
 ./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list2 -l /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list2
 ./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_dim_veh_att_list -l /data/database/manheim/man_ovt_raw/man_ovt_dim_veh_att_list
 ./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_fact_registration -l /data/database/manheim/man_ovt_raw/man_ovt_fact_registration
+./scripts/add_partitions.sh -h $NAMENODE -d at -t export_inv_listing_daily_metric_v_edw  -l /data/database/at/export_inv_listing_daily_metric_v_edw
+./scripts/add_partitions.sh -h $NAMENODE -d at -t export_customer_daily_metric_v_edw -l /data/database/at/export_customer_daily_metric_v_edw
+./scripts/add_partitions.sh -h $NAMENODE -d at -t man_ovt_fact_registration -l /data/database/manheim/man_ovt_raw/man_ovt_fact_registration
 ./scripts/add_partitions.sh -h $NAMENODE -d ovt -t man_ovt_fact_registration_ext -l /data/database/manheim/man_ovt_raw/man_ovt_fact_registration_ext
 
