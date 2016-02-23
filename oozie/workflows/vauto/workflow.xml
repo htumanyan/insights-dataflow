@@ -64,7 +64,7 @@
 					<value>/tmp/oozie-hive-site.xml</value>
 				</property>
 				<property>
-					<name>oozie.action.sharelib.for.hive</name>
+					<name>oozie.action.sharelib.for.hive2</name>
 					<value>hive-0.13</value>
 				</property>
 			</configuration>
