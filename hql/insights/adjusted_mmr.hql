@@ -11,5 +11,4 @@ lower(v.model_year)=lower(y.modelyear) and
 lower(y.body)=lower(v.body_style_description) and 
 month(y.weekdate) = month(v.lease_end_date) and
  year(y.weekdate) =  year(v.lease_end_date) 
-group by v.make, v.model, v.model_year, v.body_style_description, y.weekdate, y.mile, y.mile_factor, y.wholesaleprice;  
-
+group by v.make, v.model, v.model_year, v.body_style_description, y.weekdate, y.mile, y.mile_factor, y.wholesaleprice;

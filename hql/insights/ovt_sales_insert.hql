@@ -1,4 +1,11 @@
  use insights;
+set mapred.reduce.tasks = 600;
+set mapred.tasktracker.expiry.interval=1800000;
+set mapreduce.task.timeout=1800000;
+set mapred.task.timeout= 1800000;
+set mapred.max.split.size=80000000;
+set mapreduce.input.fileinputformat.split.maxsize=80000000;
+set mapreduce.job.reduce.slowstart.completedmaps=1;
 SET spark.sql.shuffle.partitions=200;
 
 INSERT INTO TABLE insights.sales_report_cached_tmp SELECT
@@ -289,5 +296,10 @@ left join mmr.sales mmr on ovt_reg.vin = mmr.m_vin
 left join at.geo GEO1 on GEO1.zip_code=substring(auction.zip_cd, 1, 5)
 left join ovt.man_ovt_dim_flndr_dedup ovt_flndr on ovt_reg.flndr_key=ovt_flndr.flndr_key
 left join (select cust_key, bus_subtype_desc, max(unix_timestamp(row_end_dt, 'yyyy-mm-dd hh:mm:ss')) from ovt.man_ovt_dim_customer group by cust_key, bus_subtype_desc) as cust on ovt_reg.seller_cust_key=cust.cust_key;
-SET spark.sql.shuffle.partitions=1;
+
+
+set mapred.reduce.tasks = 32;
+create table insights.sales_report_cached_stg as select * from insights.sales_report_cached_tmp;
+
+set spark.sql.shuffle.partitions=1;
 
