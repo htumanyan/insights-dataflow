@@ -12,25 +12,25 @@ V.id,
 case when  V.color='null' then NULL else V.color end as exteriorcolour,
  unix_timestamp(V.created_at) as creation_ts,
  v.region_code as countryname,
-coalesce(cc.division, vdmv.vb_make, case when v.make='null' then NULL else v.make end) as make,
-coalesce(cc.division, vdmv.vb_make, case when v.make='null' then NULL else v.make end) as makeref,
+coalesce(vdmv.vb_make,cc.division, case when v.make='null' then NULL else v.make end) as make,
+coalesce(vdmv.vb_make,cc.division,  case when v.make='null' then NULL else v.make end) as makeref,
  0 as salechannelid,
   'none' as salechannel,
  'none' as commercialconceptname,
  D.name as vendortradingname,
  D.id as vendorid,
-coalesce( V.trim_level) as derivative,
-abs(hash(v.trim_level)) as derivativeid,
+coalesce(vdmv.ev_trim, cc.style_name, v.body_style_description) as derivative,
+abs(hash(coalesce(vdmv.ev_trim, cc.style_name, v.body_style_description))) as derivativeid,
  0 as sourceid,
  'n/a' as sourcename,
  AD.repair_cost as totaldamagesnetprice,
 G.mileage,
 G.stockage, 
 coalesce(cc.fuel_type, AV.fuel_type) as fueltype,
-coalesce(cc.model_name, vdmv.vb_model,  case when v.model='null' then NULL else v.model end) as model,
-coalesce(cc.model_name, vdmv.vb_model, case when v.model='null' then  NULL else v.model end) as modelref,
+coalesce(vdmv.vb_model, cc.model_name,  case when v.model='null' then NULL else v.model end) as model,
+coalesce(vdmv.vb_model, cc.model_name, case when v.model='null' then  NULL else v.model end) as modelref,
  'n/a' as code,
-coalesce(cc.model_year, V.model_year) as modelyear,
+coalesce(vdmv.vb_model_year, cc.model_year, V.model_year) as modelyear,
  V.model_serial_number as model_code,
  0 as auctionprice,
  case when V.transmission_type='null' then NULL else V.transmission_type end as transmission,
@@ -227,7 +227,8 @@ GEO.submarket as geo_submarket,
 GEO.tim_zone_desc as geo_tim_zone_desc,
 GEO.dma_id as geo_dma_id,
 ammr.mmr as adjusted_mmr,
-l.residual_amount as  residual_amount
+l.residual_amount as  residual_amount,
+cc.style_id
 FROM rpm.vehicles_stg V 
 left join rpm.aim_vehicles_stg AV on V.id=AV.vehicle_id 
 left join rpm.dealers_cleaned DC on CAST(V.dealer_number as INT)=DC.nna_dealer_number
@@ -239,7 +240,7 @@ left outer join (select * ,  datediff( from_unixtime(unix_timestamp()), to_date(
 left join vdm.vehicles vdmv on vdmv.vb_vin=v.vin 
 left join vdm.vdm_options_packages vdmo on v.vin = vdmo.vin
 left join chrome.chrome_consolidated cc on v.vin = cc.vin
-left join  insights.adjusted_mmr ammr on (lower(ammr.make)=lower(vdmv.vb_make) and lower(ammr.model)=lower(vdmv.vb_model) and lower(ammr.model_year)=lower(vdmv.vb_model_year) and lower(v.body_style_description)=lower( ammr.body_style_description) and month(ammr.weekdate) = month(v.lease_end_date) and year(ammr.weekdate) =  year(v.lease_end_date) );
+left join  insights.adjusted_mmr ammr on v.vin = ammr.vin;
 
 insert into insights.inventory_report_cached_tmp select * from insights.inventory_report_cached_stg  
 where ( make='Nissan' and rpm_status='On Lease' and rpm_region_code=25 and rpm_branch <= 73 and rpm_branch >=50) or 

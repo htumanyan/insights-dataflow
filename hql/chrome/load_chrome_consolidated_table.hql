@@ -42,10 +42,11 @@ SELECT
  vd.manufacturer_identification_code,
  vd.restraint_types,
  vd.division,
- vd.body_type
+ vd.body_type,
+ s.style_id
 FROM 
  chrome.vehicle_description vd 
-join chrome.style s ON (s.input_row_num = vd.input_row_num and s.source_folder = vd.source_folder)
+join chrome.style_dedup s ON (s.input_row_num = vd.input_row_num and s.source_folder = vd.source_folder)
  LEFT JOIN chrome.subdivision_definition as sdd ON ( s.sub_division_id = sdd.sub_division_id)
  LEFT JOIN chrome.division_definition as dd ON (s.division_id = dd.division_id)
  LEFT JOIN chrome.model_definition as md ON ( s.model_id = md.model_id)
