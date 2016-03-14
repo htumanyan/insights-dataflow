@@ -16,7 +16,7 @@ CLIENT_CMD=$HIVE_CLIENT_CMD
 CLIENT_PORT=$HIVE_CLIENT_PORT
 
 ADD_NEW_PARTS=false;
-
+KNOWN_PARTS='';
 
 while getopts ":e:sh:t:d:l:" opt; do
   case $opt in
@@ -38,6 +38,9 @@ while getopts ":e:sh:t:d:l:" opt; do
       ;;
     n)
       ADD_NEW_PARTS=true;
+      ;;
+    p)
+      KNOWN_PARTS="$OPTARG"
       ;;
     \?)
       >&2  echo "Invalid option: -$OPTARG" >&2
@@ -95,7 +98,13 @@ echo "Adding partitions for $QUALIFIED_TABLE_NAME from $TABLE_LOCATION"
 # The first awk part extracts files and excludes directories. Directories have a '-' (dash) where normally the replication factor is
 # Sed snippet extracts the part of the path that corresponds to partition structure
 # The last AWK piece parses the partition sructure and generates ALTER TABLE statements
+if [ -z $KNOWN_PARTS ] 
+then  
 PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | grep -v copy | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','| sort | uniq` 
+else
+PART_FILES=$KNOWN_PARTS
+fi
+
 if $ADD_NEW_PARTS ; then 
 	TABLE_PART_FILES=`$CLIENT_CMD_WITH_OPTS -e "show partitions "$QUALIFIED_TABLE_NAME | sed -e "s/'//g" -e "s/\//,/g"|sort`
 	NEW_FILES=`comm -23 <( echo $PART_FILES |sed 's/ /\n/g') <( echo $TABLE_PART_FILES |  sed 's/ /\n/g')`
