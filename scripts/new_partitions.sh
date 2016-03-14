@@ -15,6 +15,8 @@ HIVE_CLIENT_PORT=10000
 CLIENT_CMD=$HIVE_CLIENT_CMD
 CLIENT_PORT=$HIVE_CLIENT_PORT
 
+ADD_NEW_PARTS=false;
+
 
 while getopts ":e:sh:t:d:l:" opt; do
   case $opt in
@@ -34,12 +36,15 @@ while getopts ":e:sh:t:d:l:" opt; do
     l)
       TABLE_LOCATION="${OPTARG%/}"
       ;;
+    n)
+      ADD_NEW_PARTS=true;
+      ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
+      >&2  echo "Invalid option: -$OPTARG" >&2
       exit 1
       ;;
     :)
-      echo "Option -$OPTARG requires an argument." >&2
+      >&2  echo "Option -$OPTARG requires an argument." >&2
       exit 1
       ;;
   esac
@@ -47,7 +52,7 @@ done
 
 if [ -z "$namenode_host" ]
 then
-  echo "Please, provide the name node host name using -h parameter"
+	>&2 echo "Please, provide the name node host name using -h parameter"
 fi
 
 CLIENT_CMD_WITH_OPTS="$CLIENT_CMD    --showHeader=false  --outputformat=tsv2 --silent -u jdbc:hive2://$namenode_host:$CLIENT_PORT" 
@@ -55,13 +60,13 @@ CLIENT_CMD_WITH_OPTS="$CLIENT_CMD    --showHeader=false  --outputformat=tsv2 --s
 
 if [ -z "${table_name}" ]
 then
-  echo "Please, provide the table name with -t option"
+  >&2 echo "Please, provide the table name with -t option"
   exit 1
 fi
 
 if [ -z "${namenode_host}" ]
 then
-  echo "Please, provide the Name Node host name wwith -h option"
+  >&2  echo "Please, provide the Name Node host name wwith -h option"
   exit 1
 fi
 
@@ -79,7 +84,7 @@ fi
 
 if [ -z "$TABLE_LOCATION" ]
 then
-  echo "Can't find the data location for $QUALIFIED_TABLE_NAME. Please, provide it with -l option"
+  >&2  echo "Can't find the data location for $QUALIFIED_TABLE_NAME. Please, provide it with -l option"
   exit 1
 fi
 
@@ -91,13 +96,17 @@ echo "Adding partitions for $QUALIFIED_TABLE_NAME from $TABLE_LOCATION"
 # Sed snippet extracts the part of the path that corresponds to partition structure
 # The last AWK piece parses the partition sructure and generates ALTER TABLE statements
 PART_FILES=`$HADOOP_CMD fs -ls -R $TABLE_LOCATION/ | grep -v copy | awk '{ if ($2 != "-") print $8 }' | sed -r "s|.*$TABLE_LOCATION/(.*)/[0-9_]+$|\1|g" | tr '/' ','| sort | uniq` 
-TABLE_PART_FILES=`$CLIENT_CMD_WITH_OPTS -e "show partitions "$QUALIFIED_TABLE_NAME | sed -e "s/'//g" -e "s/\//,/g"|sort`
-
-NEW_FILES=`comm -23 <( echo $PART_FILES |sed 's/ /\n/g') <( echo $TABLE_PART_FILES |  sed 's/ /\n/g')`
-echo "############# NEW FILES#########"
-echo $NEW_FILES
-NEW_PARTITIONS_TABLE_NAME=$QUALIFIED_TABLE_NAME"_new_parts"
-`$CLIENT_CMD_WITH_OPTS -e "drop table if exists $NEW_PARTITIONS_TABLE_NAME; create table $NEW_PARTITIONS_TABLE_NAME like $QUALIFIED_TABLE_NAME"`
-ALTER_SCRIPT=`echo "$NEW_FILES" | tr '/' ',' | awk "{ loc=\\$1;gsub(/,/, \"/\", loc);  printf \"ALTER TABLE $NEW_PARTITIONS_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s) LOCATION '$TABLE_LOCATION/%s/';\\n\", \\$1, loc }"`
+if $ADD_NEW_PARTS ; then 
+	TABLE_PART_FILES=`$CLIENT_CMD_WITH_OPTS -e "show partitions "$QUALIFIED_TABLE_NAME | sed -e "s/'//g" -e "s/\//,/g"|sort`
+	NEW_FILES=`comm -23 <( echo $PART_FILES |sed 's/ /\n/g') <( echo $TABLE_PART_FILES |  sed 's/ /\n/g')`
+	>&2  echo "############# NEW FILES#########"
+	echo 'new_partitions=$NEW_FILES'
+	NEW_PARTITIONS_TABLE_NAME=$QUALIFIED_TABLE_NAME"_new_parts"
+	`$CLIENT_CMD_WITH_OPTS -e "drop table if exists $NEW_PARTITIONS_TABLE_NAME; create table $NEW_PARTITIONS_TABLE_NAME like $QUALIFIED_TABLE_NAME"`
+	ALTER_SCRIPT=`echo "$NEW_FILES" | tr '/' ',' | awk "{ loc=\\$1;gsub(/,/, \"/\", loc);  printf \"ALTER TABLE $NEW_PARTITIONS_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s) LOCATION '$TABLE_LOCATION/%s/';\\n\", \\$1, loc }"`
+else 
+	ALTER_SCRIPT=`echo "$PART_FILES" | tr '/' ',' | awk "{ loc=\\$1;gsub(/,/, \"/\", loc);  printf \"ALTER TABLE $QUALIFIED_TABLE_NAME ADD IF NOT EXISTS PARTITION (%s) LOCATION '$TABLE_LOCATION/%s/';\\n\", \\$1, loc }"`
+fi
 `$CLIENT_CMD_WITH_OPTS -e "$ALTER_SCRIPT"`
 
+exit 0
