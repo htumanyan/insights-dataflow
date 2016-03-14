@@ -161,6 +161,7 @@ drop table if exists inventory_report_cached_tmp;
 `geo_tim_zone_desc` string,
 `geo_dma_id` smallint,
 `adjusted_mmr` double,
-`residual_amount` double
+`residual_amount` double,
+`chrome_style_id` int
 ) stored as parquet;
 
