@@ -15,7 +15,7 @@ sum(avg_list_price)/sum(count) as avg_list_price,
 theyear,
 themonth,
 theday,
-unix_timestamp(concat_ws('-', theyear, themonth,theday ), 'YYYY-MM-dd') as date_ts
+unix_timestamp(concat_ws('-', theyear, themonth,theday ), 'yyyy-MM-dd') as date_ts
 from 
 vauto.vauto_market_pricing where model_year>=2010 and (make='Nissan' or make='Inifinity')
 group by model_year                  ,
