@@ -1,6 +1,6 @@
 <workflow-app name="shell-wf" xmlns="uri:oozie:workflow:0.5">
     <start to="vauto-add-partition-recent"/>
-	<action name="vauto-add-partition-recent">
+	<action name="vauto-add-new-partition-recent">
 		<shell xmlns="uri:oozie:shell-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
@@ -19,13 +19,14 @@
 			<argument>${namenode_host}</argument>
 			<argument>-l</argument>
 			<argument>/data/database/vauto/vauto_recent_market_data/</argument>
+			<argument>-n</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
-		<ok to="vauto-add-partition-sold"/>
+		<ok to="vauto-add-new-partition-sold"/>
 		<error to="failEmail"/>
 	</action>
-	<action name="vauto-add-partition-sold">
+	<action name="vauto-add-new-partition-sold">
 		<shell xmlns="uri:oozie:shell-action:0.1">
 			<job-tracker>${jobTracker}</job-tracker>
 			<name-node>${nameNode}</name-node>
@@ -44,6 +45,7 @@
 			<argument>${namenode_host}</argument>
 			<argument>-l</argument>
 			<argument>/data/database/vauto/vauto_sold_market_vehicle/</argument>
+			<argument>-n</argument>
 			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
 			<capture-output/>
 		</shell>
@@ -72,7 +74,61 @@
 			<script>/user/oozie/share/hql/vauto/dedupe_incremental.hql</script>
 			<param>NameNode=${nameNode}</param>
 		</hive2>
-		<ok to="endMain"/>
+		<ok to="vauto-add-partition-recent"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="vauto-add-partition-recent">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>vauto</argument>
+			<argument>-t</argument>
+			<argument>vauto_recent_market_data</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/vauto/vauto_recent_market_data/</argument>
+			<argument>-p</argument>
+                        <argument>${wf:actionData('vauto-add-new-partition-recent')['new-partitions']}</argument> 
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="vauto-add-partition-sold"/>
+		<error to="failEmail"/>
+	</action>
+	<action name="vauto-add-partition-sold">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>${partitionScript}</exec>
+			<argument>-d</argument>
+			<argument>vauto</argument>
+			<argument>-t</argument>
+			<argument>vauto_sold_market_vehicle</argument>
+			<argument>-h</argument>
+			<argument>${namenode_host}</argument>
+			<argument>-l</argument>
+			<argument>/data/database/vauto/vauto_sold_market_vehicle/</argument>
+			<argument>-p</argument>
+                        <argument>${wf:actionData('vauto-add-new-partition-sold')['new-partitions']}</argument> 
+			<file>${partitionPath}${partitionScript}#${partitionScript}</file>
+			<capture-output/>
+		</shell>
+		<ok to="vauto-hql-dedupe"/>
 		<error to="failEmail"/>
 	</action>
 	<action name="failEmail">
